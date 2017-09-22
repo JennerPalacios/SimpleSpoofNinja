@@ -61,7 +61,7 @@ function checkUser(userID){
 			}
 		}
 		
-		// I'M NOT IN THE ONE OF THE SERVERS
+		// I'M NOT IN ONE OF THE SERVERS
 		else {
 			console.info("[WARNING] I am not in server: "+spoofServers[serverCount].name+" | Please join using invite code: "+spoofServers[serverCount].invite);
 		}
