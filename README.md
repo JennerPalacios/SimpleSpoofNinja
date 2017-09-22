@@ -1,8 +1,12 @@
-# SimpleSpoofNinja
-<img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Ninja.png" />
+# SimpleSpoofNinja 
+<img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Ninja.png" height="150" />
 
 A Simple Anti-Spoofing Discord bot for PokemonGo
 
+In action for <b>SeattlePokeMaps</b>
+-Alerts are triggered (with image) when 
+-- someone joins the server while in a spoofing server, or
+-- someone joins a spoofing server while being in their server.
 <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/SpoofNinja.png" />
 
 -I am **NO** a ["javascript","discord.js"] expert so I bet there are people out there that can make something better.
