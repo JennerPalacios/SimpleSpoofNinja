@@ -9,7 +9,7 @@ In action for <b>SeattlePokeMaps</b><br />
 -- someone joins a spoofing server while being in their server.<br />
 <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/SpoofNinja.png" />
 
--I am **NO** a ["javascript","discord.js"] expert so I bet there are people out there that can make something better.
+-I am **NO** a ["javascript","discord.js"] expert so I bet there are people out there that can make something better.<br />
 See it in action at my Discord server: https://discord.gg/2BGCV2K 
 
 # REQUIREMENTS:
@@ -30,7 +30,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 # SETTING IT UP:
 1) MAKE SURE YOU MEET THE REQUIREMENTS ABOVE
 
-2) Change IP-address (using proxy or vpn) in order to:
+2) Change IP-address (using proxy or vpn) in order to:<br />
 » Log into your dummy account, and set your status/visibility to: INVISIBLE
 
 » Join all the spoofing servers using the invite codes in config.json<br />
@@ -49,7 +49,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 Optional: you can install <b>PM2</b> in order to have it running in the background (instructions below)
 
 # PM2:
-PM2 allows you to run processes/scripts in the background, you can access PM2 from anywhere, 
+PM2 allows you to run processes/scripts in the background, you can access PM2 from anywhere, <br />
 but for a process/script to first start the command needs to be run from the folder where the files are.
 
 ### To install PM2:
@@ -61,7 +61,7 @@ pm2 start spoofninja.js
 ### To watch it in action (logs)
 pm2 log
 
--If you would like to modify the file and keep it up-to-date while it's running - instead of stopping the bot, and restarting it again...
+-If you would like to modify the file and keep it up-to-date while it's running - instead of stopping the bot, and restarting it again...<br />
 » you can start/restart a process/script using "--watch"
 
 pm2 start spoofninja.js --watch
