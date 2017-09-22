@@ -32,14 +32,12 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 1) MAKE SURE YOU MEET THE REQUIREMENTS ABOVE
 
 2) Change IP-address (using proxy or vpn) in order to:<br />
-» Log into your dummy account, and set your status/visibility to: INVISIBLE
-
+» Log into your dummy account, and set your status/visibility to: INVISIBLE<br />
 » Join all the spoofing servers using the invite codes in config.json<br />
 -- most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data<br />
 -- and if you try to join their server you will be wasting the new dummy account and will need another<br />
--- if any of the code say "INVITE EXPIRED" you might be banned already - your proxy/new_ip address didnt work
-
-» Logout of the dummy account
+-- if any of the code say "INVITE EXPIRED" you might be banned already - your proxy/new_ip address didnt work<br />
+» Logout of the dummy account<br />
 
 3) Go back to your regular connection or IP-address
 
