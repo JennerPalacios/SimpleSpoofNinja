@@ -10,6 +10,7 @@ In action for <b>SeattlePokeMaps</b><br />
 <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/SpoofNinja.png" />
 
 -I am **NO** a ["javascript","discord.js"] expert so I bet there are people out there that can make something better.
+See it in action at my Discord server: https://discord.gg/2BGCV2K 
 
 # REQUIREMENTS:
 1) Node.js https://nodejs.org/en/download/  
