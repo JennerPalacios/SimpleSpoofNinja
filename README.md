@@ -3,10 +3,10 @@
 
 A Simple Anti-Spoofing Discord bot for PokemonGo
 
-In action for <b>SeattlePokeMaps</b>
--Alerts are triggered (with image) when 
--- someone joins the server while in a spoofing server, or
--- someone joins a spoofing server while being in their server.
+In action for <b>SeattlePokeMaps</b><br />
+-Alerts are triggered (with image) when <br />
+-- someone joins the server while in a spoofing server, or<br />
+-- someone joins a spoofing server while being in their server.<br />
 <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/SpoofNinja.png" />
 
 -I am **NO** a ["javascript","discord.js"] expert so I bet there are people out there that can make something better.
@@ -32,9 +32,9 @@ In action for <b>SeattlePokeMaps</b>
 2) Change IP-address (using proxy or vpn) in order to:
 » Log into your dummy account, and set your status/visibility to: INVISIBLE
 
-» Join all the spoofing servers using the invite codes in config.json
--- most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data
--- and if you try to join their server you will be wasting the new dummy account and will need another
+» Join all the spoofing servers using the invite codes in config.json<br />
+-- most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data<br />
+-- and if you try to join their server you will be wasting the new dummy account and will need another<br />
 -- if any of the code say "INVITE EXPIRED" you might be banned already - your proxy/new_ip address didnt work
 
 » Logout of the dummy account
@@ -42,9 +42,9 @@ In action for <b>SeattlePokeMaps</b>
 3) Go back to your regular connection or IP-address
 
 4) LAUNCH THE SCRIPT
-- Using command prompt or bash: node spoofninja.js
--- The dummy account will not get banned as long as you DO NOT log into it using Discord app or browser
--- If you close that window, the bot connection will be terminated
+- Using command prompt or bash: node spoofninja.js<br />
+-- The dummy account will not get banned as long as you DO NOT log into it using Discord app or browser<br />
+-- If you close that window, the bot connection will be terminated<br />
 Optional: you can install <b>PM2</b> in order to have it running in the background (instructions below)
 
 # PM2:
