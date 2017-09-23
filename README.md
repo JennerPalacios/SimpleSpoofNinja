@@ -18,7 +18,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 
 2) Discord.js (npm install discord.js) 
 
-3) Discord.js (npm install fs) 
+3) File-System (npm install fs) 
 
 4) A Discord dummy account
 
