@@ -31,20 +31,20 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 # SETTING IT UP:
 1. MAKE SURE YOU MEET THE REQUIREMENTS ABOVE
 
-2. Change IP-address (using proxy or vpn) in order to:<br />
-  1. Log into your dummy account, and set your status/visibility to: **INVISIBLE**<br />
-  2. Join **all** the spoofing servers using the invite codes in `config.json`<br />
-    * most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data<br />
-    * and if you try to join their server you will be wasting the new dummy account and will need another<br />
-    * if any of the code say "**INVITE EXPIRED**" you might be banned already - your proxy or ipaddress didnt work<br />
-  3. GET the **Dummy Account's Token**, which will be needed for the script to run (check users `onJoin` and `commands`)<br />
-    * This is not a **USERBOT** nor **DiscordApp**; this is an actually discord dummy account specifically created and used by this script<br />
-    * **HOW TO GET TOKEN**?:<br />
-    * Using your browser or discord, while logged into the dummy account, do the shortcut key combination:<br />
-    [`CTRL`]+[`SHIFT`]+[`I`] - this should open Developer's Console **Application** and follow screenshot below in order to get the **Token**<br />
-    <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Token.jpg" height="250" /><br />
+2. Change IP-address (using proxy or vpn) in order to:
+  1. Log into your dummy account, and set your status/visibility to: **INVISIBLE**
+  2. Join **all** the spoofing servers using the invite codes in `config.json`
+    * most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data
+    * and if you try to join their server you will be wasting the new dummy account and will need another
+    * if any of the code say "**INVITE EXPIRED**" you might be banned already - your proxy or ipaddress didnt work
+  3. GET the **Dummy Account's Token**, which will be needed for the script to run (check users `onJoin` and `commands`)
+    * This is not a **USERBOT** nor **DiscordApp**; this is an actually discord dummy account specifically created and used by this script
+    * **HOW TO GET TOKEN**?:
+    * Using your browser or discord, while logged into the dummy account, do the shortcut key combination:
+    [`CTRL`]+[`SHIFT`]+[`I`] - this should open Developer's Console **Application** and follow screenshot below in order to get the **Token**:
+    <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Token.jpg" height="300" />
     
-3. Logout of the dummy account<br />
+3. Logout of the dummy account
 
 4. Go back to your regular connection or IP-address
 
