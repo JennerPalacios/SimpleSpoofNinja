@@ -42,7 +42,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
     * **HOW TO GET TOKEN**?:<br />
     * Using your browser or discord, while logged into the dummy account, do the shortcut key combination:<br />
     [`CTRL`]+[`SHIFT`]+[`I`] - this should open Developer's Console **Application** and follow screenshot to get the **Token**<br />
-    <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Ninja.png" height="200" /><br />
+    <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Token.jpg" height="200" /><br />
     
 3. Logout of the dummy account<br />
 
