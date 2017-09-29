@@ -32,16 +32,16 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 1. MAKE SURE YOU MEET THE REQUIREMENTS ABOVE
 
 2. Change IP-address (using proxy or vpn) in order to:
-  1. Log into your dummy account, and set your status/visibility to: **INVISIBLE**
-  2. Join **all** the spoofing servers using the invite codes in `config.json`
-    * most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data
-    * and if you try to join their server you will be wasting the new dummy account and will need another
-    * if any of the code say "**INVITE EXPIRED**" you might be banned already - your proxy or ipaddress didnt work
-  3. GET the **Dummy Account's Token**, which will be needed for the script to run (check users `onJoin` and `commands`)
-    * This is not a **USERBOT** nor **DiscordApp**; this is an actually discord dummy account specifically created and used by this script
-    * **HOW TO GET TOKEN**?:
-    * Using your browser or discord, while logged into the dummy account, do the shortcut key combination:
-    [`CTRL`]+[`SHIFT`]+[`I`] - this should open Developer's Console **Application** and follow screenshot below in order to get the **Token**:
+.. 1. Log into your dummy account, and set your status/visibility to: **INVISIBLE**
+.. 2. Join **all** the spoofing servers using the invite codes in `config.json`
+.... * most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data
+.... * and if you try to join their server you will be wasting the new dummy account and will need another
+.... * if any of the code say "**INVITE EXPIRED**" you might be banned already - your proxy or ipaddress didnt work
+.. 3. GET the **Dummy Account's Token**, which will be needed for the script to run (check users `onJoin` and `commands`)
+.... * This is not a **USERBOT** nor **DiscordApp**; this is an actually discord dummy account specifically created and used by this script
+... * **HOW TO GET TOKEN**?:
+... * Using your browser or discord, while logged into the dummy account, do the shortcut key combination:
+... [`CTRL`]+[`SHIFT`]+[`I`] - this should open Developer's Console **Application** and follow screenshot below in order to get the **Token**:
     <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Token.jpg" height="300" />
     
 3. Logout of the dummy account
@@ -49,10 +49,10 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 4. Go back to your regular connection or IP-address
 
 5. LAUNCH THE SCRIPT
-  1. Using command prompt or bash: node spoofninja.js<br />
-    * The dummy account will not get banned as long as you DO NOT log into it using Discord app or browser<br />
-    * If you close that window, the bot connection will be terminated<br />
-  * Optional: you can install <b>PM2</b> in order to have it running in the background (instructions below)
+.. 1. Using command prompt or bash: node spoofninja.js<br />
+.... * The dummy account will not get banned as long as you DO NOT log into it using Discord app or browser<br />
+.... * If you close that window, the bot connection will be terminated<br />
+.. * Optional: you can install <b>PM2</b> in order to have it running in the background (instructions below)
 
 # PM2:
 PM2 allows you to run processes/scripts in the background, you can access PM2 from anywhere, <br />
