@@ -1,7 +1,6 @@
 { 
 	"botName": "SpoofNinja",
-	"botID": "<BOT_USER_ID",
-	"token": "<BOT_TOKEN>",
+	"token": "<DUMMY_ACCOUNT_TOKEN>",
 	
 	"ownerID": "<MY_OWN_ID_IN_CASE_I_DONT_HAVE_ROLE>",
 	
@@ -16,8 +15,8 @@
 	"dangerColor": "#FF0000",
 	"snipeImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/User-Spoof.png",
 	
-	"cmdChanID": "<CHANNEL_ID_WHERE_I_WILL_LISTEN_TO_FOR_COMMANDS_(IE:_#MODLOG)",
-	"webhook": "<WEBHOOK_URL_OF_THE_CHANNEL_TO_POST_ON_(IE:_#MODLOG)",
+	"cmdChanID": "<CHANNEL_ID_WHERE_I_WILL_LISTEN_TO_FOR_COMMANDS_(IE:_#MODLOG)>",
+	"webhook": "<WEBHOOK_URL_OF_THE_CHANNEL_TO_POST_ON_(IE:_#MODLOG)>",
 	
 	"adminRoleName": "<TEXT_ROLE_I_GAVE_TO_ADMINS>",
 	"modRoleName": "<TEXT_ROLE_I_GAVE_TO_MODERATORS>",
