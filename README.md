@@ -34,11 +34,10 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 2. Change IP-address (using proxy or vpn) in order to:
     1. Log into your dummy account, and set your status/visibility to: **INVISIBLE**
     2. Join **all** the spoofing servers using the invite codes in `config.json`
-        * most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data
-        * and if you try to join their server you will be wasting the new dummy account and will need another
+        * most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data - and if you try to join their server you will be wasting the new dummy account and will need another
         * if any of the code say "**INVITE EXPIRED**" you might be banned already - your proxy or ipaddress didnt work
-    3. GET the **Dummy Account's Token**, which will be needed for the script to run (check users `onJoin` and `commands`)
-        * This is not a **USERBOT** nor **DiscordApp**; this is an actually discord dummy account specifically created and used by this script
+    3. GET the **Dummy Account's Token**, which will be **required** for the script to run (check users `onJoin` and `commands`)
+        * This is not a **UserBot** nor **DiscordApp**; this is an actual discord [`dummy/alternate`] **account** - specifically created and used by this script; DiscordApps, even when UserBot (aka `App Bot User`) is enabled it **DOES NOT** work, as they have to independently invited by the admins at each spoofing server - in other words: impossible to use.
         * **HOW TO GET TOKEN**?:
         * Using your browser or discord, while logged into the dummy account, do the shortcut key combination:
         [`CTRL`]+[`SHIFT`]+[`I`] - this should open Developer's Console **Application** and follow screenshot below in order to get the **Token**:
