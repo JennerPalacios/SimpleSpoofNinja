@@ -41,8 +41,8 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
     * This is not a **USERBOT** nor **DiscordApp**; this is an actually discord dummy account specifically created and used by this script<br />
     * **HOW TO GET TOKEN**?:<br />
     * Using your browser or discord, while logged into the dummy account, do the shortcut key combination:<br />
-    [`CTRL`]+[`SHIFT`]+[`I`] - this should open Developer's Console **Application** and follow screenshot to get the **Token**<br />
-    <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Token.jpg" height="200" /><br />
+    [`CTRL`]+[`SHIFT`]+[`I`] - this should open Developer's Console **Application** and follow screenshot below in order to get the **Token**<br />
+    <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Token.jpg" height="250" /><br />
     
 3. Logout of the dummy account<br />
 
