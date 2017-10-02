@@ -6,9 +6,9 @@ A Simple Anti-Spoofing Discord bot for PokemonGo
 **EXAMPLE:**<br />
 Here you can see it in action for <b>SeattlePokeMaps</b><br />
 Alerts are triggered (with image) when 
-   * someone joins the server while in a spoofing server, or 
-   * someone joins a spoofing server while being in their server.<br />
-<img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/SpoofNinja.png" />
+   * someone joins your server while in a spoofing server, or 
+   * someone joins a spoofing server while being in your server.<br />
+<img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/SpoofNinja.png" height="400" />
 <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/SpoofCheck.png" />
 
 -I am **NO** a ["javascript","discord.js"] expert so I bet there are people out there that can make something better.<br />
