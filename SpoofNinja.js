@@ -61,7 +61,7 @@ function checkUser(userID){
 			}
 		}
 		
-		// I'M NOT IN THE ONE OF THE SERVERS
+		// I'M NOT IN ONE OF THE SERVERS
 		else {
 			console.info("[WARNING] I am not in server: "+spoofServers[serverCount].name+" | Please join using invite code: "+spoofServers[serverCount].invite);
 		}
@@ -252,6 +252,76 @@ bot.on('message', message => {
 		// COMMAND: !CHECK
 		if(command=="check"){
 			var u2c=""; var u2cn="";
+			
+			
+			
+			if(args[0]==="server"){
+				if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
+					let allUsersID="";let allUsersNames="";let uCount="";let milSecs=1000; let uc=0;let daServers="";
+					
+					// GRAB ALL USERS
+					g.members.map(m=> { 
+						allUsersID += m.user.id+","; allUsersNames+=m.user.username+",";
+					} )
+					
+					// BREAK INTO ARRAYS
+					allUsersID=allUsersID.split(",");allUsersNames=allUsersNames.split(","); uCount=allUsersID.length-2;
+					console.info("Splitted All users, total: "+uCount); 
+					
+					for(var xUser="0"; xUser < uCount; xUser++){
+						//console.info("User["+xUser+"] : "+allUsersNames[xUser]+"|"+allUsersID[xUser]+"\n");
+						
+						setTimeout(function(){
+							console.info("Checking for: ["+uc+"] "+allUsersNames[uc]+" : "+allUsersID[uc]);
+							let spoofServersFound=checkUser(allUsersID[uc]);
+								// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
+								spoofServersFound=spoofServersFound.replace(config.myServer.name+",","");
+							
+							if(spoofServersFound){
+								console.info(spoofServersFound);
+								spoofServersFound=spoofServersFound.split(",");
+								for(var serv=0;serv<spoofServersFound.length;serv++){
+									daServers += spoofServersFound[serv]+", ";
+								}
+								daServers=daServers.slice(0,-4);
+								
+								//
+								//				SLACK TEMPLATE WITH SPOOF THUMBNAIL
+								//
+								slackmsg={
+									'username': config.botName,
+									'attachments': [{
+										'color': config.warningColor,
+										'thumb_url': config.snipeImg,
+										'text': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[uc]+'\n**UserID**: <@'+allUsersID[uc]+'\nwas **found** in servers: \n' + daServers
+									}]
+								};
+								WHchan.sendSlackMessage(slackmsg).catch(console.error);
+								daServers=""; spoofServersFound="";
+							}
+							uc++;
+						}, milSecs);
+						milSecs=milSecs+1000;
+					}
+				}
+				else {
+					slackmsg={
+						'username': config.botName,
+						'attachments': [{
+							'color': config.dangerColor,
+							'text': '⚠ You are **NOT** __ALLOWED__ to use this command!'
+						}]
+					};
+					
+					// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
+					return WHchan.sendSlackMessage(slackmsg).catch(console.error);
+				}
+			}
+			
+			return;
+			
+			
+			
 			
 			// CHECK IF SOMEONE WAS MENTIONED AND THAT USER EXIST WITHIN MY OWN SERVER
 			let mentioned=""; if(message.mentions.users.first()){ mentioned=message.mentions.users.first(); }
