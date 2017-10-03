@@ -37,6 +37,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
     2. Join **all** the spoofing servers using the invite codes in `servers.json`
         * most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data - and if you try to join their server you will be wasting the new dummy account and will need another
         * if any of the code say "**INVITE EXPIRED**" you might be banned already - your proxy or ipaddress didnt work
+        * **EDITED** PRIVATE MESSAGE ME HERE OR DISCORD FOR INVITE CODES, IT APPEARS SPOOFINGSERVER-OWNERS ARE DELETING THE INVITE CODES AND KICK/BANNING PEOPLE USING THEM.
     3. GET the **Dummy Account's Token**, which will be **required** for the script to run (check users `onJoin` and `commands`)
         * This is not a **UserBot** nor **DiscordApp**; this is an actual discord [`dummy/alternate`] **account** - specifically created and used by this script; DiscordApps, even when UserBot (aka `App Bot User`) is enabled it **DOES NOT** work, as they have to independently invited by the admins at each spoofing server - in other words: impossible to use.
         * **HOW TO GET TOKEN**?:
@@ -48,7 +49,9 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 
 4. Go back to your regular connection or IP-address
 
-5. LAUNCH THE SCRIPT
+5. Modify `config.json` 
+
+6. LAUNCH THE SCRIPT
     1. Using command prompt or bash: `node spoofninja.js`
         * The dummy account will not get banned as long as you DO NOT log into it using Discord app or browser
         * If you close that window, the bot connection will be terminated
