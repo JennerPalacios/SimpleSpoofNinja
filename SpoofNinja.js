@@ -225,7 +225,7 @@ bot.on('message', message => {
 	let timeStamp="`"+yr+"/"+mo+"/"+da+"` **@** `"+hr+":"+min+":"+sec+"`";let timeStampSys="["+yr+"/"+mo+"/"+da+" @ "+hr+":"+min+":"+sec+"] ";
 	
 	// IGNORE MESSAGES FROM CHANNELS THAT ARE NOT CMDCHANID AKA COMMAND CHANNEL ID AKA MODLOG
-	if(message.channel.id===config.cmdChanID || message.channel.id==="271531913381019648"){
+	if(message.channel.id===config.cmdChanID){
 	
 		// IGNORE REGULAR CHAT
 		if(!message.content.startsWith(config.prefix)){ return }
