@@ -19,7 +19,7 @@ const WHchan=new Discord.WebhookClient(webhookID,webhookToken);
 
 bot.on('ready', () => {
 	let CurrTime=new Date();
-	let mo=CurrTime.getMonth();if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
+	let mo=CurrTime.getMonth()+1;if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
 	let hr=CurrTime.getHours();if(hr<10){hr="0"+hr;}let min=CurrTime.getMinutes();if(min<10){min="0"+min;}let sec=CurrTime.getSeconds();if(sec<10){sec="0"+sec;}
 	let timeStampSys="["+yr+"/"+mo+"/"+da+" @ "+hr+":"+min+":"+sec+"] ";
 	
@@ -61,7 +61,7 @@ function checkUser(userID){
 			}
 		}
 		
-		// I'M NOT IN ONE OF THE SERVERS
+		// I'M NOT IN THE ONE OF THE SERVERS
 		else {
 			console.info("[WARNING] I am not in server: "+spoofServers[serverCount].name+" | Please join using invite code: "+spoofServers[serverCount].invite);
 		}
@@ -111,7 +111,7 @@ function checkJoined(serverID){
 bot.on("guildMemberAdd", member => {
 	
 	let CurrTime=new Date();
-	let mo=CurrTime.getMonth();if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
+	let mo=CurrTime.getMonth()+1;if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
 	let hr=CurrTime.getHours();if(hr<10){hr="0"+hr;}let min=CurrTime.getMinutes();if(min<10){min="0"+min;}let sec=CurrTime.getSeconds();if(sec<10){sec="0"+sec;}
 	let timeStamp="`"+yr+"/"+mo+"/"+da+"` **@** `"+hr+":"+min+":"+sec+"`";let timeStampSys="["+yr+"/"+mo+"/"+da+" @ "+hr+":"+min+":"+sec+"] ";
 
@@ -158,7 +158,7 @@ bot.on("guildMemberAdd", member => {
 			myServerFound="yes";
 		}
 		spoofServersFound=spoofServersFound.split(","); daServers="";
-		console.info(timeStampSys+"User: "+userNoSpace+" has joined Server: "+serverJoined+" || other Servers: "+spoofServersFound);
+				
 		for(var serv="0"; serv < spoofServersFound.length; serv++){
 			
 			// CHECK IF HE JOINED A SPOOF SERVER WHILE BEING IN MY SERVER
@@ -186,6 +186,14 @@ bot.on("guildMemberAdd", member => {
 		};
 	}
 	
+	// PREVENT BLANK POSTING OR FAKE NOTIFICATION GLITCH
+	if(!serverJoined){ return }
+	
+	consoleInfo=timeStampSys+"User: "+userNoSpace+" has joined Server: "+serverJoined+" || other Servers: "+spoofServersFound;
+	
+	if(spoofServersFound && myServerFound==="no"){ console.info(consoleInfo) }
+	
+	
 	//
 	//				POSTING TO MODLOG CHANNELS
 	//
@@ -204,6 +212,7 @@ bot.on("guildMemberAdd", member => {
 		};
 		
 		// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
+		console.log(consoleInfo);
 		return WHchan.sendSlackMessage(slackmsg).catch(console.error);
 	}
 	
@@ -220,7 +229,7 @@ bot.on('message', message => {
 	
 	// TIME AND DATE FOR TIMESTAMP IN LOGS - COMMANDLINE AND DISCORD MODLOG
 	let CurrTime=new Date();
-	let mo=CurrTime.getMonth();if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
+	let mo=CurrTime.getMonth()+1;if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
 	let hr=CurrTime.getHours();if(hr<10){hr="0"+hr;}let min=CurrTime.getMinutes();if(min<10){min="0"+min;}let sec=CurrTime.getSeconds();if(sec<10){sec="0"+sec;}
 	let timeStamp="`"+yr+"/"+mo+"/"+da+"` **@** `"+hr+":"+min+":"+sec+"`";let timeStampSys="["+yr+"/"+mo+"/"+da+" @ "+hr+":"+min+":"+sec+"] ";
 	
@@ -275,7 +284,7 @@ bot.on('message', message => {
 							'username': config.botName,
 							'attachments': [{
 								'color': config.goodColor,
-								'text': '✅ **'+u2cn+'** \n**ID:** `'+u2c+'`\n appears to be a __honorable__\n **Pokemon Go Trainer**'
+								'text': '✅ **'+u2cn+'** \nappears to be a __honorable__\n **Pokemon Go Trainer**'
 							}]
 						};
 					}
@@ -297,7 +306,7 @@ bot.on('message', message => {
 							'attachments': [{
 								'color': config.warningColor,
 								'thumb_url': config.snipeImg,
-								'text': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\n**ID**: `'+u2c+'`\nwas **found** in servers: \n' + daServers
+								'text': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\nwas **found** in servers: \n' + daServers
 							}]
 						};
 					}
@@ -312,7 +321,7 @@ bot.on('message', message => {
 						'username': config.botName,
 						'attachments': [{
 							'color': config.goodColor,
-							'text': 'Please `@mention` a person you want me to `!check` you can use `@user_tag` or `user_id_number`'
+							'text': 'Please `@mention` a person you want me to `!check`, you can use `@user_tag` or `user_id_number`'
 						}]
 					};
 					
