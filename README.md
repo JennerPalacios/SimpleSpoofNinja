@@ -15,11 +15,11 @@ Alerts are triggered (with image) when
 See it in action at my Discord server: https://discord.gg/2BGCV2K 
 
 # REQUIREMENTS:
-1) Node.js https://nodejs.org/en/download/  
+1) Node.js (https://nodejs.org/en/download/ `ver 8.4+`)
 
-2) Discord.js (npm install discord.js) 
+2) Discord.js (`npm install discord.js` « should be `ver 12.2+`) 
 
-3) File-System (npm install fs) 
+3) File-System (`npm install fs`) 
 
 4) A Discord dummy account
 
@@ -34,7 +34,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 
 2. Change IP-address (using proxy or vpn) in order to:
     1. Log into your dummy account, and set your status/visibility to: **INVISIBLE**
-    2. Join **all** the spoofing servers using the invite codes in `config.json`
+    2. Join **all** the spoofing servers using the invite codes in `servers.json`
         * most spoofing servers will have your IP banned already, they don't like mappers, but they like to scrape mapper's data - and if you try to join their server you will be wasting the new dummy account and will need another
         * if any of the code say "**INVITE EXPIRED**" you might be banned already - your proxy or ipaddress didnt work
     3. GET the **Dummy Account's Token**, which will be **required** for the script to run (check users `onJoin` and `commands`)
@@ -49,33 +49,33 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 4. Go back to your regular connection or IP-address
 
 5. LAUNCH THE SCRIPT
-    1. Using command prompt or bash: node spoofninja.js
+    1. Using command prompt or bash: `node spoofninja.js`
         * The dummy account will not get banned as long as you DO NOT log into it using Discord app or browser
         * If you close that window, the bot connection will be terminated
         * Optional: you can install **PM2** in order to have it running in the background (instructions below)
 
 # PM2:
-PM2 allows you to run processes/scripts in the background, you can access PM2 from anywhere, <br />
-but for a process/script to first start the command needs to be run from the folder where the files are.
+PM2 allows you to run scripts in the background, you can access PM2 from anywhere (any folder, using `cmd` prompt), <br />
+but for the first launch, the command needs to be run from the folder where the files are located.
 
 ### To install PM2:
-npm install pm2 -g
+`npm install pm2 -g`
 
 ### To start the bot, using command prompt
-pm2 start spoofninja.js
+`pm2 start spoofninja.js`
 
 ### To watch it in action (logs)
-pm2 log
+`pm2 log`
 
 -If you would like to modify the file and keep it up-to-date while it's running - instead of stopping the bot, and restarting it again...<br />
-» you can start/restart a process/script using "--watch"
+» you can start/restart a process/script using "`--watch`"<br />
 
-pm2 start spoofninja.js --watch
+`pm2 start spoofninja.js --watch`
 
 ### Other Commands:
 
-pm2 list (display a list of running processes)
+`pm2 list` (display a list of running processes)
 
-pm2 stop NAME/ID (stops the process)
+`pm2 stop <NAME/ID>` (stops the process)
 
-pm2 kill (stops pm2)
+`pm2 kill` (stops pm2)
