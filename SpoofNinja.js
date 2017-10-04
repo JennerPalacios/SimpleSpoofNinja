@@ -254,7 +254,6 @@ bot.on('message', message => {
 			var u2c=""; var u2cn="";
 			
 			
-			
 			if(args[0]==="server"){
 				if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
 					let allUsersID="";let allUsersNames="";let uCount="";let milSecs=1000; let uc=0;let daServers="";let totalSpoofers=0;
@@ -265,17 +264,16 @@ bot.on('message', message => {
 					} )
 					
 					// BREAK INTO ARRAYS
-					allUsersID=allUsersID.split(",");allUsersNames=allUsersNames.split(","); uCount=allUsersID.length-2;
-					console.info("Splitted All users, total: "+uCount); 
+					allUsersID=allUsersID.split(",");allUsersNames=allUsersNames.split(","); uCount=allUsersID.length-1; let uTotal=uCount-1;
 					
 					slackmsg={'username': config.botName,'attachments': [{
-						'color': config.goodColor,'text': '**(>^.^)> NOTICE <(^.^<)**\nAbout to check **'+uCount+'** users...\nFrom server: **'
+						'color': config.goodColor,'text': '**(>^.^)> NOTICE <(^.^<)**\nAbout to check **'+uTotal+'** users...\nFrom server: **'
 							+config.myServer.name+'**\n... please wait ...'}]};
 					WHchan.sendSlackMessage(slackmsg).catch(console.error);
 					
-					for(var xUser="0"; xUser < uCount; xUser++){
+					for(var xUser=0; xUser < uCount; xUser++){
 						setTimeout(function(){
-							console.info("[#"+uc+"/"+uCount+"] Checking: "+allUsersNames[uc]+"["+allUsersID[uc]+"]");
+							console.info("[#"+uc+"/"+uTotal+"] Checking: "+allUsersNames[uc]+"["+allUsersID[uc]+"]");
 							let spoofServersFound=checkUser(allUsersID[uc]);
 								// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
 								spoofServersFound=spoofServersFound.replace(config.myServer.name+",","");
@@ -299,21 +297,34 @@ bot.on('message', message => {
 										'color': config.warningColor,
 										'thumb_url': config.snipeImg,
 										'text': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[uc]+'\n**UserID**: <@'+allUsersID[uc]+'> \nwas **FOUND** in servers: \n'
-											+daServers+'\n.\n**User** #'+uc+' of '+uCount+' total...'
+											+daServers+'\n.\n**User** #'+uc+' of '+uTotal+' total...'
 									}]
 								};
+								
+								// POST NOOB FOUND IN SPOOFER SERVER
 								WHchan.sendSlackMessage(slackmsg).catch(console.error);
+								console.log(timeStampSys+"User: "+allUsersNames[uc]+"["+allUsersID[uc]+"] was found in servers: "+daServers);
+								
+								// ADD TO TOTALSPOOFERS COUNT
 								totalSpoofers++
+								
+								// RESET DATA FOR NEXT USER IN WAIT-LIST
 								daServers=""; spoofServersFound="";
 							}
 							
 							// END NOTIFICATION
-							if(uc===uCount){
-								slackmsg={'username': config.botName,'attachments': [{'color': config.goodColor,'text': '**(>^.^)> ALL DONE <(^.^<)**\nI __found__ a total of **'+totalSpoofers+'** spoOfers!'}]};
+							if(uc===uTotal){
+								slackmsg={'username': config.botName,'attachments': [{
+									'color': config.goodColor,'text': '**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **'+totalSpoofers+'** spoOfers!\n...out of **'+uTotal+'** users...'
+									}]};
 								WHchan.sendSlackMessage(slackmsg).catch(console.error);
 							}
+							
+							// ADD +1 TO COUNT TO CHECK NEXT USER
 							uc++;
 						}, milSecs);
+						
+						// ADD 1 SECOND TO NEXT USER CHECK FROM SERVER
 						milSecs=milSecs+1000;
 					}
 				}
@@ -329,12 +340,7 @@ bot.on('message', message => {
 					// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
 					return WHchan.sendSlackMessage(slackmsg).catch(console.error);
 				}
-			}
-			
-			return;
-			
-			
-			
+			}			
 			
 			// CHECK IF SOMEONE WAS MENTIONED AND THAT USER EXIST WITHIN MY OWN SERVER
 			let mentioned=""; if(message.mentions.users.first()){ mentioned=message.mentions.users.first(); }
@@ -358,7 +364,7 @@ bot.on('message', message => {
 						// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
 						spoofServersFound=spoofServersFound.replace(config.myServer.name+",","");
 					
-					// USER WAS NOT FOUND IN ANY SPOOFING SERVER
+					// USER WAS NOT FOUND IN ANY SPOOFING SERVER - FOR TEST CHANNEL
 					if(!spoofServersFound || spoofServersFound===""){
 						//
 						//				SLACK TEMPLATE WITH SPOOF THUMBNAIL
@@ -400,16 +406,18 @@ bot.on('message', message => {
 				
 				// MENTIONED IS INCORRECT FORMAT - NO A VALID @MENTION OR USER_ID
 				else {
-					slackmsg={
-						'username': config.botName,
-						'attachments': [{
-							'color': config.goodColor,
-							'text': 'Please `@mention` a person you want me to `!check`, you can use `@user_tag` or `user_id_number`'
-						}]
-					};
-					
-					// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-					return WHchan.sendSlackMessage(slackmsg).catch(console.error);
+					if(args[0]!=="server"){
+						slackmsg={
+							'username': config.botName,
+							'attachments': [{
+								'color': config.goodColor,
+								'text': 'Please `@mention` a person you want me to `!check`, you can use `@user_tag` or `user_id_number`'
+							}]
+						};
+						
+						// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
+						return WHchan.sendSlackMessage(slackmsg).catch(console.error);
+					}
 				}
 			}
 			
