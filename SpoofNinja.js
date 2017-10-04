@@ -257,7 +257,7 @@ bot.on('message', message => {
 			
 			if(args[0]==="server"){
 				if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
-					let allUsersID="";let allUsersNames="";let uCount="";let milSecs=1000; let uc=0;let daServers="";
+					let allUsersID="";let allUsersNames="";let uCount="";let milSecs=1000; let uc=0;let daServers="";let totalSpoofers=0;
 					
 					// GRAB ALL USERS
 					g.members.map(m=> { 
@@ -274,19 +274,16 @@ bot.on('message', message => {
 					WHchan.sendSlackMessage(slackmsg).catch(console.error);
 					
 					for(var xUser="0"; xUser < uCount; xUser++){
-						//console.info("User["+xUser+"] : "+allUsersNames[xUser]+"|"+allUsersID[xUser]+"\n");
-						
 						setTimeout(function(){
-							console.info("Checking for: ["+uc+"] "+allUsersNames[uc]+" : "+allUsersID[uc]);
+							console.info("[#"+uc+"/"+uCount+"] Checking: "+allUsersNames[uc]+"["+allUsersID[uc]+"]");
 							let spoofServersFound=checkUser(allUsersID[uc]);
 								// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
 								spoofServersFound=spoofServersFound.replace(config.myServer.name+",","");
 							
 							// DO NOT POST FINDINGS FOR SPOOFNINJA/DUMMY ACCOUNT, HE'S IN ALL SERVERS
 							if(allUsersID[uc]===config.botID){ spoofServersFound=""; }
-							
+														
 							if(spoofServersFound){
-								console.info(spoofServersFound);
 								spoofServersFound=spoofServersFound.split(",");
 								for(var serv=0;serv<spoofServersFound.length;serv++){
 									daServers += spoofServersFound[serv]+", ";
@@ -302,11 +299,18 @@ bot.on('message', message => {
 										'color': config.warningColor,
 										'thumb_url': config.snipeImg,
 										'text': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[uc]+'\n**UserID**: <@'+allUsersID[uc]+'> \nwas **FOUND** in servers: \n'
-											+daServers+'\n.\n**User** #'+uc+' of '+uCount+'...'
+											+daServers+'\n.\n**User** #'+uc+' of '+uCount+' total...'
 									}]
 								};
 								WHchan.sendSlackMessage(slackmsg).catch(console.error);
+								totalSpoofers++
 								daServers=""; spoofServersFound="";
+							}
+							
+							// END NOTIFICATION
+							if(uc===uCount){
+								slackmsg={'username': config.botName,'attachments': [{'color': config.goodColor,'text': '**(>^.^)> ALL DONE <(^.^<)**\nI __found__ a total of **'+totalSpoofers+'** spoOfers!'}]};
+								WHchan.sendSlackMessage(slackmsg).catch(console.error);
 							}
 							uc++;
 						}, milSecs);
