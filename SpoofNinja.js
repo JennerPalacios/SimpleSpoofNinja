@@ -143,7 +143,7 @@ bot.on("guildMemberAdd", member => {
 			'username': config.botName,
 			'attachments': [{
 				'color': config.warningColor,
-				'text': '**' + userNoSpace + '** has joined: **' + serverJoined + '**\n**UserTag**: ' + user + '\n**On**: ' + timeStamp
+				'text': '**'+userNoSpace+'** has joined: **'+serverJoined+'**\n**UserTag**: '+user+'\n**On**: '+timeStamp
 			}]
 		};
 	}
@@ -171,7 +171,7 @@ bot.on("guildMemberAdd", member => {
 			
 		}
 		
-		// ADD "OTHER SERVERS" + SERVERS
+		// ADD "OTHER SERVERS"+SERVERS
 		daServers="\n**Other Servers**: "+daServers.slice(0,-4);
 		
 		//
@@ -181,7 +181,7 @@ bot.on("guildMemberAdd", member => {
 			'username': config.botName,
 			'attachments': [{
 				'color': config.dangerColor,
-				'text': '**' + userNoSpace + '** has joined: **' + serverJoined + '**\n**UserTag**: ' + user + daServers + '\n**On**: ' + timeStamp
+				'text': '**'+userNoSpace+'** has joined: **'+serverJoined+'**\n**UserTag**: '+user+daServers+'\n**On**: '+timeStamp
 			}]
 		};
 	}
@@ -207,7 +207,7 @@ bot.on("guildMemberAdd", member => {
 				'color': config.dangerColor,
 				'thumb_url': config.snipeImg,
 				'text': '⚠ __**WARNING**__ ⚠\n**'
-					+ userNoSpace + '** has joined: **' + serverJoined + '**\n**UserTag**: ' + user + daServers + '\n**On**: ' + timeStamp
+					+ userNoSpace+'** has joined: **'+serverJoined+'**\n**UserTag**: '+user+daServers+'\n**On**: '+timeStamp
 			}]
 		};
 		
@@ -268,6 +268,11 @@ bot.on('message', message => {
 					allUsersID=allUsersID.split(",");allUsersNames=allUsersNames.split(","); uCount=allUsersID.length-2;
 					console.info("Splitted All users, total: "+uCount); 
 					
+					slackmsg={'username': config.botName,'attachments': [{
+						'color': config.goodColor,'text': '**(>^.^)> NOTICE <(^.^<)**\nAbout to check **'+uCount+'** users...\nFrom server: **'
+							+config.myServer.name+'**\n... please wait ...'}]};
+					WHchan.sendSlackMessage(slackmsg).catch(console.error);
+					
 					for(var xUser="0"; xUser < uCount; xUser++){
 						//console.info("User["+xUser+"] : "+allUsersNames[xUser]+"|"+allUsersID[xUser]+"\n");
 						
@@ -276,6 +281,9 @@ bot.on('message', message => {
 							let spoofServersFound=checkUser(allUsersID[uc]);
 								// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
 								spoofServersFound=spoofServersFound.replace(config.myServer.name+",","");
+							
+							// DO NOT POST FINDINGS FOR SPOOFNINJA/DUMMY ACCOUNT, HE'S IN ALL SERVERS
+							if(allUsersID[uc]===config.botID){ spoofServersFound=""; }
 							
 							if(spoofServersFound){
 								console.info(spoofServersFound);
@@ -293,7 +301,8 @@ bot.on('message', message => {
 									'attachments': [{
 										'color': config.warningColor,
 										'thumb_url': config.snipeImg,
-										'text': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[uc]+'\n**UserID**: <@'+allUsersID[uc]+'\nwas **found** in servers: \n' + daServers
+										'text': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[uc]+'\n**UserID**: <@'+allUsersID[uc]+'> \nwas **FOUND** in servers: \n'
+											+daServers+'\n.\n**User** #'+uc+' of '+uCount+'...'
 									}]
 								};
 								WHchan.sendSlackMessage(slackmsg).catch(console.error);
@@ -333,7 +342,7 @@ bot.on('message', message => {
 			if(Number.isInteger(parseInt(args[0]))){ 
 				u2cn=g.members.get(args[0]); 
 				if(u2cn){ u2cn=g.members.get(args[0]).user.username; }
-				else{ u2cn="<not_on_server>"; } u2c=args[0]
+				else{ u2cn="<@"+args[0]+">"; } u2c=args[0]
 			}
 			
 			// PERSON USING COMMAND IS AUTHORIZED - PERSON HAS ROLE FROM CONFIG.JSON OR IS BOT-OWNER
@@ -376,7 +385,7 @@ bot.on('message', message => {
 							'attachments': [{
 								'color': config.warningColor,
 								'thumb_url': config.snipeImg,
-								'text': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\nwas **found** in servers: \n' + daServers
+								'text': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\nwas **FOUND** in __servers__:\n'+daServers
 							}]
 						};
 					}
