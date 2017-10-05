@@ -68,8 +68,14 @@ function checkUser(userID){
 	}
 	
 	// CHECK PERSONAL SERVER IN CASE USER JOINS SPOOF SERVER AFTER JOINING MY SERVER
-	noobFound=""; noobFound=bot.guilds.get(myServer.server).members.get(userID);
-	if(noobFound){ serverFound += myServer.name+","; }
+	noobFound=""; noobFound=bot.guilds.get(myServer.server);
+	if(noobFound){ 
+		noobFound=bot.guilds.get(myServer.server).members.get(userID);
+		if(noobFound){ serverFound += myServer.name+","; }
+	}
+	else {
+		console.info("[WARNING] I am not in your server yet, SILLY YOU! ["+myServer.name+"]\n...Log into DummyAccount and join YOUR SERVER!");
+	}
 	
 	// SEND DATA BACK TO VARIABLE
 	return serverFound;
