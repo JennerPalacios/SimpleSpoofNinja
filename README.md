@@ -57,6 +57,14 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
         * If you close that window, the bot connection will be terminated
         * Optional: you can install **PM2** in order to have it running in the background (instructions below)
 
+# COMMANDS
+`!check @mention/user_id` - use a `@mention` or `user_id`, ie:
+  * `!check @JennerPalacios`
+  * `!check 237597448032354304`
+
+`!check server` - to check entire server, for online users and invisible users; users that are currently logged in - not the entire list of users that are registered to the server.
+
+
 # PM2:
 PM2 allows you to run scripts in the background, you can access PM2 from anywhere (any folder, using `cmd` prompt), <br />
 but for the first launch, the command needs to be run from the folder where the files are located.
