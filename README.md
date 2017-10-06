@@ -66,16 +66,16 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 # COMMANDS
 
 1. `!check @mention/user_id` - use a `@mention` or `user_id`, ie:
-  * `!check @JennerPalacios`
-  * `!check 237597448032354304`
+    * `!check @JennerPalacios`
+    * `!check 237597448032354304`
 
 2. `!check server` - to check entire server, for online users and invisible users; users that are currently logged in - not the entire list of users that are registered to the server.
 
 3. `!suggest` - to suggest a feature, command, etc... ie:
-  * `!suggest a way to order pizza`
+    * `!suggest a way to order pizza`
 
 4. `!feedback` - to offer feedback, comments, concerns, etc... ie:
-  * `feedback not bad you noOb, but you can do better`
+    * `feedback not bad you noOb, but you can do better`
 
 <hr />
 
