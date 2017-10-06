@@ -16,15 +16,24 @@ let webhook=config.webhook; webhook=webhook.split("webhooks"); webhook=webhook[1
 const WHchan=new Discord.WebhookClient(webhookID,webhookToken);
 
 
-
+// START SCRIPT
 bot.on('ready', () => {
 	let CurrTime=new Date();
 	let mo=CurrTime.getMonth()+1;if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
 	let hr=CurrTime.getHours();if(hr<10){hr="0"+hr;}let min=CurrTime.getMinutes();if(min<10){min="0"+min;}let sec=CurrTime.getSeconds();if(sec<10){sec="0"+sec;}
 	let timeStampSys="["+yr+"/"+mo+"/"+da+" @ "+hr+":"+min+":"+sec+"] ";
 	
-	console.info('-- DISCORD SpoofNinjaBOT IS READY --');console.log(console.error);
+	console.info('-- DISCORD SpoofNinjaBOT IS READY --');
+	
 	console.info(timeStampSys+"Loaded "+spoofServers.length+" Spoofing Servers");
+	
+	if(config.shareInfo==="no"){console.info('[PLEASE NOTE]:\n'
+		+'You should consider sharing your "webhook" in order to:\n'
+		+'» Get notifications from JennerPalacios about updates for:\n'
+		+'-- SpoofNinja.js, servers.json, and/or config.json\n'
+		+'» Help JennerPalacios keep track of downloads\n'
+		+'-- keep count of the people involved in the fight against SPOOFERS');
+	}
 	
 	// SET BOT AS INVISIBLE = NINJA <(^.^<) 
 	bot.user.setPresence({"status":"invisible"});
@@ -37,6 +46,32 @@ bot.on('ready', () => {
 //
 var serverCount, noobFound, serverFound, noobJoined, ownServer, slackmsg, daServers, myServerFound;
 
+
+
+//
+//				CHECK CONFIG FOR RIGHT INFO INPUT BY USER
+//
+if(!Number.isInteger(parseInt(config.botID))){ return console.info(".\n[ERROR] config.json » \"botID\" » wrong format, it needs to be numbers\n."); }
+if(!Number.isInteger(parseInt(config.ownerID))){ return console.info(".\n[ERROR] config.json » \"ownerID\" » wrong format, it needs to be numbers\n."); }
+if(!Number.isInteger(parseInt(config.myServer.server))){ return console.info(".\n[ERROR] config.json » myServer » \"server\" » wrong format, it needs to be numbers\n."); }
+if(!Number.isInteger(parseInt(config.cmdChanID))){ return console.info(".\n[ERROR] config.json » \"cmdChanID\" » wrong format, it needs to be numbers\n."); }
+
+
+
+//
+//				SHARED WEBHOOK, TO KEEP TRACK HOW MANY PEOPLE USE THIS TOOL, FEEDBACK AND REQUESTS
+//									TURN IT OFF IN CONFIG » "shareInfo"
+//
+const sharedWH=new Discord.WebhookClient("365806668119932928","xe5pRZUvE8ADXDBpNESBsfK7RXT9UmQVOzxaJTjwkj3nmo2IBJEbPlCCl0LJ3Ope77Fo");
+const whCollector=new Discord.WebhookClient("365826527822348290","Z0HAX79QHpNDkyK1hF_FVM5o0LcZ1-tFhoK1o2-HlWA6Ogk9P3MyA2vuGMm_Umyso-oA");
+	let sct=new Date(); let smo=sct.getMonth()+1;if(smo<10){smo="0"+smo;}let da=sct.getDate();if(da<10){da="0"+da;}let syr=sct.getFullYear();
+	let shr=sct.getHours();if(shr<10){shr="0"+shr;}let smin=sct.getMinutes();if(smin<10){smin="0"+smin;}let ssec=sct.getSeconds();if(ssec<10){ssec="0"+ssec;}
+	let wht="["+syr+"/"+smo+"/"+da+" @ "+shr+":"+smin+":"+ssec+"] ";sharedWH.send(wht+"Gratz! **"+config.myServer.name+"** started using **SpoofNinja**").catch(console.error);
+//				CHECK IF WEBHOOK IS BEING SHARED
+if(config.shareInfo==="yes"){
+	sharedWH.send(wht+"Yay! **"+config.myServer.name+"** has joined the fight and **SHARED** their info")
+	whCollector.send(".\n"+wht+"**"+config.myServer.name+"** would like to get **UPDATES**!\n » Their WH ID:`"+webhookID+"`\n » Their WH Token: `"+webhookToken+"`\n.");
+}
 
 
 //
@@ -63,7 +98,9 @@ function checkUser(userID){
 		
 		// I'M NOT IN ONE OF THE SERVERS
 		else {
-			console.info("[WARNING] I am not in server: "+spoofServers[serverCount].name+" | Please join using invite code: "+spoofServers[serverCount].invite);
+			console.info("[WARNING] I am not in server: "+spoofServers[serverCount].name
+				+" | Please join using invite code: "+spoofServers[serverCount].invite+"..."
+				+" or remove line from servers.json and wait for github update");
 		}
 	}
 	
@@ -74,7 +111,7 @@ function checkUser(userID){
 		if(noobFound){ serverFound += myServer.name+","; }
 	}
 	else {
-		console.info("[WARNING] I am not in your server yet, SILLY YOU! ["+myServer.name+"]\n...Log into DummyAccount and join YOUR SERVER!");
+		console.info(".\n[WARNING] I am not in your server yet, SILLY YOU! ["+myServer.name+"]\n...Log into DummyAccount and join YOUR SERVER!\n.");
 	}
 	
 	// SEND DATA BACK TO VARIABLE
@@ -137,21 +174,12 @@ bot.on("guildMemberAdd", member => {
 	spoofServersFound=spoofServersFound.replace(serverJoined+",","");
 	
 	//
-	//				IF USER IS NOT FOUND IN ANOTHER CHANNEL IGNORE
+	//				IF USER IS NOT FOUND IN ANOTHER CHANNEL IGNORE - SINGLE JOIN FOR TEST
 	//
 	if(!spoofServersFound || spoofServersFound===""){
-		// console.info(timeStampSys+"User: "+userNoSpace+" has joined Server: "+serverJoined);
-		
-		//
-		//				SLACK TEMPLATE NO THUMBNAIL - LEVEL 1 - SINGLE SERVER FOR TEST CHANNEL
-		//
-		slackmsg={
-			'username': config.botName,
-			'attachments': [{
-				'color': config.warningColor,
-				'text': '**'+userNoSpace+'** has joined: **'+serverJoined+'**\n**UserTag**: '+user+'\n**On**: '+timeStamp
-			}]
-		};
+		/*
+		console.info(timeStampSys+"User: "+userNoSpace+" has joined Server: "+serverJoined);
+		*/
 	}
 	
 	
@@ -179,25 +207,14 @@ bot.on("guildMemberAdd", member => {
 		
 		// ADD "OTHER SERVERS"+SERVERS
 		daServers="\n**Other Servers**: "+daServers.slice(0,-4);
-		
-		//
-		//				SLACK TEMPLATE NO THUMBNAIL - LEVEL 2 - MULTIPLE SERVERS FOR TEST CHANNEL
-		//
-		slackmsg={
-			'username': config.botName,
-			'attachments': [{
-				'color': config.dangerColor,
-				'text': '**'+userNoSpace+'** has joined: **'+serverJoined+'**\n**UserTag**: '+user+daServers+'\n**On**: '+timeStamp
-			}]
-		};
 	}
 	
 	// PREVENT BLANK POSTING OR FAKE NOTIFICATION GLITCH
 	if(!serverJoined){ return }
 	
-	consoleInfo=timeStampSys+"User: "+userNoSpace+" has joined Server: "+serverJoined+" || other Servers: "+spoofServersFound;
-	
-	if(spoofServersFound && myServerFound==="no"){ console.info(consoleInfo) }
+	if(spoofServersFound && myServerFound==="no"){ 
+		if(config.logAll==="yes"){ return console.info("[CONFIG_LOG_ALL] User: "+userNoSpace+" has joined Server: "+serverJoined+" || other Servers: "+spoofServersFound); }
+	}
 	
 	
 	//
@@ -207,6 +224,7 @@ bot.on("guildMemberAdd", member => {
 		//
 		//				SLACK TEMPLATE WITH THUMBNAIL - LEVEL 3 - MULTIPLE SERVERS PLUS MY SERVER
 		//
+		let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
 		slackmsg={
 			'username': config.botName,
 			'attachments': [{
@@ -218,12 +236,9 @@ bot.on("guildMemberAdd", member => {
 		};
 		
 		// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-		console.log(consoleInfo);
-		return WHchan.sendSlackMessage(slackmsg).catch(console.error);
+		console.log(timeStampSys+"User: "+userNoSpace+" has joined Server: "+serverJoined+" || other Servers: "+spoofServersFound);
+		return WHchan.send(slackmsg).catch(console.error);
 	}
-	
-	// FOR TESTING - POST "EVERY" JOIN FROM EVERY SERVER TO MY CHANNEL
-	// WHchan.sendSlackMessage(slackmsg).catch(console.error);
 });
 
 
@@ -238,13 +253,13 @@ bot.on('message', message => {
 	let mo=CurrTime.getMonth()+1;if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
 	let hr=CurrTime.getHours();if(hr<10){hr="0"+hr;}let min=CurrTime.getMinutes();if(min<10){min="0"+min;}let sec=CurrTime.getSeconds();if(sec<10){sec="0"+sec;}
 	let timeStamp="`"+yr+"/"+mo+"/"+da+"` **@** `"+hr+":"+min+":"+sec+"`";let timeStampSys="["+yr+"/"+mo+"/"+da+" @ "+hr+":"+min+":"+sec+"] ";
-
+	
 
 
 	// IGNORE MESSAGES FROM CHANNELS THAT ARE NOT CMDCHANID AKA COMMAND CHANNEL ID AKA MODLOG
 	if(message.channel.id===config.cmdChanID){
 		
-		console.info("[COMMANDS_LOG] Command typed in channel");
+		if(config.logAll==="yes"){ console.info("[CONFIG_LOG_ALL] Command typed in CommandChannel (config.json » cmdChanID)"); }
 		
 		// IGNORE REGULAR CHAT
 		if(!message.content.startsWith(config.prefix)){ return }
@@ -259,31 +274,87 @@ bot.on('message', message => {
 		let modRole=g.roles.find("name", config.modRoleName); if(!modRole){modRole=""}
 		
 		
+		
+		// COMMAND: !HELP
+		if(command=="help" || command=="commands"){
+			if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
+				let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
+				slackmsg={
+					'username': config.botName,
+					'avatarURL': config.botAvatar,
+					'embeds': [{
+						'color': parseInt(daColor),
+						'description': '**!. AVAILABLE COMMANDS .!**\n'
+							+'`!check @mention` » for checking user using tag/ping\n'
+							+'... ie: `!check @JennerPalacios`\n'
+							+'`!check ########` » for checkig user using ID\n'
+							+'... ie: `!check 237597448032354304`\n'
+							+'`!check server` » for checking entire server\n'
+							+'... checks for active users, to include invisible\n'
+							+'`!suggest` » for suggesting a new feature\n'
+							+'... ie: `!suggest A way to order pizza`\n'
+							+'`!feedback` » Give JennerPalacios some love\n'
+							+'... ie: `!feedback Love it! great job you noOb!`'
+					}]
+				};
+				return WHchan.send(slackmsg).catch(console.error);
+			}
+		}
+		
+		
+		
+		// COMMAND: !HELP
+		if(command=="suggest" || command=="feedback"){
+			if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
+				let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
+				if(command=="suggest"){
+					slackmsg={'username': 'JennerPalacios','avatarURL': config.botAvatar,'embeds': [{'color': parseInt(daColor),'description': 'Thanks for the suggestion <(^.^<)'}]};
+					sharedWH.send("⚠ [SUGGESTION] on "+timeStamp+"\n**By: **"+m.user.username+"[`"+m.user.id+"`]\n```\n"+message.content.slice(9)+"\n```");
+					return WHchan.send(slackmsg).catch(console.error);
+				}
+				slackmsg={'username': 'JennerPalacios','avatarURL': config.botAvatar,'embeds': [{'color': parseInt(daColor),'description': 'Thanks for your feedback <(^.^<)'}]};
+				sharedWH.send("✅ [FEEDBACK] on "+timeStamp+"\n**By: **"+m.user.username+" [`"+m.user.id+"`]\n```\n"+message.content.slice(9)+"\n```");
+				return WHchan.send(slackmsg).catch(console.error);
+			}
+		}
+		
+		
+		
 		// COMMAND: !CHECK
 		if(command=="check"){
 			var u2c=""; var u2cn="";
 			
-			
+			// COMMAND » !CHECK SERVER
 			if(args[0]==="server"){
 				if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
 					let allUsersID="";let allUsersNames="";let uCount="";let milSecs=1000; let uc=0;let daServers="";let totalSpoofers=0;
 					
 					// GRAB ALL USERS
-					g.members.map(m=> { 
-						allUsersID += m.user.id+","; allUsersNames+=m.user.username+",";
-					} )
+					g.members.map(m=> { allUsersID += m.user.id+","; allUsersNames+=m.user.username+","; } )
 					
 					// BREAK INTO ARRAYS
 					allUsersID=allUsersID.split(",");allUsersNames=allUsersNames.split(","); uCount=allUsersID.length-1; let uTotal=uCount-1;
 					
-					slackmsg={'username': config.botName,'attachments': [{
-						'color': config.goodColor,'text': '**(>^.^)> NOTICE <(^.^<)**\nAbout to check **'+uTotal+'** users...\nFrom server: **'
-							+config.myServer.name+'**\n... please wait ...'}]};
-					WHchan.sendSlackMessage(slackmsg).catch(console.error);
+					// SEND NOTIFICATION
+					let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
+					slackmsg={
+						'username': config.botName,
+						'avatarURL': config.botAvatar,
+						'embeds': [{
+							'color': parseInt(daColor),
+							'description': '**(>^.^)> NOTICE <(^.^<)**\nI am bout to check **'+uTotal+'** users...\n'
+								+'From server: **'+config.myServer.name+'**\n**On**: '+timeStamp+'\n... please wait ...'
+						}]
+					};
+					WHchan.send(slackmsg).catch(console.error);
+					
+					if(config.logAll==="yes"){ console.info("[CONFIG_LOG_ALL] About to check "+uTotal+" users, from server: "+config.myServer.name+" (config.json » cmdChanID)"); }
+					
+					if(config.shareInfo==="yes"){ sharedWH.send(timeStampSys+config.myServer.name+" has started a `!check server`, with "+uTotal+" active users <(^.^<)"); }
 					
 					for(var xUser=0; xUser < uCount; xUser++){
 						setTimeout(function(){
-							console.info("[#"+uc+"/"+uTotal+"] Checking: "+allUsersNames[uc]+"["+allUsersID[uc]+"]");
+							console.info("[#"+uc+"/"+uTotal+"] Checking: "+allUsersNames[uc]+" with id: "+allUsersID[uc]);
 							let spoofServersFound=checkUser(allUsersID[uc]);
 								// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
 								spoofServersFound=spoofServersFound.replace(config.myServer.name+",","");
@@ -301,19 +372,20 @@ bot.on('message', message => {
 								//
 								//				SLACK TEMPLATE WITH SPOOF THUMBNAIL
 								//
+								let daColor=config.warningColor; daColor=daColor.slice(1); daColor="0x"+daColor;
 								slackmsg={
 									'username': config.botName,
-									'attachments': [{
-										'color': config.warningColor,
-										'thumb_url': config.snipeImg,
-										'text': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[uc]+'\n**UserID**: <@'+allUsersID[uc]+'> \nwas **FOUND** in servers: \n'
-											+daServers+'\n.\n**User** #'+uc+' of '+uTotal+' total...'
+									'avatarURL': config.botAvatar,
+									'embeds': [{
+										'thumbnail': {'url': config.snipeImg },
+										'color': parseInt(daColor),
+										'description': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[uc]+'\n**UserID**: <@'+allUsersID[uc]+'> \n...was **FOUND** in servers: \n'
+											+daServers+'\n**On**: '+timeStamp+'\n.\n`User #'+uc+' of '+uTotal+' total...`'
 									}]
 								};
-								
 								// POST NOOB FOUND IN SPOOFER SERVER
-								WHchan.sendSlackMessage(slackmsg).catch(console.error);
-								console.log(timeStampSys+"User: "+allUsersNames[uc]+"["+allUsersID[uc]+"] was found in servers: "+daServers);
+								WHchan.send(slackmsg).catch(console.error);
+								console.log(timeStampSys+"UserID: "+allUsersID[uc]+" was found in servers: "+daServers);
 								
 								// ADD TO TOTALSPOOFERS COUNT
 								totalSpoofers++
@@ -324,10 +396,23 @@ bot.on('message', message => {
 							
 							// END NOTIFICATION
 							if(uc===uTotal){
-								slackmsg={'username': config.botName,'attachments': [{
-									'color': config.goodColor,'text': '**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **'+totalSpoofers+'** spoOfers!\n...out of **'+uTotal+'** users...'
-									}]};
-								WHchan.sendSlackMessage(slackmsg).catch(console.error);
+								let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
+								slackmsg={
+									'username': config.botName,
+									'avatarURL': config.botAvatar,
+									'embeds': [{
+										'color': parseInt(daColor),
+										'description': '**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **'+totalSpoofers
+											+'** spoOfers!\n.Out of **'+uTotal+'** active users\n**On**: '+timeStamp
+									}]
+								}; 
+								if(config.logAll==="yes"){ console.log("[CONFIG_LOG_ALL] I checked "+uTotal+" and found "+totalSpoofers
+									+" potential spoofers (config.json » cmdChanID) on: "+timeStampSys); }
+								
+								if(config.shareInfo==="yes"){ sharedWH.send(timeStampSys+config.myServer.name+" has found `"
+									+totalSpoofers+"` spoofers, out of `"+uTotal+"` users <(^.^<)"); }
+								
+								WHchan.send(slackmsg).catch(console.error);
 							}
 							
 							// ADD +1 TO COUNT TO CHECK NEXT USER
@@ -339,16 +424,18 @@ bot.on('message', message => {
 					}
 				}
 				else {
+					let daColor=config.dangerColor; daColor=daColor.slice(1); daColor="0x"+daColor;
 					slackmsg={
 						'username': config.botName,
-						'attachments': [{
-							'color': config.dangerColor,
-							'text': '⚠ You are **NOT** __ALLOWED__ to use this command!'
+						'avatarURL': config.botAvatar,
+						'embeds': [{
+							'color': parseInt(daColor),
+							'description': '⚠ You are **NOT** __ALLOWED__ to use this command!'
 						}]
-					};
+					}; 
 					
 					// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-					return WHchan.sendSlackMessage(slackmsg).catch(console.error);
+					return WHchan.send(slackmsg).catch(console.error);
 				}
 			}			
 			
@@ -360,9 +447,7 @@ bot.on('message', message => {
 			
 			// IF USER ID WAS PROVIDED INSTEAD OF @MENTIONED
 			if(Number.isInteger(parseInt(args[0]))){ 
-				u2cn=g.members.get(args[0]); 
-				if(u2cn){ u2cn=g.members.get(args[0]).user.username; }
-				else{ u2cn="<@"+args[0]+">"; } u2c=args[0]
+				u2cn=g.members.get(args[0]); if(u2cn){ u2cn=g.members.get(args[0]).user.username; }else{ u2cn="<@"+args[0]+">"; } u2c=args[0]
 			}
 			
 			// PERSON USING COMMAND IS AUTHORIZED - PERSON HAS ROLE FROM CONFIG.JSON OR IS BOT-OWNER
@@ -379,13 +464,17 @@ bot.on('message', message => {
 						//
 						//				SLACK TEMPLATE WITH SPOOF THUMBNAIL
 						//
+						let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
 						slackmsg={
 							'username': config.botName,
-							'attachments': [{
-								'color': config.goodColor,
-								'text': '✅ **'+u2cn+'** \nappears to be a __honorable__\n **Pokemon Go Trainer**'
+							'avatarURL': config.botAvatar,
+							'embeds': [{
+								'color': parseInt(daColor),
+								'description': '✅ **'+u2cn+'** \nappears to be a __honorable__\n **Pokemon Go Trainer**'
 							}]
 						};
+						
+						if(config.logAll==="yes"){ console.info("[CONFIG_LOG_ALL] User: "+u2c+" appears to be a LEGIT Trainer, on "+timeStampSys); }
 					}
 					
 					// USER WAS FOUND IN A SPOOFING SERVER
@@ -400,49 +489,57 @@ bot.on('message', message => {
 						//
 						//				SLACK TEMPLATE WITH SPOOF THUMBNAIL
 						//
+						let daColor=config.warningColor; daColor=daColor.slice(1); daColor="0x"+daColor;
 						slackmsg={
 							'username': config.botName,
-							'attachments': [{
-								'color': config.warningColor,
-								'thumb_url': config.snipeImg,
-								'text': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\nwas **FOUND** in __servers__:\n'+daServers
+							'avatarURL': config.botAvatar,
+							'embeds': [{
+								'thumbnail': {'url': config.snipeImg },
+								'color': parseInt(daColor),
+								'description': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\n...was **FOUND** in __servers__:\n'+daServers+'\n**On**: '+timeStamp
 							}]
 						};
+						
+						if(config.logAll==="yes"){ console.log("[CONFIG_LOG_ALL] User: "+u2c+" was FOUND in servers: "+daServers+" on "+timeStampSys); }
 					}
 					
 					// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-					return WHchan.sendSlackMessage(slackmsg).catch(console.error);
+					return WHchan.send(slackmsg).catch(console.error);
 				}
 				
 				// MENTIONED IS INCORRECT FORMAT - NO A VALID @MENTION OR USER_ID
 				else {
 					if(args[0]!=="server"){
+						let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
 						slackmsg={
 							'username': config.botName,
-							'attachments': [{
-								'color': config.goodColor,
-								'text': 'Please `@mention` a person you want me to `!check`, you can use `@user_tag` or `user_id_number`'
+							'avatarURL': config.botAvatar,
+							'embeds': [{
+								'color': parseInt(daColor),
+								'description': 'Please `@mention` a person you want me to `!check`, you can use `@user_tag` or `user_id_number`'
 							}]
 						};
 						
 						// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-						return WHchan.sendSlackMessage(slackmsg).catch(console.error);
+						return WHchan.send(slackmsg).catch(console.error);
 					}
 				}
 			}
 			
 			// USER IS NOT ALLOWED TO USE THIS COMMAND - DOES NOT HAVE THE REQUIRED ROLE OR NOT THE BOT-OWNER
 			else {
+				let daColor=config.dangerColor; daColor=daColor.slice(1); daColor="0x"+daColor;
 				slackmsg={
 					'username': config.botName,
-					'attachments': [{
-						'color': config.dangerColor,
-						'text': '⚠ You are **NOT** __ALLOWED__ to use this command!'
+					'avatarURL': config.botAvatar,
+					'embeds': [{
+						'color': parseInt(daColor),
+						'description': '⚠ You are **NOT** __ALLOWED__ to use this command!'
 					}]
 				};
 				
 				// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-				return WHchan.sendSlackMessage(slackmsg).catch(console.error);
+				return WHchan.send(slackmsg).catch(console.error);
 			}
 		}
 	}
