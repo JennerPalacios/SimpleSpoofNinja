@@ -67,10 +67,13 @@ const whCollector=new Discord.WebhookClient("365826527822348290","Z0HAX79QHpNDky
 	let sct=new Date(); let smo=sct.getMonth()+1;if(smo<10){smo="0"+smo;}let da=sct.getDate();if(da<10){da="0"+da;}let syr=sct.getFullYear();
 	let shr=sct.getHours();if(shr<10){shr="0"+shr;}let smin=sct.getMinutes();if(smin<10){smin="0"+smin;}let ssec=sct.getSeconds();if(ssec<10){ssec="0"+ssec;}
 	let wht="["+syr+"/"+smo+"/"+da+" @ "+shr+":"+smin+":"+ssec+"] ";sharedWH.send(wht+"Gratz! **"+config.myServer.name+"** started using **SpoofNinja**").catch(console.error);
-//				CHECK IF WEBHOOK IS BEING SHARED
+//
+//				CHECK IF INFO/WEBHOOK IS BEING SHARED
+//
 if(config.shareInfo==="yes"){
-	sharedWH.send(wht+"Yay! **"+config.myServer.name+"** has joined the fight and **SHARED** their info")
-	whCollector.send(".\n"+wht+"**"+config.myServer.name+"** would like to get **UPDATES**!\n » Their WH ID:`"+webhookID+"`\n » Their WH Token: `"+webhookToken+"`\n.");
+	sharedWH.send(wht+"Yay! **"+config.myServer.name+"** has joined the fight, **SHARED** their info and wants to stay up-to-date <(^.^<)... Awesome! we have received their info <(^.^)>")
+	whCollector.send(".\n"+wht+"**"+config.myServer.name+"** would like to get **UPDATES**!\n"
+		+" » Their Owner: <@"+config.ownerID+"> \n » Their WH ID:`"+webhookID+"`\n » Their WH Token: `"+webhookToken+"`\n.");
 }
 
 
@@ -177,9 +180,9 @@ bot.on("guildMemberAdd", member => {
 	//				IF USER IS NOT FOUND IN ANOTHER CHANNEL IGNORE - SINGLE JOIN FOR TEST
 	//
 	if(!spoofServersFound || spoofServersFound===""){
-		/*
-		console.info(timeStampSys+"User: "+userNoSpace+" has joined Server: "+serverJoined);
-		*/
+		if(config.logAll==="yes"){
+			console.info("[CONFIG_LOG_ALL] User: "+userNoSpace+" has joined Server: "+serverJoined)
+		}
 	}
 	
 	
@@ -259,10 +262,10 @@ bot.on('message', message => {
 	// IGNORE MESSAGES FROM CHANNELS THAT ARE NOT CMDCHANID AKA COMMAND CHANNEL ID AKA MODLOG
 	if(message.channel.id===config.cmdChanID){
 		
-		if(config.logAll==="yes"){ console.info("[CONFIG_LOG_ALL] Command typed in CommandChannel (config.json » cmdChanID)"); }
-		
 		// IGNORE REGULAR CHAT
 		if(!message.content.startsWith(config.prefix)){ return }
+		
+		if(config.logAll==="yes"){ console.info("[CONFIG_LOG_ALL] Command typed in CommandChannel (config.json » cmdChanID)"); }
 		
 		// DEFINE SHORTER DISCORD PROPERTIES
 		let g=message.guild; let c=message.channel; let m=message.member;let msg=message.content;
@@ -279,24 +282,56 @@ bot.on('message', message => {
 		if(command=="help" || command=="commands"){
 			if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
 				let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
-				slackmsg={
-					'username': config.botName,
-					'avatarURL': config.botAvatar,
-					'embeds': [{
-						'color': parseInt(daColor),
-						'description': '**!. AVAILABLE COMMANDS .!**\n'
-							+'`!check @mention` » for checking user using tag/ping\n'
-							+'... ie: `!check @JennerPalacios`\n'
-							+'`!check ########` » for checkig user using ID\n'
-							+'... ie: `!check 237597448032354304`\n'
-							+'`!check server` » for checking entire server\n'
-							+'... checks for active users, to include invisible\n'
-							+'`!suggest` » for suggesting a new feature\n'
-							+'... ie: `!suggest A way to order pizza`\n'
-							+'`!feedback` » Give JennerPalacios some love\n'
-							+'... ie: `!feedback Love it! great job you noOb!`'
-					}]
-				};
+				if(!args[0]){
+					slackmsg={
+						'username': config.botName,
+						'avatarURL': config.botAvatar,
+						'embeds': [{
+							'color': parseInt(daColor),
+							'description': '**--- AVAILABLE COMMANDS ---**\n'
+								+'`!check @mention/user_id`\n'
+								+'`!check server`\n'
+								+'`!suggest` and `!feedback`\n'
+								+'type: `'+command+' <command>` for more info'
+						}]
+					};
+				}
+				if(args[0]==="check"){
+					slackmsg={
+						'username': config.botName,
+						'avatarURL': config.botAvatar,
+						'embeds': [{
+							'color': parseInt(daColor),
+							'description': '`!check @mention/user_id` » for checking user, ie:\n'
+											+' `!check @JennerPalacios` or\n'
+											+' `!check 237597448032354304`\n'
+						}]
+					};
+				}
+				if(args[0]==="feedback"){
+					slackmsg={
+						'username': config.botName,
+						'avatarURL': config.botAvatar,
+						'embeds': [{
+							'color': parseInt(daColor),
+							'description': '`!feedback` » for providing feedback\n'
+											+' provide feedback to JennerPalacios, ie:'
+											+' `!feedback Love it! great job you noOb!`'
+						}]
+					};
+				}
+				if(args[0]==="suggest"){
+					slackmsg={
+						'username': config.botName,
+						'avatarURL': config.botAvatar,
+						'embeds': [{
+							'color': parseInt(daColor),
+							'description': '`!suggest` » for suggesting a new feature\n'
+											+' got cool ideas? Im here to listen, ie:\n'
+											+' `!suggest A way to order pizza`\n'
+						}]
+					};
+				}
 				return WHchan.send(slackmsg).catch(console.error);
 			}
 		}
@@ -323,6 +358,7 @@ bot.on('message', message => {
 		// COMMAND: !CHECK
 		if(command=="check"){
 			var u2c=""; var u2cn="";
+			var blacklist=config.blacklist; blacklist=blacklist.split(" ");
 			
 			// COMMAND » !CHECK SERVER
 			if(args[0]==="server"){
@@ -348,9 +384,9 @@ bot.on('message', message => {
 					};
 					WHchan.send(slackmsg).catch(console.error);
 					
-					if(config.logAll==="yes"){ console.info("[CONFIG_LOG_ALL] About to check "+uTotal+" users, from server: "+config.myServer.name+" (config.json » cmdChanID)"); }
+					if(config.logAll==="yes"){ console.info("[CONFIG_LOG_ALL] About to check "+uTotal+" users, from server: "+config.myServer.name); }
 					
-					if(config.shareInfo==="yes"){ sharedWH.send(timeStampSys+config.myServer.name+" has started a `!check server`, with "+uTotal+" active users <(^.^<)"); }
+					if(config.shareInfo==="yes"){ sharedWH.send(timeStampSys+"**"+config.myServer.name+"** has started a `!check server`, with **"+uTotal+"** active users <(^.^<)"); }
 					
 					for(var xUser=0; xUser < uCount; xUser++){
 						setTimeout(function(){
@@ -359,9 +395,22 @@ bot.on('message', message => {
 								// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
 								spoofServersFound=spoofServersFound.replace(config.myServer.name+",","");
 							
-							// DO NOT POST FINDINGS FOR SPOOFNINJA/DUMMY ACCOUNT, HE'S IN ALL SERVERS
-							if(allUsersID[uc]===config.botID){ spoofServersFound=""; }
-														
+							// DO NOT POST FINDINGS FOR SPOOFNINJA, OWNER, AND BLACKLIST
+							for(var blUser="0";blUser < blacklist.length; blUser++){
+								if(allUsersID[uc]===blacklist[blUser]){
+									spoofServersFound="";
+									if(config.logAll==="yes"){
+										console.info("[CONFIG_LOG_ALL] I have skipped the user above due to: \"config.json\" in » \"blacklist\"!")
+									}
+								}
+							}
+							if(allUsersID[uc]===config.botID || allUsersID[uc]===config.ownerID){
+								spoofServersFound="";
+								if(config.logAll==="yes"){ 
+									console.info("[CONFIG_LOG_ALL] I have skipped the user above due t: \"config.json\" in » \"ownerID\" or \"botID\"!")
+								}
+							}
+
 							if(spoofServersFound){
 								spoofServersFound=spoofServersFound.split(",");
 								for(var serv=0;serv<spoofServersFound.length;serv++){
@@ -406,11 +455,11 @@ bot.on('message', message => {
 											+'** spoOfers!\n.Out of **'+uTotal+'** active users\n**On**: '+timeStamp
 									}]
 								}; 
-								if(config.logAll==="yes"){ console.log("[CONFIG_LOG_ALL] I checked "+uTotal+" and found "+totalSpoofers
-									+" potential spoofers (config.json » cmdChanID) on: "+timeStampSys); }
+								if(config.logAll==="yes"){ console.log("[CONFIG_LOG_ALL] I checked "+uTotal+" and found "
+									+totalSpoofers+" potential spoofers on: "+timeStampSys); }
 								
-								if(config.shareInfo==="yes"){ sharedWH.send(timeStampSys+config.myServer.name+" has found `"
-									+totalSpoofers+"` spoofers, out of `"+uTotal+"` users <(^.^<)"); }
+								if(config.shareInfo==="yes"){ sharedWH.send(timeStampSys+"**"+config.myServer.name+"** has found `"
+									+totalSpoofers+"` spoofers, out of `"+uTotal+"` users on their server <(^.^<)"); }
 								
 								WHchan.send(slackmsg).catch(console.error);
 							}
@@ -453,7 +502,21 @@ bot.on('message', message => {
 			// PERSON USING COMMAND IS AUTHORIZED - PERSON HAS ROLE FROM CONFIG.JSON OR IS BOT-OWNER
 			if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
 				if(u2c){
-					
+					for(var blUser="0";blUser < blacklist.length; blUser++){
+						if(u2c===blacklist[blUser]){
+							if(config.logAll==="yes"){
+								console.log("[WARNING] Cannot check users in \"config.json\" » \"blacklist\"!")
+							}
+							return
+						}
+					}
+					if(u2c===config.botID || u2c===config.ownerID){
+						if(config.logAll==="yes"){
+							console.log("[WARNING] Cannot check \"config.json\" » \"ownerID\", neither \"botID\"!")
+						}
+						return
+					}
+
 					// CHECK FOR THE PERSON USING SPOOFING SERVERS LIST
 					let spoofServersFound=checkUser(u2c);
 						// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
