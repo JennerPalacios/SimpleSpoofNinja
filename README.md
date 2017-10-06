@@ -78,8 +78,11 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 
 4. `!feedback` - to offer feedback, comments, concerns, etc... ie:
     * `feedback not bad you noOb, but you can do better`
+    
+5. `!help` - to get the list of available commands
 
-* ** NEW SETTINGS: **
+
+** NEW SETTINGS: **
     * `logAll`: provides better feedback/logging - especially for new guys
     * `shareInfo`: by default: OFF ("no"), to share **only** your webhook
         * in order to get update or notifications from me to your channel without having to join my server or sending me private messages, keep up to date with commands, features, or just chat.
