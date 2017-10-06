@@ -14,6 +14,7 @@ Alerts are triggered (with image) when
 -I am **NO** a ["javascript","discord.js"] expert so I bet there are people out there that can make something better.<br />
 See it in action at my Discord server: https://discord.gg/2BGCV2K 
 
+<hr />
 # REQUIREMENTS:
 1) Node.js (https://nodejs.org/en/download/ `ver 8.4+`)
 
@@ -29,6 +30,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 
 7) User permisions to read messages, for the dummy account, to the channel above.
 
+<hr />
 # SETTING IT UP:
 1. MAKE SURE YOU MEET THE REQUIREMENTS ABOVE
 
@@ -57,14 +59,21 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
         * If you close that window, the bot connection will be terminated
         * Optional: you can install **PM2** in order to have it running in the background (instructions below)
 
+<hr />
 # COMMANDS
-`!check @mention/user_id` - use a `@mention` or `user_id`, ie:
+1. `!check @mention/user_id` - use a `@mention` or `user_id`, ie:
   * `!check @JennerPalacios`
   * `!check 237597448032354304`
 
-`!check server` - to check entire server, for online users and invisible users; users that are currently logged in - not the entire list of users that are registered to the server.
+2. `!check server` - to check entire server, for online users and invisible users; users that are currently logged in - not the entire list of users that are registered to the server.
 
+3. `!suggest` - to suggest a feature, command, etc... ie:
+  * `!suggest a way to order pizza`
 
+4. `!feedback` - to offer feedback, comments, concerns, etc... ie:
+  * `feedback not bad you noOb, but you can do better`
+
+<hr />
 # PM2:
 PM2 allows you to run scripts in the background, you can access PM2 from anywhere (any folder, using `cmd` prompt), <br />
 but for the first launch, the command needs to be run from the folder where the files are located.
