@@ -15,6 +15,7 @@ Alerts are triggered (with image) when
 See it in action at my Discord server: https://discord.gg/2BGCV2K 
 
 <hr />
+
 # REQUIREMENTS:
 1) Node.js (https://nodejs.org/en/download/ `ver 8.4+`)
 
@@ -31,6 +32,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 7) User permisions to read messages, for the dummy account, to the channel above.
 
 <hr />
+
 # SETTING IT UP:
 1. MAKE SURE YOU MEET THE REQUIREMENTS ABOVE
 
@@ -60,6 +62,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
         * Optional: you can install **PM2** in order to have it running in the background (instructions below)
 
 <hr />
+
 # COMMANDS
 
 1. `!check @mention/user_id` - use a `@mention` or `user_id`, ie:
@@ -75,6 +78,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
   * `feedback not bad you noOb, but you can do better`
 
 <hr />
+
 # PM2:
 PM2 allows you to run scripts in the background, you can access PM2 from anywhere (any folder, using `cmd` prompt), <br />
 but for the first launch, the command needs to be run from the folder where the files are located.
