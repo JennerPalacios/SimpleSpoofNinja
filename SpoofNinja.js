@@ -238,12 +238,14 @@ bot.on('message', message => {
 	let mo=CurrTime.getMonth()+1;if(mo<10){mo="0"+mo;}let da=CurrTime.getDate();if(da<10){da="0"+da;}let yr=CurrTime.getFullYear();
 	let hr=CurrTime.getHours();if(hr<10){hr="0"+hr;}let min=CurrTime.getMinutes();if(min<10){min="0"+min;}let sec=CurrTime.getSeconds();if(sec<10){sec="0"+sec;}
 	let timeStamp="`"+yr+"/"+mo+"/"+da+"` **@** `"+hr+":"+min+":"+sec+"`";let timeStampSys="["+yr+"/"+mo+"/"+da+" @ "+hr+":"+min+":"+sec+"] ";
-	
-	
-	
+
+
+
 	// IGNORE MESSAGES FROM CHANNELS THAT ARE NOT CMDCHANID AKA COMMAND CHANNEL ID AKA MODLOG
 	if(message.channel.id===config.cmdChanID){
-	
+		
+		console.info("[COMMANDS_LOG] Command typed in channel");
+		
 		// IGNORE REGULAR CHAT
 		if(!message.content.startsWith(config.prefix)){ return }
 		
