@@ -69,7 +69,9 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
     * `!check @JennerPalacios`
     * `!check 237597448032354304`
 
-2. `!check server` - to check entire server, for online users and invisible users; users that are currently logged in - not the entire list of users that are registered to the server.
+2. `!check server` - to check entire server, for online users and invisible users
+    * users that are currently logged in or active users
+    * it does not the entire list of users that are registered to the server.
 
 3. `!suggest` - to suggest a feature, command, etc... ie:
     * `!suggest a way to order pizza`
