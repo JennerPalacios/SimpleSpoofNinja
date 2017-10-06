@@ -61,6 +61,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 
 <hr />
 # COMMANDS
+
 1. `!check @mention/user_id` - use a `@mention` or `user_id`, ie:
   * `!check @JennerPalacios`
   * `!check 237597448032354304`
