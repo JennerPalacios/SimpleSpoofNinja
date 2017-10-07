@@ -1,5 +1,5 @@
 const Discord=require('discord.js');
-const bot=new Discord.Client();
+const bot=new Discord.Client({fetchAllMembers: true});
 const fs=require('fs');
 const config=require('./files/config.json');
 const servers=require('./files/servers.json'); 
@@ -295,6 +295,7 @@ bot.on('message', message => {
 								+'type: `'+command+' <command>` for more info'
 						}]
 					};
+				return WHchan.send(slackmsg).catch(console.error);
 				}
 				if(args[0]==="check"){
 					slackmsg={
@@ -307,6 +308,7 @@ bot.on('message', message => {
 											+' `!check 237597448032354304`\n'
 						}]
 					};
+				return WHchan.send(slackmsg).catch(console.error);
 				}
 				if(args[0]==="feedback"){
 					slackmsg={
@@ -315,10 +317,11 @@ bot.on('message', message => {
 						'embeds': [{
 							'color': parseInt(daColor),
 							'description': '`!feedback` » for providing feedback\n'
-											+' provide feedback to JennerPalacios, ie:'
+											+' provide feedback to JennerPalacios, ie:\n'
 											+' `!feedback Love it! great job you noOb!`'
 						}]
 					};
+				return WHchan.send(slackmsg).catch(console.error);
 				}
 				if(args[0]==="suggest"){
 					slackmsg={
@@ -331,8 +334,8 @@ bot.on('message', message => {
 											+' `!suggest A way to order pizza`\n'
 						}]
 					};
-				}
 				return WHchan.send(slackmsg).catch(console.error);
+				}
 			}
 		}
 		
@@ -358,7 +361,7 @@ bot.on('message', message => {
 		// COMMAND: !CHECK
 		if(command=="check"){
 			var u2c=""; var u2cn="";
-			var blacklist=config.blacklist; blacklist=blacklist.split(" ");
+			if(config.blacklist){ var blacklist=config.blacklist; blacklist=blacklist.split(" "); }
 			
 			// COMMAND » !CHECK SERVER
 			if(args[0]==="server"){
@@ -395,15 +398,19 @@ bot.on('message', message => {
 								// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
 								spoofServersFound=spoofServersFound.replace(config.myServer.name+",","");
 							
-							// DO NOT POST FINDINGS FOR SPOOFNINJA, OWNER, AND BLACKLIST
-							for(var blUser="0";blUser < blacklist.length; blUser++){
-								if(allUsersID[uc]===blacklist[blUser]){
-									spoofServersFound="";
-									if(config.logAll==="yes"){
-										console.info("[CONFIG_LOG_ALL] I have skipped the user above due to: \"config.json\" in » \"blacklist\"!")
+							// DO NOT POST FINDINGS FOR BLACKLIST
+							if(blacklist){
+								for(var blUser="0";blUser < blacklist.length; blUser++){
+									if(allUsersID[uc]===blacklist[blUser]){
+										spoofServersFound="";
+										if(config.logAll==="yes"){
+											console.info("[CONFIG_LOG_ALL] I have skipped the user above due to: \"config.json\" in » \"blacklist\"!")
+										}
 									}
 								}
 							}
+							
+							// DO NOT POST FINDINGS FOR OWNER AND BOT
 							if(allUsersID[uc]===config.botID || allUsersID[uc]===config.ownerID){
 								spoofServersFound="";
 								if(config.logAll==="yes"){ 
@@ -502,14 +509,19 @@ bot.on('message', message => {
 			// PERSON USING COMMAND IS AUTHORIZED - PERSON HAS ROLE FROM CONFIG.JSON OR IS BOT-OWNER
 			if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
 				if(u2c){
-					for(var blUser="0";blUser < blacklist.length; blUser++){
-						if(u2c===blacklist[blUser]){
-							if(config.logAll==="yes"){
-								console.log("[WARNING] Cannot check users in \"config.json\" » \"blacklist\"!")
+					
+					// DO NOT POST FINDINGS FOR BLACKLIST
+					if(blacklist){
+						for(var blUser="0";blUser < blacklist.length; blUser++){
+							if(u2c===blacklist[blUser]){
+								if(config.logAll==="yes"){
+									console.log("[WARNING] Cannot check users in \"config.json\" » \"blacklist\"!")
+								}
+								return
 							}
-							return
 						}
 					}
+					// DO NOT POST FINDINGS FOR OWNER OR BOT
 					if(u2c===config.botID || u2c===config.ownerID){
 						if(config.logAll==="yes"){
 							console.log("[WARNING] Cannot check \"config.json\" » \"ownerID\", neither \"botID\"!")
