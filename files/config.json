@@ -4,7 +4,7 @@
 	
 	"botName": "SpoofNinja",
 	"botID": "<DUMMY_ACCOUNT_ID>",
-	"botAvatar": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/NijaAvatar.png",
+	"botAvatar": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/NinjaAvatar.png",
 	"token": "<DUMMY_ACCOUNT_TOKEN>",
 	
 	"ownerID": "<MY_OWN_ID_IN_CASE_I_DONT_HAVE_ROLE>",
