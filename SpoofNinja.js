@@ -366,13 +366,17 @@ bot.on('message', message => {
 			// COMMAND » !CHECK SERVER
 			if(args[0]==="server"){
 				if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
-					let allUsersID="";let allUsersNames="";let uCount="";let milSecs=1000; let uc=0;let daServers="";let totalSpoofers=0;
 					
-					// GRAB ALL USERS
-					g.members.map(m=> { allUsersID += m.user.id+","; allUsersNames+=m.user.username+","; } )
+					let allUsers="";let allUsersID="";let allUsersNames="";
+					g.members.map(m=> { allUsers += m.user.id+"|"+m.user.username+","; } )
+					allUsers=allUsers.split(",");allUsers.length=allUsers.length-1;
+					for(var x=0; x<allUsers.length; x++){ var tempUser=allUsers[x].split("|");
+						allUsersID+=tempUser[0]+",";allUsersNames+=tempUser[1]+",";
+					}
+					allUsersID=allUsersID.split(",");allUsersNames=allUsersNames.split(",");
+					let uCount=allUsersID.length-1; let uTotal=uCount-1;
 					
-					// BREAK INTO ARRAYS
-					allUsersID=allUsersID.split(",");allUsersNames=allUsersNames.split(","); uCount=allUsersID.length-1; let uTotal=uCount-1;
+					let milSecs=1000;let daServers="";let totalSpoofers=0; let uc=0;
 					
 					// SEND NOTIFICATION
 					let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
@@ -393,7 +397,7 @@ bot.on('message', message => {
 					
 					for(var xUser=0; xUser < uCount; xUser++){
 						setTimeout(function(){
-							console.info("[#"+uc+"/"+uTotal+"] Checking: "+allUsersNames[uc]+" with id: "+allUsersID[uc]);
+							console.info("[#"+uc+"/"+uTotal+"] Checking userID: "+allUsersID[uc]+" with userName: "+allUsersNames[uc]);
 							let spoofServersFound=checkUser(allUsersID[uc]);
 								// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
 								spoofServersFound=spoofServersFound.replace(config.myServer.name+",","");
@@ -414,7 +418,7 @@ bot.on('message', message => {
 							if(allUsersID[uc]===config.botID || allUsersID[uc]===config.ownerID){
 								spoofServersFound="";
 								if(config.logAll==="yes"){ 
-									console.info("[CONFIG_LOG_ALL] I have skipped the user above due t: \"config.json\" in » \"ownerID\" or \"botID\"!")
+									console.info("[CONFIG_LOG_ALL] I have skipped the user above due to: \"config.json\" in » \"ownerID\" or \"botID\"!")
 								}
 							}
 
