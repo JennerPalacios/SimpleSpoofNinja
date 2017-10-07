@@ -25,6 +25,7 @@
 	
 	"adminRoleName": "<TEXT_ROLE_I_GAVE_TO_ADMINS>",
 	"modRoleName": "<TEXT_ROLE_I_GAVE_TO_MODERATORS>",
+	"blacklist": "<USER_ID_1> <USER_ID_2> <USER_ID_3>",
 	
 	"prefix": "!"
 }
