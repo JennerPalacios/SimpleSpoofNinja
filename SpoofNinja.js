@@ -1,5 +1,6 @@
 const Discord=require('discord.js');
-const bot=new Discord.Client({fetchAllMembers: true});
+//const bot=new Discord.Client({fetchAllMembers: true});		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS
+const bot=new Discord.Client();		// FAST LOAD - GET ACTIVE USERS ONLY
 const fs=require('fs');
 const config=require('./files/config.json');
 const servers=require('./files/servers.json'); 
@@ -406,7 +407,7 @@ bot.on('message', message => {
 					
 					if(config.botSupport==="yes"){ sharedWH.send(timeStampSys+"**"+config.myServer.name+"** has started a `!check server`, with **"+uTotal+"** active users <(^.^<)"); }
 					
-					for(var xUser=0; xUser < uCount; xUser++){
+					for(var xUser=0; xUser < 10; xUser++){
 						setTimeout(function(){
 							console.info("[#"+uc+"/"+uTotal+"] Checking userID: "+allUsersID[uc]+" with userName: "+allUsersNames[uc]);
 							let spoofServersFound=checkUser(allUsersID[uc]);
@@ -474,7 +475,7 @@ bot.on('message', message => {
 									'embeds': [{
 										'color': parseInt(daColor),
 										'description': '**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **'+totalSpoofers
-											+'** spoOfers!\n.\nOut of **'+uTotal+'** active users\n**On**: '+timeStamp
+											+'** spoOfers!\n.\nOut of **'+uTotal+'** registered members\n**On**: '+timeStamp
 									}]
 								}; 
 								if(config.logAll==="yes"){ console.log("[CONFIG_LOG_ALL] I checked "+uTotal+" and found "
