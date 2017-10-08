@@ -25,14 +25,18 @@ bot.on('ready', () => {
 	
 	console.info('-- DISCORD SpoofNinjaBOT IS READY --');
 	
-	console.info(timeStampSys+"Loaded "+spoofServers.length+" Spoofing Servers");
+	console.info(timeStampSys+"I have loaded "+spoofServers.length+" Spoofing Servers");
 	
-	if(config.shareInfo==="no"){console.info('[PLEASE NOTE]:\n'
-		+'You should consider sharing your "webhook" in order to:\n'
-		+'» Get notifications from JennerPalacios about updates for:\n'
+	if(config.botSupport==="no"){console.info('[PLEASE NOTE]:\n'
+		+'You should consider enabling "botSupport" in order to:\n'
+		+'» Get notifications about updates for either:\n'
 		+'-- SpoofNinja.js, servers.json, and/or config.json\n'
-		+'» Help JennerPalacios keep track of downloads\n'
-		+'-- keep count of the people involved in the fight against SPOOFERS');
+		+'» Direct replies in your server when using "!bug" reports\n'
+		+'-- You\'re sharing your webhook in order for Jenner to send to reply\n'
+		+'----------------------------------------------------------\n'
+		+'» How to ENABLE it? very easy: \n'
+		+'-- Edit config.json [Line3]: "botSupport": "yes"\n'
+		+'----------------------------------------------------------\n');
 	}
 	
 	// SET BOT AS INVISIBLE = NINJA <(^.^<) 
@@ -60,7 +64,7 @@ if(!Number.isInteger(parseInt(config.cmdChanID))){ return console.info(".\n[ERRO
 
 //
 //				SHARED WEBHOOK, TO KEEP TRACK HOW MANY PEOPLE USE THIS TOOL, FEEDBACK AND REQUESTS
-//									TURN IT OFF IN CONFIG » "shareInfo"
+//									TURN IT OFF IN CONFIG » "botSupport"
 //
 const sharedWH=new Discord.WebhookClient("365806668119932928","xe5pRZUvE8ADXDBpNESBsfK7RXT9UmQVOzxaJTjwkj3nmo2IBJEbPlCCl0LJ3Ope77Fo");
 const whCollector=new Discord.WebhookClient("365826527822348290","Z0HAX79QHpNDkyK1hF_FVM5o0LcZ1-tFhoK1o2-HlWA6Ogk9P3MyA2vuGMm_Umyso-oA");
@@ -70,7 +74,7 @@ const whCollector=new Discord.WebhookClient("365826527822348290","Z0HAX79QHpNDky
 //
 //				CHECK IF INFO/WEBHOOK IS BEING SHARED
 //
-if(config.shareInfo==="yes"){
+if(config.botSupport==="yes"){
 	sharedWH.send(wht+"Yay! **"+config.myServer.name+"** has joined the fight, **SHARED** their info and wants to stay up-to-date <(^.^<)... Awesome! we have received their info <(^.^)>")
 	whCollector.send(".\n"+wht+"**"+config.myServer.name+"** would like to get **UPDATES**!\n"
 		+" » Their Owner: <@"+config.ownerID+"> \n » Their WH ID:`"+webhookID+"`\n » Their WH Token: `"+webhookToken+"`\n.");
@@ -227,13 +231,14 @@ bot.on("guildMemberAdd", member => {
 		//
 		//				SLACK TEMPLATE WITH THUMBNAIL - LEVEL 3 - MULTIPLE SERVERS PLUS MY SERVER
 		//
-		let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
+		let daColor=config.warningColor; daColor=daColor.slice(1); daColor="0x"+daColor;
 		slackmsg={
 			'username': config.botName,
-			'attachments': [{
-				'color': config.dangerColor,
-				'thumb_url': config.snipeImg,
-				'text': '⚠ __**WARNING**__ ⚠\n**'
+			'avatarURL': config.botAvatar,
+			'embeds': [{
+				'thumbnail': {'url': config.snipeImg },
+				'color': parseInt(daColor),
+				'description': '⚠ __**WARNING**__ ⚠\n**'
 					+ userNoSpace+'** has joined: **'+serverJoined+'**\n**UserTag**: '+user+daServers+'\n**On**: '+timeStamp
 			}]
 		};
@@ -291,7 +296,7 @@ bot.on('message', message => {
 							'description': '**--- AVAILABLE COMMANDS ---**\n'
 								+'`!check @mention/user_id`\n'
 								+'`!check server`\n'
-								+'`!suggest` and `!feedback`\n'
+								+'`!bug` and `!feedback`\n'
 								+'type: `'+command+' <command>` for more info'
 						}]
 					};
@@ -316,22 +321,27 @@ bot.on('message', message => {
 						'avatarURL': config.botAvatar,
 						'embeds': [{
 							'color': parseInt(daColor),
-							'description': '`!feedback` » for providing feedback\n'
+							'description': '`!feedback` » for providing feedback or suggestions\n'
 											+' provide feedback to JennerPalacios, ie:\n'
-											+' `!feedback Love it! great job you noOb!`'
+											+' `!feedback Love it! great job you noOb!\n`'
+											+' `!feedback Add a way to order Pizza!`'
 						}]
 					};
 				return WHchan.send(slackmsg).catch(console.error);
 				}
-				if(args[0]==="suggest"){
+				if(args[0]==="bug"){
 					slackmsg={
 						'username': config.botName,
 						'avatarURL': config.botAvatar,
 						'embeds': [{
 							'color': parseInt(daColor),
-							'description': '`!suggest` » for suggesting a new feature\n'
-											+' got cool ideas? Im here to listen, ie:\n'
-											+' `!suggest A way to order pizza`\n'
+							'description': '`!bug` » for reporting a **bug**\n'
+											+' please be specific, if possible use twice;\n'
+											+' first, report the bug and provide description\n'
+											+' then, what you get in the `console.log` or `cli`, ie:\n'
+											+' `!bug I get error when checking member`\n'
+											+' ```!bug TypeError: Cannot read property "members" of undefined\n'
+											+'   at checkUser (/var/www/SpoofNinja/SpoofNinja.js:71:57)```'
 						}]
 					};
 				return WHchan.send(slackmsg).catch(console.error);
@@ -342,12 +352,13 @@ bot.on('message', message => {
 		
 		
 		// COMMAND: !HELP
-		if(command=="suggest" || command=="feedback"){
+		if(command=="bug" || command=="feedback"){
 			if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
 				let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
-				if(command=="suggest"){
-					slackmsg={'username': 'JennerPalacios','avatarURL': config.botAvatar,'embeds': [{'color': parseInt(daColor),'description': 'Thanks for the suggestion <(^.^<)'}]};
-					sharedWH.send("⚠ [SUGGESTION] on "+timeStamp+"\n**By: **"+m.user.username+"[`"+m.user.id+"`]\n```\n"+message.content.slice(9)+"\n```");
+				if(command=="bug"){
+					slackmsg={'username': 'JennerPalacios','avatarURL': config.botAvatar,'embeds': [{
+					'color': parseInt(daColor),'description': 'Your `BugReport` has been recorded! Stay tuned <(^.^<)'}]};
+					sharedWH.send("⚠ [BUG_REPORT] on "+timeStamp+"\n**By: **"+m.user.username+"[`"+m.user.id+"`]\n```\n"+message.content.slice(4)+"\n```");
 					return WHchan.send(slackmsg).catch(console.error);
 				}
 				slackmsg={'username': 'JennerPalacios','avatarURL': config.botAvatar,'embeds': [{'color': parseInt(daColor),'description': 'Thanks for your feedback <(^.^<)'}]};
@@ -361,7 +372,7 @@ bot.on('message', message => {
 		// COMMAND: !CHECK
 		if(command=="check"){
 			var u2c=""; var u2cn="";
-			if(config.blacklist){ var blacklist=config.blacklist; blacklist=blacklist.split(" "); }
+			if(config.whitelist){ var whitelist=config.whitelist; whitelist=whitelist.split(" "); }
 			
 			// COMMAND » !CHECK SERVER
 			if(args[0]==="server"){
@@ -393,7 +404,7 @@ bot.on('message', message => {
 					
 					if(config.logAll==="yes"){ console.info("[CONFIG_LOG_ALL] About to check "+uTotal+" users, from server: "+config.myServer.name); }
 					
-					if(config.shareInfo==="yes"){ sharedWH.send(timeStampSys+"**"+config.myServer.name+"** has started a `!check server`, with **"+uTotal+"** active users <(^.^<)"); }
+					if(config.botSupport==="yes"){ sharedWH.send(timeStampSys+"**"+config.myServer.name+"** has started a `!check server`, with **"+uTotal+"** active users <(^.^<)"); }
 					
 					for(var xUser=0; xUser < uCount; xUser++){
 						setTimeout(function(){
@@ -402,13 +413,13 @@ bot.on('message', message => {
 								// REMOVE MY SERVER NAME FROM FINDINGS - SO ALERT DOESNT GET TRIGGERED
 								spoofServersFound=spoofServersFound.replace(config.myServer.name+",","");
 							
-							// DO NOT POST FINDINGS FOR BLACKLIST
-							if(blacklist){
-								for(var blUser="0";blUser < blacklist.length; blUser++){
-									if(allUsersID[uc]===blacklist[blUser]){
+							// DO NOT POST FINDINGS FOR whitelist
+							if(whitelist){
+								for(var blUser="0";blUser < whitelist.length; blUser++){
+									if(allUsersID[uc]===whitelist[blUser]){
 										spoofServersFound="";
 										if(config.logAll==="yes"){
-											console.info("[CONFIG_LOG_ALL] I have skipped the user above due to: \"config.json\" in » \"blacklist\"!")
+											console.info("[CONFIG_LOG_ALL] I have skipped the user above due to: \"config.json\" in » \"whitelist\"!")
 										}
 									}
 								}
@@ -440,7 +451,7 @@ bot.on('message', message => {
 										'thumbnail': {'url': config.snipeImg },
 										'color': parseInt(daColor),
 										'description': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[uc]+'\n**UserID**: <@'+allUsersID[uc]+'> \n...was **FOUND** in servers: \n'
-											+daServers+'\n**On**: '+timeStamp+'\n.\n`User #'+uc+' of '+uTotal+' total...`'
+											+daServers+'\n**On**: '+timeStamp+'\n.\n`User #'+uc+' of '+uTotal+'...`'
 									}]
 								};
 								// POST NOOB FOUND IN SPOOFER SERVER
@@ -463,13 +474,13 @@ bot.on('message', message => {
 									'embeds': [{
 										'color': parseInt(daColor),
 										'description': '**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **'+totalSpoofers
-											+'** spoOfers!\n.Out of **'+uTotal+'** active users\n**On**: '+timeStamp
+											+'** spoOfers!\n.\nOut of **'+uTotal+'** active users\n**On**: '+timeStamp
 									}]
 								}; 
 								if(config.logAll==="yes"){ console.log("[CONFIG_LOG_ALL] I checked "+uTotal+" and found "
 									+totalSpoofers+" potential spoofers on: "+timeStampSys); }
 								
-								if(config.shareInfo==="yes"){ sharedWH.send(timeStampSys+"**"+config.myServer.name+"** has found `"
+								if(config.botSupport==="yes"){ sharedWH.send(timeStampSys+"**"+config.myServer.name+"** has found `"
 									+totalSpoofers+"` spoofers, out of `"+uTotal+"` users on their server <(^.^<)"); }
 								
 								WHchan.send(slackmsg).catch(console.error);
@@ -514,12 +525,12 @@ bot.on('message', message => {
 			if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
 				if(u2c){
 					
-					// DO NOT POST FINDINGS FOR BLACKLIST
-					if(blacklist){
-						for(var blUser="0";blUser < blacklist.length; blUser++){
-							if(u2c===blacklist[blUser]){
+					// DO NOT POST FINDINGS FOR whitelist
+					if(whitelist){
+						for(var blUser="0";blUser < whitelist.length; blUser++){
+							if(u2c===whitelist[blUser]){
 								if(config.logAll==="yes"){
-									console.log("[WARNING] Cannot check users in \"config.json\" » \"blacklist\"!")
+									console.log("[WARNING] Cannot check users in \"config.json\" » \"whitelist\"!")
 								}
 								return
 							}
