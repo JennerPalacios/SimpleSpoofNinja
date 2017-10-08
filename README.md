@@ -69,12 +69,11 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
     * `!check @JennerPalacios`
     * `!check 237597448032354304`
 
-2. `!check server` - to check entire server, for online users and invisible users
-    * users that are currently logged in or active users
-    * it does not the entire list of users that are registered to the server.
+2. `!check server` - to check entire server!
+    * all registered users; active, invisible, etc
 
-3. `!suggest` - to suggest a feature, command, etc... ie:
-    * `!suggest a way to order pizza`
+3. `!bug` - to report a bug or issue... ie:
+    * `!bug not reading my messages`
 
 4. `!feedback` - to offer feedback, comments, concerns, etc... ie:
     * `feedback not bad you noOb, but you can do better`
@@ -86,7 +85,7 @@ See it in action at my Discord server: https://discord.gg/2BGCV2K
 
 * `logAll`: provides better feedback/logging - especially for new guys
 
-* `shareInfo`: by default: OFF ("no"), to share **only** your webhook
+* `bugSupport`: by default: OFF ("no"), to share **only** your webhook
     * in order to get update or notifications from me to your channel without having to join my server or sending me private messages, keep up to date with commands, features, or just chat.
 
 
