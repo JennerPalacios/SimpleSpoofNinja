@@ -1,6 +1,6 @@
 { 
 	"logAll": "yes",
-	"shareInfo": "no",
+	"botSupport": "no",
 	
 	"botName": "SpoofNinja",
 	"botID": "<DUMMY_ACCOUNT_ID>",
