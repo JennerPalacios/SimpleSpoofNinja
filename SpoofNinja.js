@@ -353,10 +353,10 @@ bot.on('message', message => {
 		
 		
 		// COMMAND: !HELP
-		if(command=="bug" || command=="feedback"){
+		if(command==="bug" || command==="feedback"){
 			if(m.roles.has(adminRole.id) || m.roles.has(modRole.id) || m.user.id===config.ownerID){
 				let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
-				if(command=="bug"){
+				if(command==="bug"){
 					slackmsg={'username': 'JennerPalacios','avatarURL': config.botAvatar,'embeds': [{
 					'color': parseInt(daColor),'description': 'Your `BugReport` has been recorded! Stay tuned <(^.^<)'}]};
 					sharedWH.send("⚠ [BUG_REPORT] on "+timeStamp+"\n**By: **"+m.user.username+"[`"+m.user.id+"`]\n```\n"+message.content.slice(4)+"\n```");
@@ -407,7 +407,7 @@ bot.on('message', message => {
 					
 					if(config.botSupport==="yes"){ sharedWH.send(timeStampSys+"**"+config.myServer.name+"** has started a `!check server`, with **"+uTotal+"** active users <(^.^<)"); }
 					
-					for(var xUser=0; xUser < 10; xUser++){
+					for(var xUser=0; xUser < uCount; xUser++){
 						setTimeout(function(){
 							console.info("[#"+uc+"/"+uTotal+"] Checking userID: "+allUsersID[uc]+" with userName: "+allUsersNames[uc]);
 							let spoofServersFound=checkUser(allUsersID[uc]);
