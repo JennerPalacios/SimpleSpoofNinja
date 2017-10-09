@@ -1,6 +1,6 @@
 const Discord=require('discord.js');
-//const bot=new Discord.Client({fetchAllMembers: true});		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS
-const bot=new Discord.Client();		// FAST LOAD - GET ACTIVE USERS ONLY
+const bot=new Discord.Client({fetchAllMembers: true});		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS
+//const bot=new Discord.Client();		// FAST LOAD - GET ACTIVE USERS ONLY
 const fs=require('fs');
 const config=require('./files/config.json');
 const servers=require('./files/servers.json'); 
