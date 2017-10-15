@@ -1,0 +1,31 @@
+{ 
+	"logAll": "yes",
+	"botSupport": "no",
+	
+	"botName": "SpoofNinja",
+	"botID": "<DUMMY_ACCOUNT_ID_NUMBER>",
+	"botAvatar": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/NinjaAvatar.png",
+	"token": "<DUMMY_ACCOUNT_TOKEN>",
+	
+	"ownerID": "<MY_OWN_ID_IN_CASE_I_DONT_HAVE_ROLE>",
+	
+	"myServer": { 
+		"server": "<MY_SERVERS_ID_NUMBER>", 
+		"name": "<MY_SERVERS_NAME_NO_SPACE>",
+		"invite": "<MY_SERVERS_INVITE_LINK>"
+	},
+	
+	"goodColor": "#00FF00",
+	"warningColor": "#FF9900",
+	"dangerColor": "#FF0000",
+	"snipeImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/User-Spoof.png",
+	
+	"cmdChanID": "<CHANNEL_ID_NUMBER_WHERE_I_WILL_LISTEN_TO_FOR_COMMANDS_(IE:_#MODLOG/#SPOOFERS)>",
+	"webhook": "<WEBHOOK_URL_OF_THE_CHANNEL_TO_POST_ON_(IE:_#MODLOG)>",
+	
+	"adminRoleName": "<TEXT_ROLE_I_GAVE_TO_ADMINS>",
+	"modRoleName": "<TEXT_ROLE_I_GAVE_TO_MODERATORS>",
+	"whitelist": "<USER_ID_NUMBER_1> <USER_ID_NUMBER_2> <USER_ID_NUMBER_3> NUMBERS SEPARATED BY SPACE, NO COMMAS!!!",
+	
+	"prefix": "!"
+}
