@@ -359,11 +359,11 @@ bot.on('message', message => {
 				if(command==="bug"){
 					slackmsg={'username': 'JennerPalacios','avatarURL': config.botAvatar,'embeds': [{
 					'color': parseInt(daColor),'description': 'Your `BugReport` has been recorded! Stay tuned <(^.^<)'}]};
-					sharedWH.send("⚠ [BUG_REPORT] on "+timeStamp+"\n**By: **"+m.user.username+"[`"+m.user.id+"`]\n```\n"+message.content.slice(4)+"\n```");
+					sharedWH.send("⚠ [BUG_REPORT] on "+timeStamp+"\n**By: **"+m.user.username+"[`"+m.user.id+"`]\n**From: **"+config.myServer.name+"[`"+config.myServer.invite+"`]\n```\n"+message.content.slice(4)+"\n```");
 					return WHchan.send(slackmsg).catch(console.error);
 				}
 				slackmsg={'username': 'JennerPalacios','avatarURL': config.botAvatar,'embeds': [{'color': parseInt(daColor),'description': 'Thanks for your feedback <(^.^<)'}]};
-				sharedWH.send("✅ [FEEDBACK] on "+timeStamp+"\n**By: **"+m.user.username+" [`"+m.user.id+"`]\n```\n"+message.content.slice(9)+"\n```");
+				sharedWH.send("✅ [FEEDBACK] on "+timeStamp+"\n**By: **"+m.user.username+" [`"+m.user.id+"`]\n**From: **"+config.myServer.name+"[`"+config.myServer.invite+"`]\n```\n"+message.content.slice(9)+"\n```");
 				return WHchan.send(slackmsg).catch(console.error);
 			}
 		}
