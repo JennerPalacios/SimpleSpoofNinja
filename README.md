@@ -12,7 +12,7 @@ Alerts are triggered (with image) when
 <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/SpoofCheck.png" />
 
 -I am **NO** a ["javascript","discord.js"] expert so I bet there are people out there that can make something better.<br />
-See it in action at my Discord server: https://discord.gg/2BGCV2K 
+See it in action at my Discord server: https://discord.gg/fJvqFGP 
 
 <hr />
 
