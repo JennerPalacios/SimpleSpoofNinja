@@ -312,6 +312,7 @@ bot.on('message', message => {
 							'description': '`!check @mention/user_id` » for checking user, ie:\n'
 											+' `!check @JennerPalacios` or\n'
 											+' `!check 237597448032354304`\n'
+											+' `!check server` » for checking **ALL** members'
 						}]
 					};
 				return WHchan.send(slackmsg).catch(console.error);
