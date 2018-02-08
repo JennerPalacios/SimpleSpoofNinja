@@ -562,7 +562,7 @@ bot.on('message', message => {
 							'avatarURL': config.botAvatar,
 							'embeds': [{
 								'color': parseInt(daColor),
-								'description': '✅ **'+u2cn+'** \nappears to be a __honorable__\n **Pokemon Go Trainer**'
+								'description': '✅ **'+u2cn+'** \nappears to be an __honorable__\n **Pokemon Go Trainer**'
 							}]
 						};
 						
