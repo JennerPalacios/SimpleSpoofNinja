@@ -19,6 +19,7 @@
 	"warningColor": "#FF9900",
 	"dangerColor": "#FF0000",
 	"snipeImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/User-Spoof.png",
+	"honorImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/User-Badge.png",
 	
 	"cmdChanID": "<CHANNEL_ID_NUMBER_WHERE_I_WILL_LISTEN_TO_FOR_COMMANDS_(IE:_#MODLOG/#SPOOFERS)>",
 	"webhook": "<WEBHOOK_URL_OF_THE_CHANNEL_TO_POST_ON_(IE:_#MODLOG)>",
