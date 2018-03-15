@@ -1,3 +1,11 @@
+//
+//		CHECK THE LINE BELOW...DO THESE MAKE NO SENSE? ARE THEY RANDOM CHARACTERS?
+//
+// 		🔴 📵 🗨 📗 🗒 📜 📋 📝 📆 📲 👤 👥 🤖 📥 📤 ✅ ⚠ ⛔ 🚫 ❌ 🔨 🙂 😮 😁 😄 😆 😂 😅 😛 😍 😉 🤔 👍 👎 ❤
+//
+//		THEN YOU NEED TO ADJUST YOUR SETTINGS!!! "Encoding" » "Encode in UTF-8"
+//		... BECAUSE THESE ARE ACTUAL IN-TEXT EMOJIS (WHICH DISCORD ALSO USES)
+//
 const Discord=require('discord.js');
 const bot=new Discord.Client({fetchAllMembers: true});		//SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS
 //const bot=new Discord.Client();		// FAST LOAD - GET ACTIVE USERS ONLY
@@ -531,19 +539,37 @@ bot.on('message', message => {
 					if(whitelist){
 						for(var blUser="0";blUser < whitelist.length; blUser++){
 							if(u2c===whitelist[blUser]){
+								let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
+								slackmsg={
+									'username': config.botName,
+									'avatarURL': config.botAvatar,
+									'embeds': [{
+										'color': parseInt(daColor),
+										'description': '⚠ This user is `WhiteListed` 😛 ! '
+									}]
+								};
 								if(config.logAll==="yes"){
 									console.log("[WARNING] Cannot check users in \"config.json\" » \"whitelist\"!")
 								}
-								return
+								return WHchan.send(slackmsg).catch(console.error)
 							}
 						}
 					}
 					// DO NOT POST FINDINGS FOR OWNER OR BOT
 					if(u2c===config.botID || u2c===config.ownerID){
+						let daColor=config.goodColor; daColor=daColor.slice(1); daColor="0x"+daColor;
+						slackmsg={
+							'username': config.botName,
+							'avatarURL': config.botAvatar,
+							'embeds': [{
+								'color': parseInt(daColor),
+								'description': '⚠ Cannot check `Owner/Bot` 😛 ! '
+							}]
+						};
 						if(config.logAll==="yes"){
 							console.log("[WARNING] Cannot check \"config.json\" » \"ownerID\", neither \"botID\"!")
 						}
-						return
+						return  WHchan.send(slackmsg).catch(console.error)
 					}
 
 					// CHECK FOR THE PERSON USING SPOOFING SERVERS LIST
@@ -561,8 +587,9 @@ bot.on('message', message => {
 							'username': config.botName,
 							'avatarURL': config.botAvatar,
 							'embeds': [{
+								'thumbnail': {'url': config.honorImg },
 								'color': parseInt(daColor),
-								'description': '✅ **'+u2cn+'** \nappears to be an __honorable__\n **Pokemon Go Trainer**'
+								'description': '✅ "**'+u2cn+'**" appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍'
 							}]
 						};
 						
