@@ -41,7 +41,7 @@ bot.on('ready', () => {
 		+'» Get notifications about updates for either:\n'
 		+'-- SpoofNinja.js, servers.json, and/or config.json\n'
 		+'» Direct replies in your server when using "!bug" reports\n'
-		+'-- You\'re sharing your webhook in order for Jenner to send to reply\n'
+		+'-- You\'ll be sharing your webhook in order for Jenner to reply\n'
 		+'----------------------------------------------------------\n'
 		+'» How to ENABLE it? very easy: \n'
 		+'-- Edit config.json [Line3]: "botSupport": "yes"\n'
@@ -84,9 +84,9 @@ const whCollector=new Discord.WebhookClient("365826527822348290","Z0HAX79QHpNDky
 //				CHECK IF INFO/WEBHOOK IS BEING SHARED
 //
 if(config.botSupport==="yes"){
-	sharedWH.send(wht+"Yay! **"+config.myServer.name+"** has joined the fight, **SHARED** their info and wants to stay up-to-date <(^.^<)... Awesome! we have received their info <(^.^)>")
+	sharedWH.send(wht+"Yay! **"+config.myServer.name+"** has joined the fight, has **SHARED** their info, and wants to stay up-to-date <(^.^<)... Awesome! we have received their info <(^.^)>")
 	whCollector.send(".\n"+wht+"**"+config.myServer.name+"** would like to get **UPDATES**!\n"
-		+" » Their Owner: <@"+config.ownerID+"> \n » Their WH ID:`"+webhookID+"`\n » Their WH Token: `"+webhookToken+"`\n.");
+		+" » Their Owner: <@"+config.ownerID+">\n » Their Invite: `"+config.myServer.invite+"`\n » Their WH ID:`"+webhookID+"`\n » Their WH Token: `"+webhookToken+"`\n.");
 }
 
 
