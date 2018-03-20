@@ -1,0 +1,45 @@
+[ServersRemoved]:
+REMOVED DUE TO INACTIVITY/DEAD/NO-INVITE:
+
+        {"server": "203487838421909514", "name": "ScornBot",
+            "invite": "8BcNyN7",
+                "dateChecked": "2018-03-18", "notes": "Botting, Dead"
+        },
+        {"server": "208750940612722688", "name": "100IV Club",
+            "invite": "yPRjSyk",
+                "dateChecked": "2018-03-18", "notes": "NonPoGo, server renamed/repurpossed"
+        },
+        {"server": "213010121356214272", "name": "PokeEase",
+            "invite": "UWrgHKY",
+                "dateChecked": "20180318", "notes": "Spoofing, Dead"
+        },
+        {"server": "247585754132381696", "name": "PokemonStore",
+            "invite": "WKrPCex",
+                "dateChecked": "20180318", "notes": "Spoofing, Dead"
+        },
+        {"server": "245704129953923082", "name": "LetSnipe",
+            "invite": "8Bbh2CA",
+                "dateChecked": "20180318", "notes": "Spoofing, Dead"
+        },
+        {"server": "215380456281997314", "name": "ChoiPokemon",
+            "invite": "Y2HvtXX",
+                "dateChecked": "20180318", "notes": "Spoofing, Dead, account selling, 20+ users"
+        },
+        {"server": "310124621318062082", "name": "TeamRocket",
+            "invite": "B7GJSWf",
+                "dateChecked": "20180318", "notes": "Spoofing, Dead"
+        },
+        {"server": "224170984083554304", "name": "PokeCrash",
+            "invite": "97pKbP7",
+                "dateChecked": "20180318", "notes": "Spoofing, Dead"
+        },
+        {"server": "345980936871215125", "name": "PoGoClub",
+            "invite": "FF28yD9",
+                "dateChecked": "20180318", "notes": "Spoofing, Dead"
+        },
+        {"server": "209481682720522240", "name": "KimCordashian",
+            "invite": "4RbwSHj",
+                "dateChecked": "20180318", "notes": "Botting, Dead"
+        }
+
+▲ Please remove them, to go easy on your CPU; so that your bot doesn't load all the members and registered members from those servers... if you dont know how to effectively-and-efficiently leave those server, I'll upload a short vid later tomorrow
