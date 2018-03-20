@@ -21,15 +21,19 @@ See it in action at my Discord server: https://discord.gg/fJvqFGP
 
 2) Discord.js (`npm install discord.js` « should be `ver 12.2+`) 
 
-3) File-System (`npm install fs`) 
+3) File-System (`npm install fs`)  
 
-4) A Discord dummy account
+4) SQLite (`npm install sqlite`)  
 
-5) A dedicated Discord channel in your server (IE: #modlog/#mod-log/#spoofers/#noobs)
+5) Request (`npm install request`) 
 
-6) A Discord webhook url, for the channel above
+6) A Discord dummy account
 
-7) User permisions to read messages, for the dummy account, to the channel above.
+7) A dedicated Discord channel in your server (IE: #modlog/#mod-log/#spoofers/#noobs)
+
+8) A Discord webhook url, for the channel above
+
+9) User permisions to read messages, for the dummy account, to the channel above.
 
 <hr />
 
