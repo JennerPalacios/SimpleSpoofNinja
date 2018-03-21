@@ -7,8 +7,8 @@
 //		... BECAUSE THESE ARE ACTUAL IN-TEXT EMOJIS (WHICH DISCORD ALSO USES)
 //
 const Discord=require('discord.js');
-const bot=new Discord.Client({fetchAllMembers: true});		//SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS
-//const bot=new Discord.Client();		// FAST LOAD - GET ACTIVE USERS ONLY
+//const bot=new Discord.Client({fetchAllMembers: true});		//SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS
+const bot=new Discord.Client();		// FAST LOAD - GET ACTIVE USERS ONLY
 const fs=require('fs');
 const request = require("request");
 const config=require('./files/config.json');
@@ -80,8 +80,8 @@ bot.on('ready', () => {
 				let gitHubVer=body.slice(0,-1); let timeLog=timeStamp(2);
 				let verChecker="up-to-date"; if(gitHubVer!==config.botVersion){ verChecker="OUTDATED!" }
 				console.info(
-					timeLog+"GitHub Discord Bot [SpoofNinja] version: "+gitHubVer+"\n"
-					+timeLog+"Local Discord Bot ["+bot.user.username+"] version: "+config.botVersion+" -> "+verChecker+"\n"
+					timeLog+"GitHub [SpoofNinja] version: "+gitHubVer+"\n"
+					+timeLog+"Local Bot ["+bot.user.username+"] version: "+config.botVersion+" -> "+verChecker+"\n"
 					+timeLog+"Discord API [discord.js] version: "+Discord.version+"\n"
 					+timeLog+"Node API [node.js] version: "+process.version
 				)
@@ -224,7 +224,7 @@ bot.on("guildMemberAdd", member => {
 	
 	// USERNAMES REPLACE SPACE WITH UNDERLINE
 	let user=member.user; let userNoSpace=user.username; 
-		nuser=userNoSpace.split(" "); for(var xn="0";xn < nuser.length; xn++){ userNoSpace=userNoSpace.replace(" ","_"); }
+		nuser=userNoSpace.split(/ +/); for(var xn="0";xn < nuser.length; xn++){ userNoSpace=userNoSpace.replace(" ","_"); }
 	
 	// CHECK IF USER IS IN A SPOOFING SERVER
 	let spoofServersFound=checkUser(user.id);
@@ -320,8 +320,8 @@ bot.on('message', message => {
 		
 		// DEFINE SHORTER DISCORD PROPERTIES
 		let g=message.guild; let c=message.channel; let m=message.member;let msg=message.content;
-		let command=msg.toLowerCase(); command=command.split(" ")[0]; command=command.slice(1);
-		args=msg.split(" ").slice(1);
+		let command=msg.toLowerCase(); command=command.split(/ +/)[0]; command=command.slice(1);
+		args=msg.split(/ +/).slice(1);
 		
 		// ROLES TO LISTEN TO - ACCESS TO THE COMMAND - CONFIGURE IN CONFIG.JSON
 		let adminRole=g.roles.find("name", config.adminRoleName); if(!adminRole){adminRole=""}
@@ -435,12 +435,11 @@ bot.on('message', message => {
 								'username': config.botName,
 								'avatarURL': config.botAvatar,
 								'embeds': [{
-									'thumbnail': {'url': config.snipeImg },
 									'color': parseInt(daColor),
-									'description': 'GitHub **Discord** Bot [`SpoofNinja`] __version__: **'+gitHubVer+'**\n'
-										+'Local **Discord** Bot [`'+config.botName+'`] __version__: **'+config.botVersion+'** '+verChecker+'\n'
-										+'**Discord** API [`discord.js`] __version__: **'+Discord.version+'**\n'
-										+'**Node** API [`node.js`] __version__: **'+process.version+'**'
+									'description': 'GitHub [`SpoofNinja`]: v**'+gitHubVer+'**\n'
+										+'Local Bot [`'+config.botName+'`]: v**'+config.botVersion+'** '+verChecker+'\n'
+										+'**Discord** API [`discord.js`]: v**'+Discord.version+'**\n'
+										+'**Node** API [`node.js`]: v**'+process.version+'**'
 								}]
 							};
 							WHchan.send(slackmsg).catch(console.error);
