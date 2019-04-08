@@ -55,7 +55,7 @@ bot.on('ready', () => {
 	bot.user.setPresence({"status":"invisible"});
 	
 	// BOT LOCAL VERSION
-	config.botVersion="2.0";
+	config.botVersion="2.1";
 	
 	console.info(timeStamp(2)+"-- DISCORD SpoofNinja, user: "+bot.user.username+", IS READY --");
 	
