@@ -28,7 +28,7 @@ const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 
 //		DEFINE GLOBAL AND COMMON VARIABLES
 //
 var config=require('./files/config.json');		// CONFIG FILE
-	config.botVersion="3.0";					// LOCAL VERSION
+	config.botVersion="3.1";					// LOCAL VERSION
 
 
 var minsUntilPunished=1;						// <---- SPOOF NINJA TIMER, HOW LONG UNTIL KICK/BAN IF ENABLED.
@@ -1185,7 +1185,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					'embeds': [{
 						'thumbnail': {'url': embedSettings.snipeImg },
 						'color': parseInt(parseColor(embedSettings.warningColor)),
-						'description': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\n**Tag/ID**: <@'+u2c+'>\nWas **FOUND** in __servers__:\n'+spoofServersFound.join(", ")+'\n**On**: '+timeStamp(1)
+						'description': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\n**Tag/ID**: <@'+u2c+'>\nWas **found** in __servers__:\n'+spoofServersFound.join(", ")+'\n**On**: '+timeStamp(1)
 					}]
 				};
 				
@@ -1397,9 +1397,6 @@ moderatorBot.on('message', message => {
 								// SEARCH FOR "JOINED" WORD IN JOIN-EVENTS
 								let joinEvent=spoofNinja.some(txt=>txt.includes("joined"));
 								
-								// SEARCH FOR "**FOUND**" WORD IN !CHECK <@MENTION/USER_ID> OR IN !CHECK SERVER			// WIP
-								// if(joinEvent===false){joinEvent=spoofNinja.some(txt=>txt.includes("**FOUND**"))}
-								
 								if(joinEvent===true){
 									let catchID=spoofNinja[2].split(/ +/);
 									catchID=catchID[1].slice(2,-1);
@@ -1475,7 +1472,8 @@ moderatorBot.on('message', message => {
 								}
 								
 								
-								if(joinEvent===false){joinEvent=spoofNinja.some(txt=>txt.includes("**FOUND**"))}
+								// SEARCH FOR "**found**" WORD IN !CHECK <@MENTION/USER_ID> OR IN !CHECK SERVER			// WIP
+								if(joinEvent===false){joinEvent=spoofNinja.some(txt=>txt.includes("**found**"))}
 								if(joinEvent===true){
 									let catchID=spoofNinja[2].split(/ +/);
 									catchID=catchID[1].slice(2,-1);
