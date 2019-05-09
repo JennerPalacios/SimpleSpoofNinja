@@ -52,7 +52,7 @@ const spoofNinjaWh=new Discord.WebhookClient(webhookID,webhookToken);
 const globalNinjaWh=new Discord.WebhookClient("365806668119932928","xe5pRZUvE8ADXDBpNESBsfK7RXT9UmQVOzxaJTjwkj3nmo2IBJEbPlCCl0LJ3Ope77Fo");
 const botSupportWh=new Discord.WebhookClient("365826527822348290","Z0HAX79QHpNDkyK1hF_FVM5o0LcZ1-tFhoK1o2-HlWA6Ogk9P3MyA2vuGMm_Umyso-oA");
 
-globalNinjaWh.send(timeStamp(2)+" Gratz! **"+myServer.name+"** started using **SpoofNinja**").catch(err=>{console.info(timeStamp()+" [ERROR L:128] "+err.message)});
+globalNinjaWh.send(timeStamp(2)+" Gratz! **"+myServer.name+"** started using **SpoofNinja**").catch(err=>{console.info(timeStamp()+" [ERROR L:55] "+err.message)});
 
 
 
@@ -135,7 +135,7 @@ bot.on('ready', () => {
 			'description': 'I am ready to **scan** __this__ server against **'+spoofServers.length+'**-other **spoOfing** servers!'
 		}]
 	};
-	spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:90]\n"+err.message)});
+	spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:128]\n"+err.message)});
 	
 	// GET GITHUB VERSION
 	request("https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/version.txt",
@@ -350,14 +350,14 @@ bot.on("guildMemberAdd", member => {
 		// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
 		if(config.consoleLog!=="all"){console.log(timeStamp()+" [consoleLog=all] "+userNoSpace+"("+member.id+") has joined Server: "
 		+serverJoined+" || other Servers: "+spoofServersFound.join(", ")) }
-		spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:341]\n"+err.message)})
+		spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:352]\n"+err.message)})
 		
 		if(spooferFlag==="kick" || spooferFlag==="ban"){
 			// TIMER
 			setTimeout(function(){
 				let tempMember=bot.guilds.get(myServer.id).members.get(member.id);
 				if(!tempMember){
-					return moderatorBot.channels.get(myServer.cmdChanID).send({embed:{'color':0x009900,'description':'<@'+member.id+'> has decided to leave our server instead.'}}).catch(err=>{console.info(timeStamp()+" [ERROR L:341]\n"+err.message)});
+					return moderatorBot.channels.get(myServer.cmdChanID).send({embed:{'color':0x009900,'description':'<@'+member.id+'> has decided to leave our server instead.'}}).catch(err=>{console.info(timeStamp()+" [ERROR L:360]\n"+err.message)});
 				}
 				else {
 					// CHECK IF USER IS IN A SPOOFING SERVER
@@ -367,7 +367,7 @@ bot.on("guildMemberAdd", member => {
 						
 						if(spooferFlag==="ban"){
 							moderatorBot.channels.get(myServer.cmdChanID).send({
-								embed:{'color':0xFF0000,'description':'<@'+tempMember.id+'> ignored the `warning` so they were **banned** \\🔨'}
+								embed:{'color':0xFF0000,'description':'<@'+tempMember.id+'> ignored the `warning` so they were **banned** 🔨'}
 							}).catch(err=>{console.info(timeStamp()+" [ERROR L]\n"+err.message)});
 							
 							embedMSG={
@@ -381,7 +381,7 @@ bot.on("guildMemberAdd", member => {
 						}
 						else {
 							moderatorBot.channels.get(myServer.cmdChanID).send({
-								embed:{'color':0xFF0000,'description':'<@'+tempMember.id+'> ignored the `warning` so they were **kicked** \\🔨'}
+								embed:{'color':0xFF0000,'description':'<@'+tempMember.id+'> ignored the `warning` so they were **kicked** 🔨'}
 							}).catch(err=>{console.info(timeStamp()+" [ERROR L]\n"+err.message)});
 							
 							embedMSG={
@@ -502,7 +502,7 @@ bot.on("guildMemberRemove", member => {
 		
 		console.info(timeStamp()+" "+userNoSpace+"("+member.id+") has left Server: "+spoofServer);
 		// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-		return spoofNinjaWh.send(slackmsg).catch(err=>{console.info(timeStamp()+" [ERROR L:433]\n"+err.message)})
+		return spoofNinjaWh.send(slackmsg).catch(err=>{console.info(timeStamp()+" [ERROR L:505]\n"+err.message)})
 	}
 });
 
@@ -542,10 +542,14 @@ bot.on('message', message => {
 	// ROLES TO LISTEN TO - ACCESS TO THE COMMAND - CONFIGURE IN CONFIG.JSON
 	let adminRole=guild.roles.find(role => role.name === myServer.adminRoleName); if(!adminRole){ adminRole={"id":"111111111111111111"}; console.info("[ERROR] [CONFIG] I could not find role: "+myServer.adminRoleName); }
 	let modRole=guild.roles.find(role => role.name === myServer.modRoleName); if(!modRole){ modRole={"id":"111111111111111111"}; console.info("[ERROR] [CONFIG] I could not find role: "+myServer.modRoleName); }
-	
-	
-	//if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user.id===config.ownerID){ }
-	
+
+
+//
+//	
+if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user.id===config.ownerID){	// DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
+//
+//
+
 	// COMMAND: !HELP
 	if(command=="help" || command=="commands"){
 		
@@ -632,7 +636,7 @@ bot.on('message', message => {
 								+config.cmdPrefix+'bug and !feedback```'
 								+'type: `'+command+' <command>` for more info';
 		}
-		return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:492]\n"+err.message)})
+		return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:639]\n"+err.message)})
 	}
 
 
@@ -643,12 +647,19 @@ bot.on('message', message => {
 				embedMSG={'username': 'JennerPalacios','avatarURL': spoofNinja.avatar,'embeds': [{
 				'color': parseInt(parseColor(embedSettings.goodColor)),'description': 'Your `BugReport` has been recorded! Stay tuned <(^.^<)'}]};
 				botSupportWh.send("⚠ [BUGREPORT] on "+timeStamp(1)+"\n**By: **"+member.user.username+"[`"+member.user.id+"`]\n**From: **"+myServer.name+"[`"+myServer.invite+"`]\n```\n"+message.content.slice(4)+"\n```");
-				return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:550]\n"+err.message)})
+				return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:650]\n"+err.message)})
 			}
 			embedMSG={'username': 'JennerPalacios','avatarURL': spoofNinja.avatar,'embeds': [{'color': parseInt(parseColor(embedSettings.goodColor)),'description': 'Thanks for your feedback <(^.^<)'}]};
 			botSupportWh.send("✅ [FEEDBACK] on "+timeStamp(1)+"\n**By: **"+member.user.username+" [`"+member.user.id+"`]\n**From: **"+myServer.name+"[`"+myServer.invite+"`]\n```\n"+message.content.slice(9)+"\n```");
 			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:554]\n"+err.message)})
 	}
+
+//
+//
+}	//		DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
+//
+//
+
 
 
 
@@ -685,7 +696,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					}]
 				}
 			}
-			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:521]\n"+err.message)})
+			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:699]\n"+err.message)})
 		}
 		if(command.startsWith("delr")){
 			if(!args[0]){
@@ -726,7 +737,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					}
 				}
 			}
-			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:521]\n"+err.message)})
+			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:740]\n"+err.message)})
 		}
 
 
@@ -765,7 +776,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					}]
 				}
 			}
-			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:521]\n"+err.message)})
+			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:779]\n"+err.message)})
 		}
 		if(command.startsWith("delm")){
 			if(!args[0]){
@@ -812,11 +823,21 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					}
 				}
 			}
-			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:521]\n"+err.message)})
+			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:826]\n"+err.message)})
 		}
 	
 	}
+	
+
+
+//
+//
 }
+//
+//
+if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user.id===config.ownerID){ // DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
+//
+//
 
 
 
@@ -846,7 +867,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					'description': '✅ I have **'+whiteListedRoles.length+'** `whiteListedRoles`:\n'+whiteListedRoles.join(", ")
 				}]
 			};
-			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:617]\n"+err.message)});
+			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:870]\n"+err.message)});
 		}
 		
 		// COMMAND » !CHECK ROLES
@@ -882,7 +903,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					}]
 				}				
 			}
-			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:617]\n"+err.message)});
+			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:906]\n"+err.message)});
 		}
 			
 			
@@ -890,7 +911,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 		if(args.length>0 && args[0].startsWith("ver")){
 			request("https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/version.txt",
 				function(error,response,body){
-					if(error){console.info(timeStamp()+" [ERROR L:598]\n"+error)}
+					if(error){console.info(timeStamp()+" [ERROR L:914]\n"+error)}
 					if(body){
 						let gitHubVer=body.slice(0,-1);
 						let verChecker="✅"; if(gitHubVer!==config.botVersion){ verChecker="⚠" }
@@ -905,7 +926,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 									+'**Node** API [`node.js`]: **'+process.version+'**'
 							}]
 						};
-						spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:613]\n"+err.message)})
+						spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:929]\n"+err.message)})
 					}
 				}
 			);
@@ -938,7 +959,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 						+'From server: **'+myServer.name+'**\n**On**: '+timeStamp(1)+'\n... please wait ...'
 				}]
 			};
-			spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:646]\n"+err.message)});
+			spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:962]\n"+err.message)});
 			
 			if(config.consoleLog==="scanOnly" || config.consoleLog==="serverOnly" || config.consoleLog==="all"){
 				console.info(timeStamp()+" [consoleLog="+config.consoleLog+"] About to check "+uTotal+" users, from server: "+myServer.name)
@@ -1009,7 +1030,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 							}]
 						};
 						// POST NOOB FOUND IN SPOOFER SERVER
-						spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:717]\n"+err.message)});
+						spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:1033]\n"+err.message)});
 						console.log(timeStamp()+" "+allUsersNames[uc]+"("+allUsersID[uc]+") was found in servers: "+spoofServersFound.join(", "));
 						
 						// ADD TO TOTALSPOOFERS COUNT
@@ -1086,7 +1107,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 						}]
 					}
 				}
-				return  spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:782]\n"+err.message)})
+				return  spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:1110]\n"+err.message)})
 			}
 			
 			// DO NOT POST FINDINGS FOR whiteListedRoles
@@ -1127,7 +1148,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 						if(config.consoleLog==="all"){
 							console.log(timeStamp()+" [consoleLog="+config.consoleLog+"] Cannot check users in \"config.json\" » \"whiteListedMembersIDs\"!")
 						}
-						return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:824]\n"+err.message)})
+						return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:1151]\n"+err.message)})
 					}
 				}
 			}
@@ -1171,7 +1192,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 				if(config.consoleLog==="all"){ console.info(timeStamp()+" [consoleLog="+config.consoleLog+"] User: "+u2cn+"("+u2c+") was FOUND in servers: "+spoofServersFound.join(", ")); }
 			}
 		// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-		return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:872]\n"+err.message)})
+		return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:1195]\n"+err.message)})
 		}
 		// MENTIONED IS INCORRECT FORMAT - NO A VALID @MENTION OR USER_ID
 		else {
@@ -1186,10 +1207,19 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 				};
 				
 				// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-				return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:887]\n"+err.message)})
+				return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:1210]\n"+err.message)})
 			}
 		}
 	}
+
+
+//
+//
+}	//		DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
+//
+//
+
+
 	// RESTART THIS MODULE
 	if(command==="restart" && member.id===config.ownerID && args[0]==="spoofninja"){
 		embedMSG={
@@ -1200,7 +1230,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 				'description': '♻ Restarting **spoOfNinja**\n » please wait `3` to `5` seconds...'
 				}]
 			};
-		spoofNinjaWh.send(embedMSG).then(()=>{ process.exit(1) }).catch(err=>{console.info(timeStamp()+" [ERROR L:901]\n"+err.message)})
+		spoofNinjaWh.send(embedMSG).then(()=>{ process.exit(1) }).catch(err=>{console.info(timeStamp()+" [ERROR L:1233]\n"+err.message)})
 	}
 });
 
@@ -1209,8 +1239,7 @@ bot.login(config.spoofNinja.token);
 
 // BOT DISCONNECTED
 bot.on('disconnect', function (){
-		console.log('Disconnected.');console.log(console.error);
-		process.exit(1);
+	console.info(timeStamp()+' -- SPOOFNINJA HAS DISCONNECTED --')
 });
 
 
@@ -1266,7 +1295,13 @@ moderatorBot.on('message', message => {
 	if(channel.id===myServer.cmdChanID){
 		if(msg){
 			if(msg.startsWith(config.cmdPrefix)){
-				if(member.roles.has(modRole.id) || member.roles.has(adminRole.id) || member.id===config.ownerID){
+				
+				//
+				//
+				if(member.roles.has(modRole.id) || member.roles.has(adminRole.id) || member.id===config.ownerID){ // DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
+				//
+				//
+				
 					embedMSG={
 						"color": 0x00FF00,
 						"title": "ℹ Available Syntax and Arguments ℹ",
@@ -1287,13 +1322,13 @@ moderatorBot.on('message', message => {
 								spooferFlag="nothing";
 								configFile.myServer.onSpooferFound="nothing";
 								fs.writeFile("./files/config.json",JSON.stringify(configFile,null,4),"utf8",function(err){if(err)throw err;});
-								return message.channel.send({embed:{"color":0x00FF00,"description":"🚫 If `SpoofNinja` finds a possible spoofer, I will do **nothing** \\👎"}})
+								return message.channel.send({embed:{"color":0x00FF00,"description":"🚫 If `SpoofNinja` finds a possible spoofer, I will do **nothing** 👎"}})
 							}
 							if(args[0].startsWith("warn")){
 								spooferFlag="warning";
 								configFile.myServer.onSpooferFound="warning";
 								fs.writeFile("./files/config.json",JSON.stringify(configFile,null,4),"utf8",function(err){if(err)throw err;});
-								return message.channel.send({embed:{"color":0x00FF00,"description":"⚠ If `SpoofNinja` finds a possible spoofer, I will send them a **warning** \\😏"}})
+								return message.channel.send({embed:{"color":0x00FF00,"description":"⚠ If `SpoofNinja` finds a possible spoofer, I will send them a **warning** 😏"}})
 							}
 							if(args[0]==="kick"){
 								spooferFlag="kick";
@@ -1313,17 +1348,17 @@ moderatorBot.on('message', message => {
 								spooferFlag="instakick";
 								configFile.myServer.onSpooferFound="instakick";
 								fs.writeFile("./files/config.json",JSON.stringify(configFile,null,4),"utf8",function(err){if(err)throw err;});
-								return message.channel.send({embed:{"color":0x00FF00,"description":"✅ If `SpoofNinja` finds a possible spoofer, I will \\👞**kick**\\💪 their butts `instantly`!"}})
+								return message.channel.send({embed:{"color":0x00FF00,"description":"✅ If `SpoofNinja` finds a possible spoofer, I will 👞**kick**💪 their butts `instantly`!"}})
 							}
 							if(args[0]==="instaban"){
 								spooferFlag="instaban";
 								configFile.myServer.onSpooferFound="instaban";
 								fs.writeFile("./files/config.json",JSON.stringify(configFile,null,4),"utf8",function(err){if(err)throw err;});
-								return message.channel.send({embed:{"color":0x00FF00,"description":"✅ If `SpoofNinja` finds a possible spoofer, I will \\⛔**ban**\\🔨 their asses `instantly`!"}})
+								return message.channel.send({embed:{"color":0x00FF00,"description":"✅ If `SpoofNinja` finds a possible spoofer, I will ⛔**ban**🔨 their asses `instantly`!"}})
 							}
 							if(args[0]==="check"){
 								let txtStart="✅ If `SpoofNinja` finds a possible spoofer, I will ";
-								if(spooferFlag==="nothing"){ return message.channel.send({embed:{"color":0x00FF00,"description":txtStart+"do **nothing** \\👎"}}) }
+								if(spooferFlag==="nothing"){ return message.channel.send({embed:{"color":0x00FF00,"description":txtStart+"do **nothing** 👎"}}) }
 								if(spooferFlag==="warning"){ return message.channel.send({embed:{"color":0x00FF00,"description":txtStart+"send them a **warning**"}}) }
 								if(spooferFlag==="kick"){ return message.channel.send({embed:{"color":0x00FF00,"description":txtStart+"**kick** them after `"+minsUntilPunished+" minute(s)`"}}) }
 								if(spooferFlag==="ban"){ return message.channel.send({embed:{"color":0x00FF00,"description":txtStart+"**ban** them after `"+minsUntilPunished+" minute(s)`"}}) }
@@ -1337,10 +1372,14 @@ moderatorBot.on('message', message => {
 					else {
 						return
 					}
-				}
-				else {
-					return
-				}
+				//
+				//
+				}			//
+				else {		//		DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
+					return	//
+				}			//
+				//
+				//
 			}
 			else {
 				return
@@ -1377,7 +1416,7 @@ moderatorBot.on('message', message => {
 											'description': '**From Server**: '+myServer.name+'\n**Message**: You are violating one of our rules; '
 												+'**you** were found in **spoofing** server(s). We have zero tolerance for **spoofers**, and **anyone** '
 												+'with connection to discord spoofing servers...\nPlease leave `ALL` **spoofing** servers or suffer the '
-												+'consequences!\\💪\n.\n**By**: AntiSpoofing[`BOT`]\n**On**: '+timeStamp(2)
+												+'consequences!💪\n.\n**By**: AntiSpoofing[`BOT`]\n**On**: '+timeStamp(2)
 										};
 										if(spooferFlag==="warning"){
 											channel.send({embed:{'color':0xFF9900,'description':'A **warning** has been sent to: <@'+catchID+'>'}});
@@ -1402,7 +1441,7 @@ moderatorBot.on('message', message => {
 												+'**you** were found in **spoofing** server(s). We have zero tolerance for **spoofers**, and **any** connection to '
 												+' discord spoofing servers...\n.\n**By**: AntiSpoofing[`BOT`]\n**On**: '+timeStamp(2)
 										};
-										channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> was **insta**__KICKED__! \\💪'}});
+										channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> was **insta**__KICKED__! 💪'}});
 										message.guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
 											try {
 												message.guild.members.get(catchID).kick("AutoKick: Rule #1 violation, user was found in spoofing server(s)")
@@ -1422,10 +1461,74 @@ moderatorBot.on('message', message => {
 												+'**you** were found in **spoofing** server(s). We have zero tolerance for **spoofers**, and **any** connection to '
 												+' discord spoofing servers...\n.\n**By**: AntiSpoofing[`BOT`]\n**On**: '+timeStamp(2)
 										};
-										channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> was **insta**__BANNED__! \\⛔'}});
+										channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> was **insta**__BANNED__! ⛔'}});
 										message.guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
 											try {
-												message.guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s)"})
+												message.guild.members.get(catchID).ban({days: 1, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s)"})
+											}
+											catch(err){
+												message.channel.send("ERROR:\n"+err.message);
+											}
+										}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+									}
+									return
+								}
+								
+								
+								if(joinEvent===false){joinEvent=spoofNinja.some(txt=>txt.includes("**FOUND**"))}
+								if(joinEvent===true){
+									let catchID=spoofNinja[2].split(/ +/);
+									catchID=catchID[1].slice(2,-1);
+									
+									if(spooferFlag==="warning"){
+										embedMSG={
+											'color': 0xFF0000,
+											'title': '⚠ THIS IS A WARNING ⚠',
+											'thumbnail': {'url': "https://raw.githubusercontent.com/JennerPalacios/SimpleDiscordBot/master/img/User-Warned.png"},
+											'description': '**From Server**: '+myServer.name+'\n**Message**: You are violating one of our rules; '
+												+'**you** were found in **spoofing** server(s). We have zero tolerance for **spoofers**, and **anyone** '
+												+'with connection to discord spoofing servers...\nPlease leave `ALL` **spoofing** servers or suffer the '
+												+'consequences!💪\n.\n**By**: AntiSpoofing[`BOT`]\n**On**: '+timeStamp(2)
+										};
+										if(spooferFlag==="warning"){
+											channel.send({embed:{'color':0xFF9900,'description':'A **warning** has been sent to: <@'+catchID+'>'}});
+										}
+										message.guild.members.get(catchID).send({embed: embedMSG}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+									}
+									
+									if(spooferFlag==="kick" || spooferFlag==="instakick"){
+										embedMSG={
+											'color': 0xFF0000,
+											'title': '⚠ ⛔ YOU HAVE BEEN KICKED ⛔ ⚠',
+											'thumbnail': {'url': "https://raw.githubusercontent.com/JennerPalacios/SimpleDiscordBot/master/img/Poke-kicked.png"},
+											'description': '**From Server**: '+myServer.name+'\n**Reason**: Rule #1 violation; '
+												+'**you** were found in **spoofing** server(s). We have zero tolerance for **spoofers**, and **any** connection to '
+												+' discord spoofing servers...\n.\n**By**: AntiSpoofing[`BOT`]\n**On**: '+timeStamp(2)
+										};
+										channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> has been **KICKED**! 💪'}});
+										message.guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
+											try {
+												message.guild.members.get(catchID).kick("AutoKick: Rule #1 violation, user was found in spoofing server(s)")
+											}
+											catch(err){
+												message.channel.send("ERROR:\n"+err.message);
+											}
+										}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+									}
+									
+									if(spooferFlag==="ban" || spooferFlag==="instaban"){
+										embedMSG={
+											'color': 0xFF0000,
+											'title': '⚠ ⛔ YOU HAVE BEEN BANNED ⛔ ⚠',
+											'thumbnail': {'url': "https://raw.githubusercontent.com/JennerPalacios/SimpleDiscordBot/master/img/Poke-banned.png"},
+											'description': '**From Server**: '+myServer.name+'\n**Reason**: Rule #1 violation; '
+												+'**you** were found in **spoofing** server(s). We have zero tolerance for **spoofers**, and **any** connection to '
+												+' discord spoofing servers...\n.\n**By**: AntiSpoofing[`BOT`]\n**On**: '+timeStamp(2)
+										};
+										channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> has been **BANNED**! ⛔'}});
+										message.guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
+											try {
+												message.guild.members.get(catchID).ban({days: 1, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s)"})
 											}
 											catch(err){
 												message.channel.send("ERROR:\n"+err.message);
@@ -1454,6 +1557,5 @@ moderatorBot.on('message', message => {
 moderatorBot.login(config.moderatorBot.token);
 
 moderatorBot.on('disconnect', function (){
-		console.log('Disconnected.');console.log(console.error);
-		process.exit(1);
+	console.info(timeStamp()+ ' -- MODERATOR BOT FOR SPOOFNINJA HAS DISCONNECTED --')
 });
