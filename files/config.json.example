@@ -1,32 +1,74 @@
-{ 
-	"logAll": "yes",
-	"botSupport": "no",
+{
+    "_comment_for_cmdPrefix": "how to start the commands",
+    "cmdPrefix": "!",
 	
-	"botName": "SpoofNinja",
-	"botID": "<DUMMY_ACCOUNT_ID_NUMBER>",
-	"botAvatar": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/NinjaAvatar.png",
-	"token": "<DUMMY_ACCOUNT_TOKEN>",
 	
-	"ownerID": "<MY_OWN_ID_IN_CASE_I_DONT_HAVE_ROLE>",
+    "_comments_for_ownerID": "it will always listen to you even when you don't have an Admin or Moderator role",
+    "ownerID": "",
 	
-	"myServer": { 
-		"server": "<MY_SERVERS_ID_NUMBER>", 
-		"name": "<MY_SERVERS_NAME_NO_SPACE>",
-		"invite": "<MY_SERVERS_INVITE_LINK>"
-	},
 	
-	"goodColor": "#00FF00",
-	"warningColor": "#FF9900",
-	"dangerColor": "#FF0000",
-	"snipeImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/User-Spoof.png",
-	"honorImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/User-Badge.png",
+    "_comments_for_ConsoleLog": {
+        "Available": "eventsOnly, serverOnly, all",
+        "eventsOnly": "for when user joins my server or another server",
+        "serverOnly": "everything that happens in my server",
+        "all": "every event, even from other servers"
+    },
+    "consoleLog": "serverOnly",
 	
-	"cmdChanID": "<CHANNEL_ID_NUMBER_WHERE_I_WILL_LISTEN_TO_FOR_COMMANDS_(IE:_#MODLOG/#SPOOFERS)>",
-	"webhook": "<WEBHOOK_URL_OF_THE_CHANNEL_TO_POST_ON_(IE:_#MODLOG)>",
 	
-	"adminRoleName": "<TEXT_ROLE_I_GAVE_TO_ADMINS>",
-	"modRoleName": "<TEXT_ROLE_I_GAVE_TO_MODERATORS>",
-	"whitelist": "<USER_ID_NUMBER_1> <USER_ID_NUMBER_2> <USER_ID_NUMBER_3> NUMBERS SEPARATED BY SPACE, NO COMMAS!!!",
+    "_comments_for_botSupport": "share your webhook in order for me to send IMPORTANT MESSAGES such as an UPDATE, or ability to reply back when sending a !bug or !feedback",
+    "botSupport": "no",
 	
-	"prefix": "!"
+	
+    "_comments_for_spoofNinja": "pretty much self explained, very important to get the bot's ID",
+    "spoofNinja": {
+        "name": "SpoofNinja",
+        "id": "",
+        "token": "",
+        "avatar": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/NinjaAvatar.png"
+    },
+	
+	
+    "_comments_for_moderatorBot": "this bot will be in charge of issuing warnings, kicks, and bans",
+    "moderatorBot": {
+        "token": ""
+    },
+	
+	
+    "_comments_for_myServer": "pretty much self-explaied",
+    "myServer": {
+        "id": "",
+        "name": "",
+        "invite": "",
+        "cmdChanID": "",
+        "webhook": "",
+        "adminRoleName": "Admin",
+        "modRoleName": "Moderator",
+        "onSpooferFound": "instaban",
+        "whiteListedRoles": [
+            "Admin",
+            "Moderator",
+            "Developer",
+            "Mapper",
+            "VIP"
+        ],
+        "whiteListedMembersIDs": [
+            "223629798516195349",
+            "329584924573040645",
+            "197369908307165184"
+        ]
+    },
+	
+	
+    "_comments_for_embedSettings": "cosmetic and appearance",
+    "embedSettings": {
+        "goodColor": "#00FF00",
+        "warningColor": "#FF9900",
+        "dangerColor": "#FF0000",
+        "snipeImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/User-Spoof.png",
+        "honorImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/User-Badge.png",
+        "startImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Search-Start.png",
+        "endImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Search-Done.png",
+        "checkedImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/checked.png"
+    }
 }
