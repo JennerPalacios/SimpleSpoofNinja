@@ -40,7 +40,7 @@
         "id": "",
         "name": "",
         "invite": "",
-        "cmdChanID": "",
+        "cmdChanIDs": [],
         "webhook": "",
         "adminRoleName": "Admin",
         "modRoleName": "Moderator",
@@ -53,7 +53,8 @@
             "VIP"
         ],
         "whiteListedMembersIDs": [
-            "223629798516195349",
+            "237597448032354304",
+	    "223629798516195349",
             "329584924573040645",
             "197369908307165184"
         ]
