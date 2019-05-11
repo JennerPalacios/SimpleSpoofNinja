@@ -1177,7 +1177,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 							}]
 						};
 						if(config.consoleLog==="all"){
-							console.log(timeStamp()+" [consoleLog="+config.consoleLog+"] Cannot check users in \"config.json\" » \"whiteListedMembersIDs\"!")
+							console.info(timeStamp()+" [consoleLog="+config.consoleLog+"] Cannot check users in \"config.json\" » \"whiteListedMembersIDs\"!")
 						}
 						return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:1151]\n"+err.message)})
 					}
@@ -1225,7 +1225,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					}]
 				};
 				
-				if(config.consoleLog==="all"){ console.info(timeStamp()+" [consoleLog="+config.consoleLog+"] User: "+u2cn+"("+u2c+") was FOUND in servers: "+spoofServersFound.join(", ")); }
+				if(config.consoleLog==="all" || config.consoleLog==="serverOnly"){ console.log(timeStamp()+" [consoleLog="+config.consoleLog+"] User: "+u2cn+"("+u2c+") was FOUND in servers: "+spoofServersFound.join(", ")); }
 			}
 		// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
 		return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:1195]\n"+err.message)})
@@ -1477,7 +1477,7 @@ moderatorBot.on('message', message => {
 												+'**you** were found in **spoofing** server(s). We have zero tolerance for **spoofers**, and **any** connection to '
 												+' discord spoofing servers...\n.\n**By**: AntiSpoofing[`BOT`]\n**On**: '+timeStamp(2)
 										};
-										channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> was **insta**__KICKED__! 💪'}});
+										channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> has been **KICKED**! 💪'}});
 										guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
 											try {
 												guild.members.get(catchID).kick("AutoKick: Rule #1 violation, user was found in spoofing server(s)")
@@ -1497,7 +1497,7 @@ moderatorBot.on('message', message => {
 												+'**you** were found in **spoofing** server(s). We have zero tolerance for **spoofers**, and **any** connection to '
 												+' discord spoofing servers...\n.\n**By**: AntiSpoofing[`BOT`]\n**On**: '+timeStamp(2)
 										};
-										channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> was **insta**__BANNED__! ⛔'}});
+										channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> has been **BANNED**! ⛔'}});
 										guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
 											try {
 												guild.members.get(catchID).ban({days: 1, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s)"})
