@@ -32,6 +32,9 @@ var config=require('./files/config.json');		// CONFIG FILE
 
 
 var minsUntilPunished=1;						// <---- SPOOF NINJA TIMER, HOW LONG UNTIL KICK/BAN IF ENABLED.
+//
+//
+//
 
 
 var serverCount, noobFound, serverFound, noobJoined, ownServer, embedMSG, myServerFound, memberIsSpoofer, webhook, daServers="",
@@ -413,7 +416,7 @@ bot.on("guildMemberAdd", member => {
 						if(spooferFlag==="ban"){
 							moderatorBot.channels.get(myServer.cmdChanIDs[0]).send({
 								embed:{'color':0xFF0000,'description':'<@'+tempMember.id+'> ignored the `warning` so they were **banned** 🔨'}
-							}).catch(err=>{console.info(timeStamp()+" [ERROR L]\n"+err.message)});
+							}).catch(err=>{console.info(timeStamp()+" [ERROR L]\n"+err.message+" | Member blocked me, so no message was sent")});
 							
 							embedMSG={
 								'color': 0xFF0000,
@@ -427,7 +430,7 @@ bot.on("guildMemberAdd", member => {
 						else {
 							moderatorBot.channels.get(myServer.cmdChanIDs[0]).send({
 								embed:{'color':0xFF0000,'description':'<@'+tempMember.id+'> ignored the `warning` so they were **kicked** 😏'}
-							}).catch(err=>{console.info(timeStamp()+" [ERROR L]\n"+err.message)});
+							}).catch(err=>{console.info(timeStamp()+" [ERROR L]\n"+err.message+" | Member blocked me, so no message was sent")});
 							
 							embedMSG={
 								'color': 0xFF0000,
@@ -451,7 +454,10 @@ bot.on("guildMemberAdd", member => {
 							catch(err){
 								console.info(timeStamp()+" [ERROR]\n"+err.message)
 							}
-						}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+						}).catch(err=>{
+							console.info(timeStamp()+" [ERROR]\n"+err.message+" | Member blocked me, it appears");
+							moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).ban({days: 7, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s) | Member blocked me, so no message was sent"})
+						})
 					}
 				}
 			}, 60000 * minsUntilPunished)
@@ -596,10 +602,11 @@ bot.on('message', message => {
 	let adminRole=guild.roles.find(role => role.name === myServer.adminRoleName); if(!adminRole){ adminRole={"id":"111111111111111111"}; console.info("[ERROR] [CONFIG] I could not find role: "+myServer.adminRoleName); }
 	let modRole=guild.roles.find(role => role.name === myServer.modRoleName); if(!modRole){ modRole={"id":"111111111111111111"}; console.info("[ERROR] [CONFIG] I could not find role: "+myServer.modRoleName); }
 
-
+//
 //
 //	
 if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user.id===config.ownerID){	// DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
+//
 //
 //
 
@@ -668,8 +675,8 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 				embedMSG.embeds[0].description='`'+config.cmdPrefix+'onSpoofer check` » to check current **action**\n'
 									+'`'+config.cmdPrefix+'onSpoofer nothing` » to disable/do **nothing**\n'
 									+'`'+config.cmdPrefix+'onSpoofer warning` » to send them a warning\n'
-									+'`'+config.cmdPrefix+'onSpoofer kick` » to kick after 1min warning\n'
-									+'`'+config.cmdPrefix+'onSpoofer ban` » to ban after 1min warning\n'
+									+'`'+config.cmdPrefix+'onSpoofer kick` » to kick after '+minsUntilPunished+'min warning\n'
+									+'`'+config.cmdPrefix+'onSpoofer ban` » to ban after '+minsUntilPunished+'min warning\n'
 									+'`'+config.cmdPrefix+'onSpoofer instakick` » to kick instantly\n'
 									+'`'+config.cmdPrefix+'onSpoofer instaban` » to ban instantly'
 			}
@@ -706,19 +713,22 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 			botSupportWh.send("✅ [FEEDBACK] on "+timeStamp(1)+"\n**By: **"+member.user.username+" [`"+member.user.id+"`]\n**From: **"+myServer.name+"[`"+myServer.invite+"`]\n```\n"+message.content.slice(9)+"\n```");
 			return spoofNinjaWh.send(embedMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:554]\n"+err.message)})
 	}
-
+//
 //
 //
 }	//		DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
 //
 //
+//
 
 
-
-
+//
+//
 //
 //
 if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user.id===config.ownerID){ // DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
+//
+//
 //
 //
 
@@ -1049,14 +1059,15 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 			}
 		}
 	}
-
-
 //
 //
-}	//		DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
 //
 //
-
+}//		DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
+//
+//
+//
+//
 
 	// RESTART THIS MODULE
 	if(command==="restart" && member.id===config.ownerID && args[0]==="spoofninja"){
@@ -1132,10 +1143,13 @@ moderatorBot.on('message', message => {
 				
 				//
 				//
+				//
+				//
 				if(member.roles.has(modRole.id) || member.roles.has(adminRole.id) || member.id===config.ownerID){ // DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
 				//
 				//
-				
+				//
+				//
 					
 					// PUNISHMENT ACTION
 					if(command==="onspoofer"){
@@ -1145,8 +1159,8 @@ moderatorBot.on('message', message => {
 							"description": "`"+config.cmdPrefix+"onSpoofer check` » to check current **action**\n"
 								+"`"+config.cmdPrefix+"onSpoofer nothing` » to disable/do **nothing**\n"
 								+"`"+config.cmdPrefix+"onSpoofer warning` » to send them a warning\n"
-								+"`"+config.cmdPrefix+"onSpoofer kick` » to kick after 1min warning\n"
-								+"`"+config.cmdPrefix+"onSpoofer ban` » to ban after 1min warning\n"
+								+"`"+config.cmdPrefix+"onSpoofer kick` » to kick after "+minsUntilPunished+"min warning\n"
+								+"`"+config.cmdPrefix+"onSpoofer ban` » to ban after "+minsUntilPunished+"min warning\n"
 								+"`"+config.cmdPrefix+"onSpoofer instakick` » to kick instantly\n"
 								+"`"+config.cmdPrefix+"onSpoofer instaban` » to ban instantly"
 						};
@@ -1258,7 +1272,7 @@ moderatorBot.on('message', message => {
 						let configFile=JSON.parse(fs.readFileSync("./files/config.json", "utf8"));
 						
 						// ADD ROLE TO WHITELIST
-						if(command.startsWith("addr")){
+						if(command.startsWith("addr") && member.id===config.ownerID){
 							if(!args2[0]){
 								embedMSG={
 									'color': parseInt(parseColor(embedSettings.goodColor)),
@@ -1280,7 +1294,7 @@ moderatorBot.on('message', message => {
 						}
 						
 						// DELETE ROLE FROM WHITELIST
-						if(command.startsWith("delr")){
+						if(command.startsWith("delr") && member.id===config.ownerID){
 							if(!args2[0]){
 								embedMSG={
 									'color': parseInt(parseColor(embedSettings.warningColor)),
@@ -1309,11 +1323,9 @@ moderatorBot.on('message', message => {
 							}
 							return channel.send({embed: embedMSG}).catch(err=>{console.info(timeStamp()+" [ERROR L:740]\n"+err.message)})
 						}
-
-
-
+						
 						// ADD USER TO WHITELIST
-						if(command.startsWith("addm")){
+						if(command.startsWith("addm") && member.id===config.ownerID){
 							if(!args2[0]){
 								embedMSG={
 									'color': parseInt(parseColor(embedSettings.warningColor)),
@@ -1342,7 +1354,7 @@ moderatorBot.on('message', message => {
 						}
 						
 						// DELETE MEMBER FROM WHITELIST
-						if(command.startsWith("delm")){
+						if(command.startsWith("delm") && member.id===config.ownerID){
 							if(!args2[0]){
 								embedMSG={
 									'color': parseInt(parseColor(embedSettings.warningColor)),
@@ -1379,20 +1391,15 @@ moderatorBot.on('message', message => {
 						}
 					
 					}
-					else {
-						return
-					}
 				//
 				//
-				}			//
-				else {		//		DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
-					return	//
-				}			//
 				//
 				//
-			}
-			else {
-				return
+				}//	DISABLE FOR GLOBAL USE - ANY USER - AT DEVELOPER'S SERVER
+				//
+				//
+				//
+				//
 			}
 		}
 		if(myServer.cmdChanIDs[0]===channel.id){
@@ -1440,7 +1447,7 @@ moderatorBot.on('message', message => {
 												channel.send({embed:{'color':0xFF9900,'description':'A **warning** has been sent to: <@'+catchID+'>. They will be '
 													+'**banned** in `'+minsUntilPunished+' minute(s)` if they haven\'t left the spoofing server(s).'}});
 											}
-											guild.members.get(catchID).send({embed: embedMSG}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+											guild.members.get(catchID).send({embed: embedMSG}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message+" | Member blocked me, it appears")})
 										}
 										
 										if(spooferFlag==="instakick"){
@@ -1460,7 +1467,10 @@ moderatorBot.on('message', message => {
 												catch(err){
 													console.info(timeStamp()+" [ERROR]\n"+err.message);
 												}
-											}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+											}).catch(err=>{
+												console.info(timeStamp()+" [ERROR]\n"+err.message+" | Member blocked me, it appears");
+												guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
+											})
 										}
 										
 										if(spooferFlag==="instaban"){
@@ -1475,12 +1485,15 @@ moderatorBot.on('message', message => {
 											channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> has been **BANNED**! ⛔'}});
 											guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
 												try {
-													guild.members.get(catchID).ban({days: 1, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s)"})
+													guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s)"})
 												}
 												catch(err){
 													channel.send("ERROR:\n"+err.message);
 												}
-											}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+											}).catch(err=>{
+												console.info(timeStamp()+" [ERROR]\n"+err.message+" | Member blocked me, it appears");
+												guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
+											})
 										}
 										return
 									}
@@ -1519,7 +1532,7 @@ moderatorBot.on('message', message => {
 													+'**banned** in `'+minsUntilPunished+' minute(s)` if they haven\'t left the spoofing server(s).'}});
 											}
 											
-											guild.members.get(catchID).send({embed: embedMSG}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+											guild.members.get(catchID).send({embed: embedMSG}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message+" | Member blocked me, it appears")})
 											
 											if(spooferFlag==="kick" || spooferFlag==="ban"){
 												//
@@ -1583,7 +1596,10 @@ moderatorBot.on('message', message => {
 																catch(err){
 																	console.info(timeStamp()+" [ERROR]\n"+err.message)
 																}
-															}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+															}).catch(err=>{
+																console.info(timeStamp()+" [ERROR]\n"+err.message+" | Member blocked me, so no message was sent");
+																moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).ban({days: 7, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
+															})
 														}
 													}
 												}, 60000 * minsUntilPunished)
@@ -1608,9 +1624,12 @@ moderatorBot.on('message', message => {
 													guild.members.get(catchID).kick("AutoKick: Rule #1 violation, user was found in spoofing server(s)")
 												}
 												catch(err){
-													channel.send("ERROR:\n"+err.message);
+													channel.send(" catch(err) ERROR:\n"+err.message);
 												}
-											}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+											}).catch(err=>{
+												console.info(timeStamp()+" [ERROR]\n"+err.message+" | Member blocked me, so no message was sent");
+												guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
+											})
 										}
 										
 										if(spooferFlag==="instaban"){
@@ -1625,12 +1644,15 @@ moderatorBot.on('message', message => {
 											channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> has been **BANNED**! ⛔'}});
 											guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
 												try {
-													guild.members.get(catchID).ban({days: 1, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s)"})
+													guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s)"})
 												}
 												catch(err){
-													console.info(timeStamp()+" [ERROR]\n"+err.message);
+													console.info(timeStamp()+" catch(err) [ERROR]\n"+err.message);
 												}
-											}).catch(err=>{console.info(timeStamp()+" [ERROR]\n"+err.message)})
+											}).catch(err=>{
+												console.info(timeStamp()+" [ERROR]\n"+err.message+" | Member blocked me, so no message was sent");
+												guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule #1 violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
+											})
 										}
 									}
 								}
