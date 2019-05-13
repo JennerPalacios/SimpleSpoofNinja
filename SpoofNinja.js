@@ -28,7 +28,7 @@ const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 
 //		DEFINE GLOBAL AND COMMON VARIABLES
 //
 var config=require('./files/config.json');		// CONFIG FILE
-	config.botVersion="3.6";					// LOCAL VERSION
+	config.botVersion="3.7";					// LOCAL VERSION
 
 
 var minsUntilPunished=1;						// <---- SPOOF NINJA TIMER, HOW LONG UNTIL KICK/BAN IF ENABLED.
