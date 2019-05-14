@@ -13,6 +13,9 @@ Alerts are triggered (with image) when
 -I am **NO** a ["javascript","discord.js","node.js"] expert so I bet there are people out there that can make something better.<br />
 See it in action at my Discord server: https://discord.gg/fJvqFGP 
 
+## MORE EXAMPLES IN THE WIKI TAB
+Or simply click here: https://github.com/JennerPalacios/SimpleSpoofNinja/wiki 
+
 <hr />
 
 # REQUIREMENTS:
