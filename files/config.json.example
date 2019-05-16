@@ -13,7 +13,7 @@
         "serverOnly": "everything that happens in my server",
         "all": "every event, even from other servers"
     },
-    "consoleLog": "serverOnly",
+    "consoleLog": "all",
 	
 	
     "_comments_for_botSupport": "share your webhook in order for me to send IMPORTANT MESSAGES such as an UPDATE, or ability to reply back when sending a !bug or !feedback",
