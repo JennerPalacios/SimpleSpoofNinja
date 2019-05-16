@@ -21,7 +21,7 @@ Or simply click here: https://github.com/JennerPalacios/SimpleSpoofNinja/wiki
 # REQUIREMENTS:
 1) Node.js (https://nodejs.org/en/download/ `ver 8.4+`)
 
-2) Discord.js (`npm install discord.js` « should be `ver 12.2+`) 
+2) Discord.js (`npm install discord.js` « should be `ver 11.2+`) 
 
 3) File-System (`npm install fs`)  
 
