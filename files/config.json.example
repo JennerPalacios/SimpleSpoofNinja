@@ -45,6 +45,7 @@
         "adminRoleName": "Admin",
         "modRoleName": "Moderator",
         "onSpooferFound": "instaban",
+        "minsUntilPunished": "1",
         "whiteListedRoles": [
             "Admin",
             "Moderator",
@@ -66,6 +67,9 @@
         "goodColor": "#00FF00",
         "warningColor": "#FF9900",
         "dangerColor": "#FF0000",
+        "warningImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleDiscordBot/master/img/User-Warned.png",
+        "kickImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleDiscordBot/master/img/Poke-banned.png",
+        "banImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleDiscordBot/master/img/Poke-kicked.png",
         "snipeImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/User-Spoof.png",
         "honorImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/User-Badge.png",
         "startImg": "https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Search-Start.png",
