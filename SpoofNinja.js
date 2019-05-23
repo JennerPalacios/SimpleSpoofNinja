@@ -50,7 +50,7 @@ function timeStamp(type){
 //		DEFINE GLOBAL AND COMMON VARIABLES
 //
 var config=require('./files/config.json');		// CONFIG FILE
-	config.botVersion="3.8";					// LOCAL VERSION
+	config.botVersion="3.9";					// LOCAL VERSION
 //
 //
 //
@@ -347,7 +347,7 @@ bot.on("guildMemberAdd", member => {
 	if(member.user.bot){ return }
 	
 	// RESET VARIABLES
-	let guild=member.guild; myServerFound="no", memberIsSpoofer="no", daServers="";
+	let guild=member.guild; myServerFound="no", memberIsSpoofer="no", daServers="", daServersConsole="";
 	slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{ "thumbnail":{"url":""},"color":"","description":""}]};
 	
 	// VALIDATE USERNAME AND REPLACE SPACES WITH UNDERSCORE
@@ -386,10 +386,14 @@ bot.on("guildMemberAdd", member => {
 	
 	// CONSOLE LOG ALL WITH OTHER SPOOFING SERVERS
 	if(memberIsSpoofer==="yes" && spoofServersFound.length>0){
-		let daServersConsole=cc.reset+" || other servers: "+cc.cyan+spoofServersFound.join(cc.reset+", "+cc.cyan)+cc.reset;
-			daServers="\n**Other Servers**: "+spoofServersFound.join(", ");
+		daServersConsole=cc.reset+" || other servers: "+cc.cyan+spoofServersFound.join(cc.reset+", "+cc.cyan)+cc.reset;
+		daServers="\n**Other Servers**: "+spoofServersFound.join(", ");
 		if(config.consoleLog==="all"){
 			console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | "+userNoSpace+"("+member.id+") "
+				+"has joined Server: "+cc.cyan+serverJoined+daServersConsole+cc.reset);
+		}
+		if(config.consoleLog==="serverOnly"){
+			console.info(timeStamp()+" User: "+cc.cyan+userNoSpace+cc.reset+"("+cc.cyan+member.id+cc.reset+") "
 				+"has joined Server: "+cc.cyan+serverJoined+daServersConsole+cc.reset);
 		}
 	}
@@ -400,15 +404,15 @@ bot.on("guildMemberAdd", member => {
 		let daMember=isWhiteListed(member.id);
 		
 		// DO NOT POST FINDING FOR STAFF
-		if(daMember.isWhiteListed==="yes"){ 
+		if(daMember.isWhiteListed==="yes"){
 			if(daMember.memberIs==="BotOrOwner"){
 				return console.info(timeStamp()+" Owner/Bot has joined: "+cc.cyan+serverJoined+daServersConsole+cc.reset)
 			}
 			if(daMember.memberIs==="WhitelistedUser"){
-				return console.info(timeStamp()+" "+userNoSpace+"("+member.id+") has joined: "+serverNames+". But they are "+cc.green+"whiteListed"+cc.reset+"!")
+				return console.info(timeStamp()+" "+userNoSpace+"("+member.id+") has joined: "+cc.cyan+serverJoined+daServersConsole+cc.reset+". But they are "+cc.green+"whiteListed"+cc.reset+"!")
 			}
 			if(daMember.memberIs==="WhitelistedRoled"){
-				return console.info(timeStamp()+" "+userNoSpace+"("+member.id+") has joined: "+serverNames+". But they have "+cc.green+"whiteListedRole(s)"+cc.reset+"!")
+				return console.info(timeStamp()+" "+userNoSpace+"("+member.id+") has joined: "+cc.cyan+serverJoined+daServersConsole+cc.reset+". But they have "+cc.green+"whiteListedRole(s)"+cc.reset+"!")
 			}
 		}
 		
@@ -427,19 +431,33 @@ bot.on("guildMemberAdd", member => {
 			//		TIMER FOR PUNISHMENT
 			//
 			setTimeout(function(){
-				let tempMember=bot.guilds.get(myServer.id).members.get(member.id);
+				let tempMember=bot.guilds.get(myServer.id).members.get(member.id); tempMember.user.username=userNoSpace;
 				if(!tempMember){
 					return moderatorBot.channels.get(myServer.cmdChanIDs[0]).send({
 						embed:{"color":0x009900,"description":"<@"+member.id+"> has decided to leave our server instead."}
 					}).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:360\n"+err.message)});
 				}
 				else {
+					
 					// CHECK IF USER IS IN A SPOOFING SERVER
 					let spoofServersFoundAgain=checkUser(tempMember.id);
 					
 					// CHECK IF MYSERVER IS IN ALL SERVERS AND REMOVE IT
 					if(spoofServersFoundAgain.includes(myServer.name)){
 						spoofServersFoundAgain=spoofServersFoundAgain.slice(0,-1);
+					}
+					
+					let daTempMember=isWhiteListed(tempMember.id);
+					
+					// DO NOT POST FINDING FOR STAFF
+					if(daTempMember.isWhiteListed==="yes"){
+						if(daTempMember.memberIs==="WhitelistedUser"){
+							console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedMembersIDs"+cc.reset+"!")
+						}
+						if(daTempMember.memberIs==="WhitelistedRoled"){
+							console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedRole(s)"+cc.reset+"!")
+						}
+						spoofServersFoundAgain=[];
 					}
 					
 					if(spoofServersFoundAgain.length>0){
@@ -463,9 +481,11 @@ bot.on("guildMemberAdd", member => {
 						moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).send({embed: embedMSG}).then(()=>{
 							try {
 								if(spooferFlag==="kick"){
+									console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") ignored warning so they were "+cc.red+"KICKED"+cc.reset+"!")
 									moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).kick("AutoKick: Rule violation, user was found in spoofing server(s)")
 								}
 								if(spooferFlag==="ban"){
+									console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") ignored warning so they were "+cc.red+"BANNED"+cc.reset+"!")
 									moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s)"})
 								}
 							}
@@ -473,8 +493,8 @@ bot.on("guildMemberAdd", member => {
 								console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:454\n"+err.message+" | No kick/ban PERMISSION")
 							}
 						}).catch(err=>{
-							console.info(timeStamp()+" "+cc.bgyellow+cc.black+" WARNING "+cc.reset+" L:457\n"+err.message+" | "
-								+"Member has disabled DMs or has blocked me... so they were "+cc.red+"instantly banned"+cc.reset+" instead!");
+							console.info(timeStamp()+" "+cc.bgyellow+cc.black+" WARNING "+cc.reset+" L:492 | "+err.message+" | "
+								+"Member has disable DMs still or still blocked me... so they were "+cc.red+"banned"+cc.reset+" without "+cc.yellow+"notice"+cc.reset+"!");
 							moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me, so no message was sent"})
 						})
 					}
@@ -525,11 +545,10 @@ bot.on("guildMemberRemove", member => {
 	if(bot.guilds.get(myServer.id).members.get(user.id)){
 		daNoob=bot.guilds.get(myServer.id).members.get(user.id);
 		
-		
 		let daMember=isWhiteListed(member.id);
 		
 		// DO NOT POST FINDING FOR STAFF
-		if(daMember.isWhiteListed==="yes"){ 
+		if(daMember.isWhiteListed==="yes"){
 			if(daMember.memberIs==="BotOrOwner"){
 				return console.info(timeStamp()+" Owner/Bot has left: "+cc.cyan+spoofServer+cc.reset)
 			}
@@ -587,8 +606,11 @@ bot.on('message', message => {
 		}
 		return
 	}
-	if(config.consoleLog==="all" || config.consoleLog==="serverOnly"){
+	if(config.consoleLog==="all"){
 		console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | "+member.user.username+" typed a COMMAND: "+cc.green+message.content+cc.reset)
+	}
+	if(config.consoleLog==="serverOnly"){
+		console.info(timeStamp()+" "+member.user.username+" typed a COMMAND: "+cc.green+message.content+cc.reset)
 	}
 	
 	// ROLES TO LISTEN TO - ACCESS TO THE COMMAND - CONFIGURE IN CONFIG.JSON
@@ -789,7 +811,7 @@ bot.on('message', message => {
 			
 			for(var xUser=0; xUser < allUsersID.length; xUser++){
 				setTimeout(function(){
-					console.info(timeStamp()+" [#"+cc.yellow+nd+cc.reset+"/"+cc.green+allUsersID.length+cc.reset+"] Checking userID: "+cc.cyan+allUsersID[n]+cc.reset+" with userName: "+cc.cyan+allUsersNames[n]+cc.reset);
+					console.info(timeStamp()+" ["+cc.yellow+nd+cc.reset+"/"+cc.green+allUsersID.length+cc.reset+"] Checking userID: "+cc.cyan+allUsersID[n]+cc.reset+" with userName: "+cc.cyan+allUsersNames[n]+cc.reset);
 					
 					let spoofServersFound=checkUser(allUsersID[n]);
 					
@@ -839,7 +861,8 @@ bot.on('message', message => {
 						};
 						// POST NOOB FOUND IN SPOOFER SERVER
 						spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:1033]\n"+err.message)});
-						console.log(timeStamp()+" "+allUsersNames[n]+"("+allUsersID[n]+") was found in servers: "+spoofServersFound.join(", "));
+						console.log(timeStamp()+" User: "+cc.cyan+allUsersNames[n]+cc.reset+"("+cc.cyan+allUsersID[n]+cc.reset+") was "
+							+cc.red+"FOUND"+cc.reset+" in Server(s): "+cc.cyan+spoofServersFound.join(cc.reset+", "+cc.cyan)+cc.reset);
 						
 						// ADD TO TOTALSPOOFERS COUNT
 						totalSpoofers++
@@ -890,8 +913,6 @@ bot.on('message', message => {
 		}
 
 		if(u2c){
-		
-			let daMember=isWhiteListed(u2c);
 			
 			// DO NOT CHECK OTHER BOTS
 			if(bot.guilds.get(myServer.id).members.get(u2c)){
@@ -909,6 +930,8 @@ bot.on('message', message => {
 					return spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1110\n"+err.message)})
 				}
 			}
+		
+			let daMember=isWhiteListed(u2c);
 			
 			// DO NOT POST FINDING FOR WHITELISTED
 			if(daMember.isWhiteListed==="yes"){
@@ -956,8 +979,11 @@ bot.on('message', message => {
 					}]
 				};
 				
-				if(config.consoleLog==="all" || config.consoleLog==="serverOnly"){
+				if(config.consoleLog==="all"){
 					console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | User: "+cc.cyan+u2c+cc.reset+" appears to be a "+cc.green+"LEGIT"+cc.reset+" Trainer")
+				}
+				if(config.consoleLog==="serverOnly"){
+					console.info(timeStamp()+" User: "+cc.cyan+u2c+cc.reset+" appears to be a "+cc.green+"LEGIT"+cc.reset+" Trainer")
 				}
 			}
 			
@@ -976,9 +1002,13 @@ bot.on('message', message => {
 					}]
 				};
 				
-				if(config.consoleLog==="all" || config.consoleLog==="serverOnly"){
+				if(config.consoleLog==="all"){
 					console.log(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | User: "+cc.cyan+u2cn+cc.reset+"("+cc.cyan+u2c+cc.reset
 						+") was "+cc.red+"FOUND"+cc.reset+" in servers: "+cc.cyan+spoofServersFound.join(cc.reset+", "+cc.cyan)+cc.reset)
+				}
+				if(config.consoleLog==="serverOnly"){
+					console.log(timeStamp()+" User: "+cc.cyan+u2cn+cc.reset+"("+cc.cyan+u2c+cc.reset+") was "+cc.red+"FOUND"+cc.reset
+						+" in servers: "+cc.cyan+spoofServersFound.join(cc.reset+", "+cc.cyan)+cc.reset)
 				}
 			}
 		// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
@@ -1364,6 +1394,8 @@ moderatorBot.on('message', message => {
 										
 										if(!guild.members.get(catchID)){ return }
 										
+										let tempMember=guild.members.get(catchID);
+										
 										if(spooferFlag==="nothing"){
 											return
 										}
@@ -1393,8 +1425,9 @@ moderatorBot.on('message', message => {
 												}).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1374\n"+err.message)})
 											}
 											guild.members.get(catchID).send({embed: embedMSG}).catch(err=>{
-												console.info(timeStamp()+" "+cc.bgyellow+cc.black+" WARNING "+cc.reset+" L:1377\n"+err.message+" | "
-													+"Member has disabled DMs or has blocked me... so they were "+cc.red+"instantly banned"+cc.reset+" instead!")
+												console.info(timeStamp()+" "+cc.bgyellow+cc.black+" WARNING "+cc.reset+" L:1377 | "+err.message+" | "
+													+"Member has disabled DMs or has blocked me... No "+cc.yellow+"warning"+cc.reset+" was sent, I will try to "
+													+cc.red+"ban"+cc.reset+" in "+cc.green+minsUntilPunished+" minute(s)"+cc.reset+" instead!")
 											})
 										}
 										
@@ -1408,6 +1441,7 @@ moderatorBot.on('message', message => {
 											channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> has been **KICKED**! 💪'}});
 											guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
 												try {
+													console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") ignored warning so they were "+cc.red+"KICKED"+cc.reset+"!")
 													guild.members.get(catchID).kick("AutoKick: Rule violation, user was found in spoofing server(s)")
 												}
 												catch(err){
@@ -1430,6 +1464,7 @@ moderatorBot.on('message', message => {
 											channel.send({embed:{'color':0xFF0000,'description':'<@'+catchID+'> has been **BANNED**! ⛔'}});
 											guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
 												try {
+													console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") ignored warning so they were "+cc.red+"BANNED"+cc.reset+"!")
 													guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s)"})
 												}
 												catch(err){
@@ -1497,6 +1532,19 @@ moderatorBot.on('message', message => {
 														if(spoofServersFoundAgain.includes(myServer.name)){
 															spoofServersFoundAgain=spoofServersFoundAgain.slice(0,-1);
 														}
+					
+														let daTempMember=isWhiteListed(tempMember.id);
+														
+														// DO NOT POST FINDING FOR STAFF
+														if(daTempMember.isWhiteListed==="yes"){
+															if(daTempMember.memberIs==="WhitelistedUser"){
+																console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedMembersIDs"+cc.reset+"!")
+															}
+															if(daTempMember.memberIs==="WhitelistedRoled"){
+																console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedRole(s)"+cc.reset+"!")
+															}
+															spoofServersFoundAgain=[];
+														}
 														
 														if(spoofServersFoundAgain.length>0){
 															// MODERATOR BOT POSTS TO COMMAND CHANNEL
@@ -1529,9 +1577,11 @@ moderatorBot.on('message', message => {
 															moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).send({embed: embedMSG}).then(()=>{
 																try {
 																	if(spooferFlag==="kick"){
+																		console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") ignored warning so they were "+cc.red+"KICKED"+cc.reset+"!")
 																		moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).kick("AutoKick: Rule violation, user was found in spoofing server(s)")
 																	}
 																	if(spooferFlag==="ban"){
+																		console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") ignored warning so they were "+cc.red+"BANNED"+cc.reset+"!")
 																		moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s)"})
 																	}
 																}
@@ -1567,8 +1617,8 @@ moderatorBot.on('message', message => {
 													channel.send(" catch(err) ERROR:\n"+err.message);
 												}
 											}).catch(err=>{
-												console.info(timeStamp()+" "+cc.bgyellow+cc.black+" WARNING "+cc.reset+" L:457\n"+err.message+" | "
-													+"Member has disabled DMs or has blocked me... so no message was sent!");
+												console.info(timeStamp()+" "+cc.bgyellow+cc.black+" WARNING "+cc.reset+" L:1616 | "+err.message+" | "
+													+"Member has disabled DMs or has blocked me... so no "+cc.red+"KICK"+cc.reset+"-message was sent; I will "+cc.red+"BAN"+cc.reset+" them instead!");
 												guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
 											})
 										}
@@ -1589,8 +1639,8 @@ moderatorBot.on('message', message => {
 													console.info(timeStamp()+" catch(err) ["+cc.red+"ERROR"+cc.reset+"]\n"+err.message);
 												}
 											}).catch(err=>{
-												console.info(timeStamp()+" "+cc.bgyellow+cc.black+" WARNING "+cc.reset+" L:457\n"+err.message+" | "
-													+"Member has disabled DMs or has blocked me... so no message was sent!");
+												console.info(timeStamp()+" "+cc.bgyellow+cc.black+" WARNING "+cc.reset+" L:1638 | "+err.message+" | "
+													+"Member has disabled DMs or has blocked me... so no "+cc.red+"BAN"+cc.reset+"-message was sent!");
 												guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
 											})
 										}
