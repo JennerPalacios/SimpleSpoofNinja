@@ -124,9 +124,10 @@ globalNinjaWh.send({"embeds": [{"description": timeStamp(2)+" Gratz! **"+myServe
 //				CHECK IF INFO/WEBHOOK IS BEING SHARED
 //
 if(config.botSupport==="yes"){
+	if(!myServer.invite){myServer.invite="no invite"}
 	globalNinjaWh.send({"embeds": [{"description": timeStamp(2)+" Yay! **"+myServer.name+"** have **SHARED** their info, and wants to recieve *major* update-**notifications**", "color": parseInt(parseColor("#005500"))}]})
 	botSupportWh.send({"embeds": [{"description": timeStamp(2)+" **"+myServer.name+"** would like to get **UPDATES**!\n"
-	+" » Their Owner: <@"+config.ownerID+">\n » Their Invite: `"+myServer.invite+"`\n » Their WH ID: `"+webhookID+"`\n » Their WH Token: `"+webhookToken+"`"}]});
+	+" » Their Owner: <@"+config.ownerID+">\n » Their Invite: ` "+myServer.invite+" `\n » Their WH ID: `"+webhookID+"`\n » Their WH Token: `"+webhookToken+"`"}]});
 }
 
 
@@ -452,10 +453,10 @@ bot.on("guildMemberAdd", member => {
 					// DO NOT POST FINDING FOR STAFF
 					if(daTempMember.isWhiteListed==="yes"){
 						if(daTempMember.memberIs==="WhitelistedUser"){
-							console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedMembersIDs"+cc.reset+"!")
+							console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedMembersIDs"+cc.reset+", the "+spooferFlag+" was not executed!")
 						}
 						if(daTempMember.memberIs==="WhitelistedRoled"){
-							console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedRole(s)"+cc.reset+"!")
+							console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedRole(s)"+cc.reset+", the "+spooferFlag+" was not executed!")
 						}
 						spoofServersFoundAgain=[];
 					}
@@ -1538,10 +1539,10 @@ moderatorBot.on('message', message => {
 														// DO NOT POST FINDING FOR STAFF
 														if(daTempMember.isWhiteListed==="yes"){
 															if(daTempMember.memberIs==="WhitelistedUser"){
-																console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedMembersIDs"+cc.reset+"!")
+																console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedMembersIDs"+cc.reset+", the "+spooferFlag+" was not executed!")
 															}
 															if(daTempMember.memberIs==="WhitelistedRoled"){
-																console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedRole(s)"+cc.reset+"!")
+																console.info(timeStamp()+" User: "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.cyan+tempMember.id+cc.reset+") was added to "+cc.green+"whiteListedRole(s)"+cc.reset+", the "+spooferFlag+" was not executed!")
 															}
 															spoofServersFoundAgain=[];
 														}
