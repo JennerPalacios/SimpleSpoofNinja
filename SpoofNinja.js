@@ -16,8 +16,8 @@ const moderatorBot=new Discord.Client();
 //		PICK ONE BELOW, ONLY ONE CAN BE ENABLED, THE OTHER ONE MUST BE COMMENTED-OUT BY ADDING "//" AT THE BEGINNING
 //		"SLOW LOAD" IS RECOMMENDED WHEN LAUNCHING THE BOT FOR THE FIRST TIME, IT GRABS ALL USERS FROM ALL SERVERS
 //
-const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
-//const bot=new Discord.Client(); //							FAST LOAD - GET ACTIVE USERS ONLY
+const bot=new Discord.Client({fetchAllMembers: true}); //			SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
+//const bot=new Discord.Client(); //						FAST LOAD - GET ACTIVE USERS ONLY
 //
 //
 //
@@ -416,9 +416,9 @@ bot.on("guildMemberAdd", member => {
 		// JOINED ONE SERVER WAS IN TWO, REMOVE JOINED 		XEN|XEN,100 > 100 (SHIFT)		XEN|100,XEN > XEN|100 (POP)			XEN|100,XEN,BOT > XEN|100,BOT
 		if(spoofServersFound.length>1 && spoofServersFound.includes(serverJoined)){
 			let n=spoofServersFound.indexOf(serverJoined);
-			if(n===0){spoofServersFound.shift();console.info("shift() happened: "+spoofServersFound)}
-			else if(n===spoofServersFound.length-1){spoofServersFound.pop();console.info("pop() happened: "+spoofServersFound)}
-			else{spoofServersFound.splice(n,1);console.info("splice("+n+") happened: "+spoofServersFound)}
+			if(n===0){spoofServersFound.shift()}
+			else if(n===spoofServersFound.length-1){spoofServersFound.pop()}
+			else{spoofServersFound.splice(n,1)}
 		}
 	}	
 	
