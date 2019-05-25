@@ -16,8 +16,8 @@ const moderatorBot=new Discord.Client();
 //		PICK ONE BELOW, ONLY ONE CAN BE ENABLED, THE OTHER ONE MUST BE COMMENTED-OUT BY ADDING "//" AT THE BEGINNING
 //		"SLOW LOAD" IS RECOMMENDED WHEN LAUNCHING THE BOT FOR THE FIRST TIME, IT GRABS ALL USERS FROM ALL SERVERS
 //
-const bot=new Discord.Client({fetchAllMembers: true}); //			SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
-//const bot=new Discord.Client(); //						FAST LOAD - GET ACTIVE USERS ONLY
+const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
+//const bot=new Discord.Client(); //							FAST LOAD - GET ACTIVE USERS ONLY
 //
 //
 //
@@ -125,7 +125,7 @@ globalNinjaWh.send({"embeds": [{"description": timeStamp(2)+" Gratz! **"+myServe
 //
 if(config.botSupport==="yes"){
 	if(!myServer.invite){myServer.invite="no invite"}
-	globalNinjaWh.send({"embeds": [{"description": timeStamp(2)+" Yay! **"+myServer.name+"** have **SHARED** their info, and wants to recieve *major* update-**notifications**", "color": parseInt(parseColor("#005500"))}]})
+	globalNinjaWh.send({"embeds": [{"description": timeStamp(2)+" Yay! **"+myServer.name+"** have **SHARED** their info, and wants to recieve *major* update-**notifications**", "color": parseColor("#005500")}]})
 	botSupportWh.send({"embeds": [{"description": timeStamp(2)+" **"+myServer.name+"** would like to get **UPDATES**!\n"
 	+" » Their Owner: <@"+config.ownerID+">\n » Their Invite: ` "+myServer.invite+" `\n » Their WH ID: `"+webhookID+"`\n » Their WH Token: `"+webhookToken+"`"}]});
 }
@@ -136,7 +136,7 @@ if(config.botSupport==="yes"){
 //		PARSE COLORS FUNCTION
 //
 function parseColor(color){
-	let tempColor=color; tempColor=tempColor.slice(1); tempColor="0x"+tempColor; return tempColor;
+	let tempColor=color; tempColor=tempColor.slice(1); tempColor="0x"+tempColor; return parseInt(tempColor);
 }
 
 
@@ -194,7 +194,7 @@ bot.on('ready', () => {
 	console.info(timeStamp()+" -- DISCORD SpoofNinja, DummyAcc: "+cc.yellow+bot.user.username+cc.reset+", IS "+cc.green+"READY"+cc.reset+" --");
 	console.info(timeStamp()+" I have loaded "+cc.cyan+spoofServers.length+cc.reset+" Spoofing Servers");
 	
-	slackMSG.embeds[0].color=parseInt(parseColor(embedSettings.goodColor));
+	slackMSG.embeds[0].color=parseColor(embedSettings.goodColor);
 	slackMSG.embeds[0].description="I am ready to **scan** __this__ server against **"+spoofServers.length+"**-other **spoOfing** servers!"
 	
 	spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:128\n"+err.message)});
@@ -460,7 +460,7 @@ bot.on("guildMemberAdd", member => {
 		}
 		
 		// MODIFY EMBED
-		slackMSG.embeds[0].color=parseInt(parseColor(embedSettings.warningColor));
+		slackMSG.embeds[0].color=parseColor(embedSettings.warningColor);
 		slackMSG.embeds[0].thumbnail.url=embedSettings.snipeImg;
 		slackMSG.embeds[0].description="⚠ __**WARNING**__ ⚠\n**"
 			+userNoSpace+"** has joined: **"+serverJoined+"**\n**Tag/ID**: "+user+daServers+"\n**On**: "+timeStamp(1);
@@ -603,7 +603,7 @@ bot.on("guildMemberRemove", member => {
 			}
 		}
 		
-		slackMSG.embeds[0].color=parseInt(parseColor(embedSettings.goodColor));
+		slackMSG.embeds[0].color=parseColor(embedSettings.goodColor);
 		slackMSG.embeds[0].thumbnail.url=embedSettings.checkedImg;
 		slackMSG.embeds[0].description="✅ __**USER LEFT SERVER**__ ✅\n**"
 			+userNoSpace+"** has left: **"+spoofServer+"**\n**UserID**: `"+member.id+"`\n**On**: "+timeStamp(1)
@@ -630,7 +630,7 @@ bot.on('message', message => {
 	if(channel.id!==myServer.cmdChanIDs[0]){ return }
 	
 	let command=msg.toLowerCase(), args=msg.toLowerCase().split(/ +/).slice(1); command=command.split(/ +/)[0]; command=command.slice(config.cmdPrefix.length);
-		
+	
 	// IGNORE REGULAR CHAT
 	if(!message.content.startsWith(config.cmdPrefix)){
 		if(member){
@@ -680,10 +680,9 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 
 	// COMMAND: !HELP
 	if(command=="help" || command=="commands"){
+		slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{"color":parseColor(embedSettings.goodColor),"title":"","description":""}]};
+		slackMSG.embeds[0].title="ℹ Available Syntax and Arguments ℹ";
 		if(args.length>0){
-			slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{"color":parseInt(parseColor(embedSettings.goodColor)),"title":"","description":""}]};
-			slackMSG.embeds[0].title="ℹ Available Syntax and Arguments ℹ";
-
 			if(args[0]==="check"){
 				slackMSG.embeds[0].description='`'+config.cmdPrefix+'check @mention/user_id` » for checking user, ie:\n'
 									+' `'+config.cmdPrefix+'check @JennerPalacios` or\n'
@@ -764,7 +763,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 
 	// COMMAND: !BUG ||FEEDBACK
 	if(command==="bug" || command==="feedback"){
-		slackMSG={"username":"[Dev]JennerPalacios","avatarURL":spoofNinja.avatar,"embeds":[{"color":parseInt(parseColor(embedSettings.goodColor)),"description":""}]};
+		slackMSG={"username":"[Dev]JennerPalacios","avatarURL":spoofNinja.avatar,"embeds":[{"color":parseColor(embedSettings.goodColor),"description":""}]};
 			if(command==="bug"){
 				slackMSG.embeds[0].description="Your `BugReport` has been recorded! Stay tuned <(^.^<)";
 				botSupportWh.send("⚠ [BUGREPORT] on "+timeStamp(1)+"\n**By: **"+member.user.username+"[`"+member.user.id+"`]\n**From: **"+myServer.name+"[`"+myServer.invite+"`]\n```\n"+message.content.slice(4)+"\n```");
@@ -797,8 +796,22 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 
 	// COMMAND: !CHECK
 	if(command=="check"){
+		if(args.length<1){
+			slackMSG={
+				'username': spoofNinja.name,
+				'avatarURL': spoofNinja.avatar,
+				'embeds': [{
+					'color': parseColor(embedSettings.goodColor),
+					'description': 'Please `@mention` a person you want me to `'+config.cmdPrefix+'check`, you can use `@user_tag` or `user_id_number`'
+				}]
+			};
+			
+			// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
+			return spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1210\n"+err.message)})
+		}
+		
 		let u2c="", u2cn="";
-		slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{"color":parseInt(parseColor(embedSettings.goodColor)),"description":""}]};		
+		slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{"color":parseColor(embedSettings.goodColor),"description":""}]};		
 			
 		// COMMAND » !CHECK VERSION
 		if(args.length>0 && args[0].startsWith("ver")){
@@ -821,13 +834,13 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 		}
 		
 		// COMMAND » !CHECK WLR | WLM » EXIT SCRIPT, MODERATOR-BOT WILL REPLY
-		if(args.length>0 && args[0].startsWith("wlr") || args[0].startsWith("wlm")){
+		if(args[0].startsWith("wlr") || args[0].startsWith("wlm")){
 			return
 		}
 		
 		
 		// COMMAND » !CHECK SERVER
-		if(args.length>0 && args[0]==="server"){
+		if(args[0]==="server"){
 			
 			slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{ "thumbnail":{"url":""},"color":"","description":""}]};
 			
@@ -845,7 +858,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 			let milSecs=1000, daServers="", totalSpoofers=0, n=0, nd=1;
 			
 			// SEND NOTIFICATION
-			slackMSG.embeds[0].color=parseInt(parseColor(embedSettings.goodColor));
+			slackMSG.embeds[0].color=parseColor(embedSettings.goodColor);
 			slackMSG.embeds[0].thumbnail.url=embedSettings.startImg;
 			slackMSG.embeds[0].description="**(>^.^)> NOTICE <(^.^<)**\nI am bout to check **"+allUsersID.length+"** users...\n"
 				+"From server: **"+myServer.name+"**\n**On**: "+timeStamp(1)+"\n... please wait ...";
@@ -896,7 +909,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 							'avatarURL': spoofNinja.avatar,
 							'embeds': [{
 								'thumbnail': {'url': embedSettings.snipeImg },
-								'color': parseInt(parseColor(embedSettings.warningColor)),
+								'color': parseColor(embedSettings.warningColor),
 								'description': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[n]+'\n**Tag/ID**: <@'+allUsersID[n]+'> \nWas **found** in server(s): \n'
 									+spoofServersFound.join(", ")+'\n**On**: '+timeStamp(1),
 								'footer': {
@@ -924,7 +937,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 							'avatarURL': spoofNinja.avatar,
 							'embeds': [{
 								'thumbnail': {'url': embedSettings.endImg },
-								'color': parseInt(parseColor(embedSettings.goodColor)),
+								'color': parseColor(embedSettings.goodColor),
 								'description': '**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **'+totalSpoofers
 									+'** potential spoOfers!\n.\nOut of **'+allUsersID.length+'** registered members\n**On**: '+timeStamp(1)
 							}]
@@ -944,6 +957,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 				// ADD 1 SECOND TO NEXT USER CHECK FROM SERVER
 				milSecs=milSecs+1500;
 			}
+			return
 		}
 
 		// CHECK IF SOMEONE WAS MENTIONED AND THAT USER EXIST WITHIN MY OWN SERVER
@@ -968,7 +982,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 						'avatarURL': spoofNinja.avatar,
 						'embeds': [{
 							'thumbnail': {'url': embedSettings.honorImg },
-							'color': parseInt(parseColor(embedSettings.goodColor)),
+							'color': parseColor(embedSettings.goodColor),
 							'description': '✅ "**'+u2cn+'**" appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍'
 						}]
 					};
@@ -994,7 +1008,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					'avatarURL': spoofNinja.avatar,
 					'embeds': [{
 						'thumbnail': {'url': embedSettings.honorImg },
-						'color': parseInt(parseColor(embedSettings.goodColor)),
+						'color': parseColor(embedSettings.goodColor),
 						'description': '✅ "**'+u2cn+'**" appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍'
 					}]
 				}
@@ -1019,7 +1033,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					'avatarURL': spoofNinja.avatar,
 					'embeds': [{
 						'thumbnail': {'url': embedSettings.honorImg },
-						'color': parseInt(parseColor(embedSettings.goodColor)),
+						'color': parseColor(embedSettings.goodColor),
 						'description': '✅ "**'+u2cn+'**" appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍'
 					}]
 				};
@@ -1042,7 +1056,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					'avatarURL': spoofNinja.avatar,
 					'embeds': [{
 						'thumbnail': {'url': embedSettings.snipeImg },
-						'color': parseInt(parseColor(embedSettings.warningColor)),
+						'color': parseColor(embedSettings.warningColor),
 						'description': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\n**Tag/ID**: <@'+u2c+'>\nWas **found** in __servers__:\n'+spoofServersFound.join(", ")+'\n**On**: '+timeStamp(1)
 					}]
 				};
@@ -1059,21 +1073,18 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 		// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
 		return spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1195\n"+err.message)})
 		}
-		// MENTIONED IS INCORRECT FORMAT - NO A VALID @MENTION OR USER_ID
 		else{
-			if(args[0]!=="server"){
-				slackMSG={
-					'username': spoofNinja.name,
-					'avatarURL': spoofNinja.avatar,
-					'embeds': [{
-						'color': parseInt(parseColor(embedSettings.goodColor)),
-						'description': 'Please `@mention` a person you want me to `'+config.cmdPrefix+'check`, you can use `@user_tag` or `user_id_number`'
-					}]
-				};
-				
-				// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-				return spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1210\n"+err.message)})
-			}
+			slackMSG={
+				'username': spoofNinja.name,
+				'avatarURL': spoofNinja.avatar,
+				'embeds': [{
+					'color': parseColor(embedSettings.goodColor),
+					'description': 'Please `@mention` a person you want me to `'+config.cmdPrefix+'check`, you can use `@user_tag` or `user_id_number`'
+				}]
+			};
+			
+			// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
+			return spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1210\n"+err.message)})
 		}
 	}
 //
@@ -1092,7 +1103,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 			'username': spoofNinja.name,
 			'avatarURL': spoofNinja.avatar,
 			'embeds': [{
-				'color': parseInt(parseColor(embedSettings.goodColor)),
+				'color': parseColor(embedSettings.goodColor),
 				'description': '♻ Restarting **spoOfNinja**\n » please wait `3` to `5` seconds...'
 				}]
 			};
@@ -1101,7 +1112,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 });
 
 // BOT LOGIN TO DISCORD
-bot.login(config.spoofNinja.token);
+bot.login(spoofNinja.token);
 
 // BOT DISCONNECTED
 bot.on('disconnect', function (){
@@ -1246,12 +1257,12 @@ moderatorBot.on('message', message => {
 						if(args.length>0 && args[0].startsWith("wlr")){
 							if(whiteListedRoles.length<1){
 								embedMSG={
-									'color': parseInt(parseColor(embedSettings.warningColor)),
+									'color': parseColor(embedSettings.warningColor),
 									'description': '⚠ There aren\'t any `whiteListedRoles`'
 								}
 							}
 							embedMSG={
-								'color': parseInt(parseColor(embedSettings.goodColor)),
+								'color': parseColor(embedSettings.goodColor),
 								'description': '✅ I have **'+whiteListedRoles.length+'** `whiteListedRoles`:\n'+whiteListedRoles.join(", ")
 							};
 							return channel.send({embed: embedMSG}).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:870\n"+err.message)});
@@ -1261,19 +1272,19 @@ moderatorBot.on('message', message => {
 						if(args.length>0 && args[0].startsWith("wlm")){
 							if(whiteListedMembersIDs.length<1){
 								embedMSG={
-									'color': parseInt(parseColor(embedSettings.warningColor)),
+									'color': parseColor(embedSettings.warningColor),
 									'description': '⚠ There aren\'t any `whiteListedMembersIDs`'
 								}
 							}
 							if(whiteListedMembersIDs.length>0 && whiteListedMembersIDs.length<89){
 								embedMSG={
-									'color': parseInt(parseColor(embedSettings.goodColor)),
+									'color': parseColor(embedSettings.goodColor),
 									'description': '✅ I have **'+whiteListedMembersIDs.length+'** `whiteListedMembersIDs`:\n<@'+whiteListedMembersIDs.join(">, <@")+'>'
 								}
 							}
 							else{
 								embedMSG={
-									'color': parseInt(parseColor(embedSettings.warningColor)),
+									'color': parseColor(embedSettings.warningColor),
 									'description': '⚠ There are too many members in `whiteListedMembersIDs`, max **88**, currently: `'+whiteListedMembersIDs.length+'`. '
 										+'You should consider creating a `whiteListedRole` and assigning users to it.'
 								}				
@@ -1292,7 +1303,7 @@ moderatorBot.on('message', message => {
 						if(command.startsWith("addr") && member.id===config.ownerID){
 							if(!args2[0]){
 								embedMSG={
-									'color': parseInt(parseColor(embedSettings.goodColor)),
+									'color': parseColor(embedSettings.goodColor),
 									'title': 'ℹ Available Syntax and Arguments ℹ',
 									'description': '`'+config.cmdPrefix+'addrole <roleName>` or `'+config.cmdPrefix+'addr <roleName>`\n» for adding a role to `whiteListedRoles`\n'
 										+'» IE: `'+config.cmdPrefix+'addrole VIP`\n» case sensitive, role must exist!'
@@ -1303,7 +1314,7 @@ moderatorBot.on('message', message => {
 								myServer.whiteListedRoles.push(args2[0]);
 								fs.writeFile("./files/config.json",JSON.stringify(configFile,null,4),"utf8",function(err){if(err)throw err;});
 								embedMSG={
-									'color': parseInt(parseColor(embedSettings.goodColor)),
+									'color': parseColor(embedSettings.goodColor),
 									'description': '✅ The role: `'+args2[0]+'` was **successfully** added to `whiteListedRole`'
 								}
 							}
@@ -1314,7 +1325,7 @@ moderatorBot.on('message', message => {
 						if(command.startsWith("delr") && member.id===config.ownerID){
 							if(!args2[0]){
 								embedMSG={
-									'color': parseInt(parseColor(embedSettings.warningColor)),
+									'color': parseColor(embedSettings.warningColor),
 									'title': 'ℹ Available Syntax and Arguments ℹ',
 									'description': '`'+config.cmdPrefix+'delrole <roleName>` or `'+config.cmdPrefix+'delr <roleName>`\n» for removing a role from `whiteListedRoles`\n'
 										+'» IE: `'+config.cmdPrefix+'addrole VIP`\n» case sensitive, role must exist!'
@@ -1324,7 +1335,7 @@ moderatorBot.on('message', message => {
 								let n=myServer.whiteListedRoles.indexOf(args2[0]);
 								if(n===-1){
 									embedMSG={
-										'color': parseInt(parseColor(embedSettings.dangerColor)),
+										'color': parseColor(embedSettings.dangerColor),
 										'description': '⛔ The role: `'+args2[0]+'` was not found in `whiteListedRole`'
 									}
 								}
@@ -1333,7 +1344,7 @@ moderatorBot.on('message', message => {
 									myServer.whiteListedRoles.splice(n,1);
 									fs.writeFile("./files/config.json",JSON.stringify(configFile,null,4),"utf8",function(err){if(err)throw err;});
 									embedMSG={
-										'color': parseInt(parseColor(embedSettings.goodColor)),
+										'color': parseColor(embedSettings.goodColor),
 										'description': '✅ The role: `'+args2[0]+'` was **successfully** removed to `whiteListedRole`'
 									}
 								}
@@ -1345,7 +1356,7 @@ moderatorBot.on('message', message => {
 						if(command.startsWith("addm") && member.id===config.ownerID){
 							if(!args2[0]){
 								embedMSG={
-									'color': parseInt(parseColor(embedSettings.warningColor)),
+									'color': parseColor(embedSettings.warningColor),
 									'title': 'ℹ Available Syntax and Arguments ℹ',
 									'description': '`'+config.cmdPrefix+'addmember @mention` or `'+config.cmdPrefix+'addm @mention`\n» for adding a member to `whiteListedMembersIDs`\n'
 										+'» IE: `'+config.cmdPrefix+'addmember @JennerPalacios`\n» member must be in server\n'
@@ -1363,7 +1374,7 @@ moderatorBot.on('message', message => {
 								myServer.whiteListedMembersIDs.push(mentioned.id);
 								fs.writeFile("./files/config.json",JSON.stringify(configFile,null,4),"utf8",function(err){if(err)throw err;});
 								embedMSG={
-									'color': parseInt(parseColor(embedSettings.goodColor)),
+									'color': parseColor(embedSettings.goodColor),
 									'description': '✅ The member: <@'+mentioned.id+'> was **successfully** added to `whiteListedMembersIDs`'
 								}
 							}
@@ -1374,7 +1385,7 @@ moderatorBot.on('message', message => {
 						if(command.startsWith("delm") && member.id===config.ownerID){
 							if(!args2[0]){
 								embedMSG={
-									'color': parseInt(parseColor(embedSettings.warningColor)),
+									'color': parseColor(embedSettings.warningColor),
 									'title': 'ℹ Available Syntax and Arguments ℹ',
 									'description': '`'+config.cmdPrefix+'delrole <roleName>` or `'+config.cmdPrefix+'delr <roleName>`\n» for removing a role from `whiteListedMembersIDs`\n'
 										+'» IE: `'+config.cmdPrefix+'addrole VIP`\n» case sensitive, role must exist!'
@@ -1390,7 +1401,7 @@ moderatorBot.on('message', message => {
 								let n=configFile.myServer.whiteListedMembersIDs.indexOf(mentioned.id);
 								if(n===-1){
 									embedMSG={
-										'color': parseInt(parseColor(embedSettings.dangerColor)),
+										'color': parseColor(embedSettings.dangerColor),
 										'description': '⛔ The member: <@'+mentioned.id+'> was not found in `whiteListedMembersIDs`'
 									}
 								}
@@ -1399,7 +1410,7 @@ moderatorBot.on('message', message => {
 									myServer.whiteListedMembersIDs.splice(n,1);
 									fs.writeFile("./files/config.json",JSON.stringify(configFile,null,4),"utf8",function(err){if(err)throw err;});
 									embedMSG={
-										'color': parseInt(parseColor(embedSettings.goodColor)),
+										'color': parseColor(embedSettings.goodColor),
 										'description': '✅ The member: `'+mentioned.id+'` was **successfully** removed to `whiteListedMembersIDs`'
 									}
 								}
