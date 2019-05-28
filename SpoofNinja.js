@@ -16,8 +16,8 @@ const moderatorBot=new Discord.Client();
 //		PICK ONE BELOW, ONLY ONE CAN BE ENABLED, THE OTHER ONE MUST BE COMMENTED-OUT BY ADDING "//" AT THE BEGINNING
 //		"SLOW LOAD" IS RECOMMENDED WHEN LAUNCHING THE BOT FOR THE FIRST TIME, IT GRABS ALL USERS FROM ALL SERVERS
 //
-//const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
-const bot=new Discord.Client(); //							FAST LOAD - GET ACTIVE USERS ONLY
+const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
+//const bot=new Discord.Client(); //							FAST LOAD - GET ACTIVE USERS ONLY
 //
 //
 //
@@ -748,6 +748,10 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 									+'`'+config.cmdPrefix+'onSpoofer instakick` » to kick instantly\n'
 									+'`'+config.cmdPrefix+'onSpoofer instaban` » to ban instantly'
 			}
+			if(args[0]==="minstilpunish"){
+				slackMSG.embeds[0].description='`'+config.cmdPrefix+'minsTilPunish check` » to check current setting\n'
+									+'`'+config.cmdPrefix+'minsTilPunish <mins>` » to adjust minutes'
+			}
 		}
 		else{
 			slackMSG.embeds[0].title='ℹ Available Commands ℹ';
@@ -761,6 +765,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 								+config.cmdPrefix+'addRole <role_name>\n'
 								+config.cmdPrefix+'delRole <role_name>\n'
 								+config.cmdPrefix+'onSpoofer <action>\n'
+								+config.cmdPrefix+'minsTilPunish <mins>\n'
 								+config.cmdPrefix+'bug and !feedback```'
 								+'type: `'+command+' <command>` for more info';
 		}
@@ -1209,6 +1214,33 @@ moderatorBot.on('message', message => {
 								if(spooferFlag==="ban"){ return message.channel.send({embed:{"color":0x00FF00,"description":txtStart+"**ban** them after `"+minsUntilPunished+" minute(s)`"}}) }
 								if(spooferFlag==="instakick"){ return message.channel.send({embed:{"color":0x00FF00,"description":txtStart+"**kick** them `instantly`!"}}) }
 								if(spooferFlag==="instaban"){ return message.channel.send({embed:{"color":0x00FF00,"description":txtStart+"**ban** them `instantly`!"}}) }
+							}
+							return channel.send({embed: embedMSG})
+						}
+						return channel.send({embed: embedMSG})
+					}
+					
+					// MINUTES UNTIL PUNISH ADJUSTMENT
+					if(command==="minstilpunish"){
+						embedMSG={
+							"color": 0x00FF00,
+							"title": "ℹ Available Syntax and Arguments ℹ",
+							"description": "`"+config.cmdPrefix+"minsTilPunish check` » to check current setting\n"
+								+"`"+config.cmdPrefix+"minsTilPunish <mins>` » to adjust minutes"
+						};
+						if(args.length>0){
+						
+							// CONFIGURATION FILE
+							let configFile=JSON.parse(fs.readFileSync("./files/config.json", "utf8"));
+							
+							if(Number.isInteger(parseInt(args[0]))){
+								minsUntilPunished=parseInt(args[0]);
+								configFile.myServer.minsUntilPunished=parseInt(args[0]);
+								fs.writeFile("./files/config.json",JSON.stringify(configFile,null,4),"utf8",function(err){if(err)throw err;});
+								return channel.send({embed:{"color":0x00FF00,"description":"✅ I have adjusted `MinutesUntilPunished` to: **"+parseInt(args[0])+" minute(s)**"}})
+							}
+							if(args[0]==="check"){
+								return message.channel.send({embed:{"color":0x00FF00,"description": "✅ MinutesUntilPunished is set to: **"+minsUntilPunished+"** minutes(s)"}})
 							}
 							return channel.send({embed: embedMSG})
 						}
