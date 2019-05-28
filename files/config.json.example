@@ -40,12 +40,15 @@
         "id": "",
         "name": "",
         "invite": "",
-        "cmdChanIDs": [],
+        "cmdChanIDs": [
+            "271532077650935808",
+	    "299635285246083073"
+        ],
         "webhook": "",
         "adminRoleName": "Admin",
         "modRoleName": "Moderator",
-        "onSpooferFound": "instaban",
-        "minsUntilPunished": "1",
+        "onSpooferFound": "ban",
+        "minsUntilPunished": 1,
         "whiteListedRoles": [
             "Admin",
             "Moderator",
