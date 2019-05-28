@@ -16,8 +16,8 @@ const moderatorBot=new Discord.Client();
 //		PICK ONE BELOW, ONLY ONE CAN BE ENABLED, THE OTHER ONE MUST BE COMMENTED-OUT BY ADDING "//" AT THE BEGINNING
 //		"SLOW LOAD" IS RECOMMENDED WHEN LAUNCHING THE BOT FOR THE FIRST TIME, IT GRABS ALL USERS FROM ALL SERVERS
 //
-const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
-//const bot=new Discord.Client(); //							FAST LOAD - GET ACTIVE USERS ONLY
+//const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
+const bot=new Discord.Client(); //							FAST LOAD - GET ACTIVE USERS ONLY
 //
 //
 //
@@ -57,9 +57,11 @@ var config=require('./files/config.json');		// CONFIG FILE
 var serverCount, noobFound, serverFound, noobJoined, ownServer, slackMSG, embedMSG, myServerFound, memberIsSpoofer, webhook,
 	myServer=config.myServer, spoofNinja=config.spoofNinja, embedSettings=config.embedSettings, validUsername=/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{1,})$/igm,
 	minsUntilPunished=parseInt(config.myServer.minsUntilPunished), spooferFlag=config.myServer.onSpooferFound, daServers, whiteListedMembersIDs=[], whiteListedRoles=[],
-	cc={"reset": "\x1b[0m","black": "\x1b[30m","red": "\x1b[31m","green": "\x1b[32m","yellow": "\x1b[33m","blue": "\x1b[34m",
-	"magenta": "\x1b[35m","cyan": "\x1b[36m","white": "\x1b[37m","bgblack": "\x1b[40m","bgred": "\x1b[41m","bggreen": "\x1b[42m",
-	"bgyellow": "\x1b[43m","bgblue": "\x1b[44m","bgmagenta": "\x1b[45m","bgcyan": "\x1b[46m","bgwhite": "\x1b[47m"};
+	cc={"reset":"\x1b[0m","ul":"\x1b[4m","lred":"\x1b[91m","red":"\x1b[31m","lgreen":"\x1b[92m","green":"\x1b[32m","lyellow":"\x1b[93m","yellow":"\x1b[33m",
+		"lblue":"\x1b[94m","blue":"\x1b[34m","lcyan":"\x1b[96m","cyan":"\x1b[36m","pink":"\x1b[95m","purple":"\x1b[35m","bgwhite":"\x1b[107m","bggray":"\x1b[100m",
+		"bgred":"\x1b[41m","bggreen":"\x1b[42m","bglgreen":"\x1b[102m","bgyellow":"\x1b[43m","bgblue":"\x1b[44m","bglblue":"\x1b[104m","bgcyan":"\x1b[106m",
+		"bgpink":"\x1b[105m","bgpurple":"\x1b[45m","hlwhite":"\x1b[7m","hlred":"\x1b[41m\x1b[30m","hlgreen":"\x1b[42m\x1b[30m","hlblue":"\x1b[44m\x1b[37m",
+		"hlcyan":"\x1b[104m\x1b[30m","hlyellow":"\x1b[43m\x1b[30m","hlpink":"\x1b[105m\x1b[30m","hlpurple":"\x1b[45m\x1b[37m"};
 	
 	// LOAD WHITELISTED MEMBERS
 	if(myServer.whiteListedMembersIDs.length>0){ whiteListedMembersIDs=myServer.whiteListedMembersIDs }
@@ -70,7 +72,7 @@ var serverCount, noobFound, serverFound, noobJoined, ownServer, slackMSG, embedM
 	if(myServer.modRoleName){ whiteListedRoles.push(myServer.modRoleName) }
 	
 	// SPOOFNINJA EMBED MESSAGE SETTINGS - DO NOT MODIFY - DO IT FROM CONFIG
-	slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{"color":"","description":""}]};
+	slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar};
 	
 	// MODERATOR EMBED MESSAGE SETTINGS - DO NOT MODIFY
 	
@@ -191,11 +193,13 @@ bot.on('ready', () => {
 	// SET BOT AS INVISIBLE = NINJA <(^.^<) 
 	bot.user.setPresence({"status":"invisible"});
 	
-	console.info(timeStamp()+" -- DISCORD SpoofNinja, DummyAcc: "+cc.yellow+bot.user.username+cc.reset+", IS "+cc.green+"READY"+cc.reset+" --");
+	console.info(timeStamp()+" -- DISCORD SpoofNinja, DummyAccount: "+cc.yellow+bot.user.username+cc.reset+", IS "+cc.green+"READY"+cc.reset+" --");
 	console.info(timeStamp()+" I have loaded "+cc.cyan+spoofServers.length+cc.reset+" Spoofing Servers");
 	
-	slackMSG.embeds[0].color=parseColor(embedSettings.goodColor);
-	slackMSG.embeds[0].description="I am ready to **scan** __this__ server against **"+spoofServers.length+"**-other **spoOfing** servers!"
+	slackMSG.embeds=[{
+		"color": parseColor(embedSettings.goodColor),
+		"description": "I am ready to **scan** __this__ server against **"+spoofServers.length+"**-other **spoOfing** servers!"
+	}];
 	
 	spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:128\n"+err.message)});
 	
@@ -218,14 +222,14 @@ bot.on('ready', () => {
 	
 	// CHECK IF BOTSUPPORT IS ENABLED
 	if(config.botSupport==="no"){console.info(cc.cyan+".:[ FRIENDLY NOTICE ]:."+cc.reset+"\n"
-		+"You should consider "+cc.green+"enabling"+cc.reset+" \""+cc.magenta+"botSupport"+cc.reset+"\" in order to:\n"
+		+"You should consider "+cc.green+"enabling"+cc.reset+" \""+cc.purple+"botSupport"+cc.reset+"\" in order to:\n"
 		+cc.green+"»"+cc.reset+" Get notifications about updates for either:\n"
-		+"-- "+cc.magenta+"SpoofNinja.js"+cc.reset+", "+cc.magenta+"servers.json"+cc.reset+", and/or "+cc.magenta+"config.json"+cc.reset+"\n"
+		+"-- "+cc.purple+"SpoofNinja.js"+cc.reset+", "+cc.purple+"servers.json"+cc.reset+", and/or "+cc.purple+"config.json"+cc.reset+"\n"
 		+cc.green+"»"+cc.reset+" Direct replies in your server when using \""+cc.cyan+"!bug"+cc.reset+"\" reports\n"
 		+"-- You'll be sharing your webhook in order for Jenner to reply\n"
 		+"----------------------------------------------------------\n"
 		+cc.green+"»"+cc.reset+" How to ENABLE it? very easy: \n"
-		+"-- Edit "+cc.magenta+"config.json"+cc.reset+" at line 14: \""+cc.magenta+"botSupport"+cc.reset+"\": \""+cc.green+"yes"+cc.reset+"\"\n"
+		+"-- Edit "+cc.purple+"config.json"+cc.reset+" at line 14: \""+cc.purple+"botSupport"+cc.reset+"\": \""+cc.green+"yes"+cc.reset+"\"\n"
 		+"----------------------------------------------------------\n");
 	}
 });
@@ -259,7 +263,7 @@ function checkUser(userID){
 		else{
 			console.info(timeStamp()+" "+cc.bgyellow+cc.black+" WARNING "+cc.reset+" I am not in server: "+cc.cyan+spoofServers[serverCount].name+cc.reset
 				+" | Please join using invite code: "+cc.cyan+spoofServers[serverCount].invite+cc.reset+"..."
-				+" or remove line from \""+cc.magenta+"servers.json"+cc.reset+"\" and wait for update (if botsupport is enabled)");
+				+" or remove line from \""+cc.purple+"servers.json"+cc.reset+"\" and wait for update (if botsupport is enabled)");
 		}
 	}
 	
@@ -313,7 +317,7 @@ function checkJoined(serverID){
 //
 //				FUNCTION: CHECK IF USER IS WHITELISTED OR HAS ROLES
 //
-function isWhiteListed(userID,serverNames){
+function isWhiteListed(userID){
 	
 	// OWNER'S ID AND BOT'S ID
 	if(userID===spoofNinja.id || userID===config.ownerID){
@@ -355,7 +359,6 @@ bot.on("guildMemberAdd", member => {
 	
 	// RESET VARIABLES
 	let guild=member.guild; myServerFound="no", memberIsSpoofer="no", daServers="", daServersConsole="";
-	slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{ "thumbnail":{"url":""},"color":"","description":""}]};
 	
 	// VALIDATE USERNAME AND REPLACE SPACES WITH UNDERSCORE
 	let user=member.user; let userNoSpace=user.username; let nuser=userNoSpace.split(/ +/);
@@ -378,7 +381,7 @@ bot.on("guildMemberAdd", member => {
 		if(spoofServersFound[0]===myServer.name && serverJoined===myServer.name){
 			spoofServersFound=[];
 			if(config.consoleLog==="all"){
-				console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | "+cc.cyan+userNoSpace+cc.reset+"("+member.id+") has joined Server: "+cc.cyan+serverJoined+cc.reset)
+				console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+cc.cyan+userNoSpace+cc.reset+"("+member.id+") has joined Server: "+cc.cyan+serverJoined+cc.reset)
 			}
 			else{
 				console.info(timeStamp()+" User: "+cc.cyan+userNoSpace+cc.reset+"("+member.id+") has joined Server: "+cc.cyan+serverJoined+cc.reset)
@@ -424,7 +427,7 @@ bot.on("guildMemberAdd", member => {
 	
 	// CONSOLE LOG ALL WITH NO OTHER SPOOFING SERVER
 	if(memberIsSpoofer==="yes" && spoofServersFound.length<1 && config.consoleLog==="all" && myServerFound==="no"){
-		console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | "+userNoSpace+"("+member.id+") has joined Server: "+cc.cyan+serverJoined+cc.reset)
+		console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+userNoSpace+"("+member.id+") has joined Server: "+cc.cyan+serverJoined+cc.reset)
 	}
 	
 	// CONSOLE LOG ALL WITH OTHER SPOOFING SERVERS
@@ -432,7 +435,7 @@ bot.on("guildMemberAdd", member => {
 		daServersConsole=cc.reset+" || other servers: "+cc.cyan+spoofServersFound.join(cc.reset+", "+cc.cyan)+cc.reset;
 		daServers="\n**Other Servers**: "+spoofServersFound.join(", ");
 		if(config.consoleLog==="all"){
-			console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | "+userNoSpace+"("+member.id+") "
+			console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+userNoSpace+"("+member.id+") "
 				+"has joined Server: "+cc.cyan+serverJoined+daServersConsole+cc.reset);
 		}
 	}
@@ -449,7 +452,7 @@ bot.on("guildMemberAdd", member => {
 		// DO NOT POST FINDING FOR STAFF
 		if(daMember.isWhiteListed==="yes"){
 			if(daMember.memberIs==="BotOrOwner"){
-				return console.info(timeStamp()+" User above is "+cc.magenta+"Owner"+cc.reset+"/"+cc.magenta+"Bot"+cc.reset+".... so "+cc.green+"shhhhhh!"+cc.reset)
+				return console.info(timeStamp()+" User above is "+cc.purple+"Owner"+cc.reset+"/"+cc.purple+"Bot"+cc.reset+".... so "+cc.green+"shhhhhh!"+cc.reset)
 			}
 			if(daMember.memberIs==="WhitelistedUser"){
 				return console.info(timeStamp()+" User above, "+cc.cyan+userNoSpace+cc.reset+"("+member.id+"), has is a "+cc.green+"whiteListedMember"+cc.reset+"!")
@@ -460,10 +463,12 @@ bot.on("guildMemberAdd", member => {
 		}
 		
 		// MODIFY EMBED
-		slackMSG.embeds[0].color=parseColor(embedSettings.warningColor);
-		slackMSG.embeds[0].thumbnail.url=embedSettings.snipeImg;
-		slackMSG.embeds[0].description="⚠ __**WARNING**__ ⚠\n**"
-			+userNoSpace+"** has joined: **"+serverJoined+"**\n**Tag/ID**: "+user+daServers+"\n**On**: "+timeStamp(1);
+		slackMSG.embeds=[{
+			"color": parseColor(embedSettings.warningColor),
+			"thumbnail": {"url": embedSettings.snipeImg},
+			"description": "⚠ __**WARNING**__ ⚠\n**"
+				+userNoSpace+"** has joined: **"+serverJoined+"**\n**Tag/ID**: "+user+daServers+"\n**On**: "+timeStamp(1)
+		}];
 		
 		// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
 		spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:352\n"+err.message)})
@@ -579,10 +584,13 @@ bot.on("guildMemberRemove", member => {
 	// LOGGING EACH EVENT , TO DISABLE/REMOVE: DELETE EACH LINE, OR ADD COMMENT PARAM: //
 	if(!spoofServer && !bot.guilds.get(myServer.id).members.get(user.id)){
 		if(config.consoleLog==="all"){
-			return console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | User: "+cc.cyan+userNoSpace+cc.reset+"("+member.id+") has left Server: "+cc.cyan+guild.name+cc.reset);
+			return console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | User: "+cc.cyan+userNoSpace+cc.reset+"("+member.id+") has left Server: "+cc.cyan+guild.name+cc.reset);
 		}
 	}
 	
+	if(!spoofServer){
+		spoofServer=guild.name
+	}
 	
 	// CHECK IF USER IS STILL IN MY SERVER
 	if(bot.guilds.get(myServer.id).members.get(user.id)){
@@ -603,10 +611,12 @@ bot.on("guildMemberRemove", member => {
 			}
 		}
 		
-		slackMSG.embeds[0].color=parseColor(embedSettings.goodColor);
-		slackMSG.embeds[0].thumbnail.url=embedSettings.checkedImg;
-		slackMSG.embeds[0].description="✅ __**USER LEFT SERVER**__ ✅\n**"
-			+userNoSpace+"** has left: **"+spoofServer+"**\n**UserID**: `"+member.id+"`\n**On**: "+timeStamp(1)
+		slackMSG.embeds=[{
+			"color": parseColor(embedSettings.goodColor),
+			"thumbnail": {"url": embedSettings.checkedImg},
+			"description": "✅ __**USER LEFT SERVER**__ ✅\n**"
+				+userNoSpace+"** has left: **"+spoofServer+"**\n**UserID**: `"+member.id+"`\n**On**: "+timeStamp(1)
+		}];
 		
 		console.info(timeStamp()+" "+userNoSpace+"("+member.id+") has left: "+cc.cyan+spoofServer+cc.reset);
 		
@@ -625,6 +635,7 @@ bot.on('message', message => {
 	
 	// DEFINE SHORTER DISCORD PROPERTIES
 	let guild=message.guild, channel=message.channel, member=message.member, msg=message.content;
+	slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar};
 		
 	// IGNORE MESSAGES FROM CHANNELS THAT ARE NOT THE COMMAND CHANNEL ID AKA MODLOG
 	if(channel.id!==myServer.cmdChanIDs[0]){ return }
@@ -638,13 +649,8 @@ bot.on('message', message => {
 				if(member.user.username){
 					if(config.consoleLog==="all"){
 						if(message.content){
-							console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | "+member.user.username+" has said: "+cc.cyan+message.content+cc.reset)
+							console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+member.user.username+" has said: "+cc.cyan+message.content+cc.reset)
 						}
-						/*
-						else{
-							console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | "+member.user.username+" sent a Slack/Embed MSG")
-						}
-						*/
 					}
 				}
 			}
@@ -652,7 +658,7 @@ bot.on('message', message => {
 		return
 	}
 	if(config.consoleLog==="all"){
-		console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | "+cc.cyan+member.user.username+cc.reset+" typed a COMMAND: "+cc.green+message.content+cc.reset)
+		console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+cc.cyan+member.user.username+cc.reset+" typed a COMMAND: "+cc.green+message.content+cc.reset)
 	}
 	else{
 		console.info(timeStamp()+" "+cc.cyan+member.user.username+cc.reset+" typed a COMMAND: "+cc.green+message.content+cc.reset)
@@ -662,12 +668,12 @@ bot.on('message', message => {
 	let adminRole=guild.roles.find(role => role.name === myServer.adminRoleName);
 		if(!adminRole){
 			adminRole={"id":"111111111111111111"};
-			console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.magenta+myServer.adminRoleName+cc.reset)
+			console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.purple+myServer.adminRoleName+cc.reset)
 		}
 	let modRole=guild.roles.find(role => role.name === myServer.modRoleName);
 		if(!modRole){
 			modRole={"id":"111111111111111111"};
-			console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.magenta+myServer.modRoleName+cc.reset)
+			console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.purple+myServer.modRoleName+cc.reset)
 		}
 
 //
@@ -680,8 +686,10 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 
 	// COMMAND: !HELP
 	if(command=="help" || command=="commands"){
-		slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{"color":parseColor(embedSettings.goodColor),"title":"","description":""}]};
-		slackMSG.embeds[0].title="ℹ Available Syntax and Arguments ℹ";
+		slackMSG.embeds=[{
+			"color": parseColor(embedSettings.goodColor),
+			"title": "ℹ Available Syntax and Arguments ℹ"
+		}];
 		if(args.length>0){
 			if(args[0]==="check"){
 				slackMSG.embeds[0].description='`'+config.cmdPrefix+'check @mention/user_id` » for checking user, ie:\n'
@@ -763,7 +771,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 
 	// COMMAND: !BUG ||FEEDBACK
 	if(command==="bug" || command==="feedback"){
-		slackMSG={"username":"[Dev]JennerPalacios","avatarURL":spoofNinja.avatar,"embeds":[{"color":parseColor(embedSettings.goodColor),"description":""}]};
+		slackMSG={"username":"[Dev]JennerPalacios","avatarURL":spoofNinja.avatar,"embeds":[{"color":parseColor(embedSettings.goodColor)}]};
 			if(command==="bug"){
 				slackMSG.embeds[0].description="Your `BugReport` has been recorded! Stay tuned <(^.^<)";
 				botSupportWh.send("⚠ [BUGREPORT] on "+timeStamp(1)+"\n**By: **"+member.user.username+"[`"+member.user.id+"`]\n**From: **"+myServer.name+"[`"+myServer.invite+"`]\n```\n"+message.content.slice(4)+"\n```");
@@ -797,21 +805,16 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 	// COMMAND: !CHECK
 	if(command=="check"){
 		if(args.length<1){
-			slackMSG={
-				'username': spoofNinja.name,
-				'avatarURL': spoofNinja.avatar,
-				'embeds': [{
-					'color': parseColor(embedSettings.goodColor),
-					'description': 'Please `@mention` a person you want me to `'+config.cmdPrefix+'check`, you can use `@user_tag` or `user_id_number`'
-				}]
-			};
+			slackMSG.embeds=[{
+				'color': parseColor(embedSettings.goodColor),
+				'description': 'Please `@mention` a person you want me to `'+config.cmdPrefix+'check`, you can use `@user_tag` or `user_id_number`'
+			}];
 			
 			// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
 			return spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1210\n"+err.message)})
 		}
 		
-		let u2c="", u2cn="";
-		slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{"color":parseColor(embedSettings.goodColor),"description":""}]};		
+		let u2c="", u2cn="";	
 			
 		// COMMAND » !CHECK VERSION
 		if(args.length>0 && args[0].startsWith("ver")){
@@ -822,10 +825,13 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 						let gitHubVer=body.slice(0,-1);
 						let verChecker="✅"; if(gitHubVer!==config.botVersion){ verChecker="⚠" }
 						
-						slackMSG.embeds[0].description="GitHub [`SpoofNinja`]: v**"+gitHubVer+"**\n"
-									+"Local Bot [`"+spoofNinja.name+"`]: v**"+config.botVersion+"** "+verChecker+"\n"
-									+"**Discord** API [`discord.js`]: v**"+Discord.version+"**\n"
-									+"**Node** API [`node.js`]: **"+process.version+"**";
+						slackMSG.embeds=[{
+							'color': parseColor(embedSettings.goodColor),
+							"description": "GitHub [`SpoofNinja`]: v**"+gitHubVer+"**\n"
+								+"Local Bot [`"+spoofNinja.name+"`]: v**"+config.botVersion+"** "+verChecker+"\n"
+								+"**Discord** API [`discord.js`]: v**"+Discord.version+"**\n"
+								+"**Node** API [`node.js`]: **"+process.version+"**"
+						}];
 						spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:929]\n"+err.message)})
 					}
 				}
@@ -841,27 +847,20 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 		
 		// COMMAND » !CHECK SERVER
 		if(args[0]==="server"){
-			
-			slackMSG={"username":spoofNinja.name,"avatarURL":spoofNinja.avatar,"embeds":[{ "thumbnail":{"url":""},"color":"","description":""}]};
-			
 			let allUsersID=[], allUsersNames=[];
 			guild.members.map(m=>{
-				allUsersID.push(m.id)
-				if(validUsername.test(m.user.username)==true){
-					allUsersNames.push("noObName")
-				}
-				else{
-					allUsersNames.push(m.user.username)
-				}
+				allUsersID.push(m.id);allUsersNames.push(m.user.username)
 			});
 			
 			let milSecs=1000, daServers="", totalSpoofers=0, n=0, nd=1;
 			
 			// SEND NOTIFICATION
-			slackMSG.embeds[0].color=parseColor(embedSettings.goodColor);
-			slackMSG.embeds[0].thumbnail.url=embedSettings.startImg;
-			slackMSG.embeds[0].description="**(>^.^)> NOTICE <(^.^<)**\nI am bout to check **"+allUsersID.length+"** users...\n"
-				+"From server: **"+myServer.name+"**\n**On**: "+timeStamp(1)+"\n... please wait ...";
+			slackMSG.embeds=[{
+				"color": parseColor(embedSettings.goodColor),
+				"thumbnail": {"url": embedSettings.startImg},
+				"description": "**(>^.^)> NOTICE <(^.^<)**\nI am bout to check **"+allUsersID.length+"** users...\n"
+					+"From server: **"+myServer.name+"**\n**On**: "+timeStamp(1)+"\n... please wait ..."
+			}];
 			spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:962]\n"+err.message)});
 			console.info(timeStamp()+" About to check "+cc.cyan+allUsersID.length+cc.reset+" users, from server: "+cc.cyan+myServer.name+cc.reset);
 			
@@ -879,20 +878,20 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 					if(daMember.isWhiteListed==="yes"){
 						spoofServersFound=[];
 						if(daMember.memberIs==="BotOrOwner"){
-							console.info(timeStamp()+" I have skipped the user above due to: \""+cc.magenta+"config.json"+cc.reset+"\" » \""+cc.magenta+"ownerID"+cc.reset+"\" or \""+cc.magenta+"spoofNinja.id"+cc.reset+"\"!")
+							console.info(timeStamp()+" I have skipped the user above due to: \""+cc.purple+"config.json"+cc.reset+"\" » \""+cc.purple+"ownerID"+cc.reset+"\" or \""+cc.purple+"spoofNinja.id"+cc.reset+"\"!")
 						}
 						if(daMember.memberIs==="WhitelistedUser"){
-							console.info(timeStamp()+" I have skipped the user above due to: \""+cc.magenta+"config.json"+cc.reset+"\" » \""+cc.magenta+"whiteListedMembersIDs"+cc.reset+"\"!")
+							console.info(timeStamp()+" I have skipped the user above due to: \""+cc.purple+"config.json"+cc.reset+"\" » \""+cc.purple+"whiteListedMembersIDs"+cc.reset+"\"!")
 						}
 						if(daMember.memberIs==="WhitelistedRoled"){
-							console.info(timeStamp()+" I have skipped the user above due to: \""+cc.magenta+"config.json"+cc.reset+"\" » \""+cc.magenta+"whiteListedRoles"+cc.reset+"\"!")
+							console.info(timeStamp()+" I have skipped the user above due to: \""+cc.purple+"config.json"+cc.reset+"\" » \""+cc.purple+"whiteListedRoles"+cc.reset+"\"!")
 						}
 					}
 					
 					// DO NOT CHECK OTHER BOTS
 					if(daMember.isWhiteListed!=="yes" && bot.guilds.get(myServer.id).members.get(allUsersID[n]).user.bot){
 						spoofServersFound=[];
-						console.info(timeStamp()+" I have skipped the user above due to user being another \""+cc.magenta+"BOT"+cc.reset+"\"!")
+						console.info(timeStamp()+" I have skipped the user above due to user being another \""+cc.purple+"BOT"+cc.reset+"\"!")
 					}
 					
 					//	CHECK IF MYSERVER IS IN ALL SERVERS AND REMOVE IT
@@ -904,19 +903,15 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 						//
 						//				SLACK TEMPLATE WITH SPOOF THUMBNAIL
 						//
-						slackMSG={
-							'username': spoofNinja.name,
-							'avatarURL': spoofNinja.avatar,
-							'embeds': [{
-								'thumbnail': {'url': embedSettings.snipeImg },
-								'color': parseColor(embedSettings.warningColor),
-								'description': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[n]+'\n**Tag/ID**: <@'+allUsersID[n]+'> \nWas **found** in server(s): \n'
-									+spoofServersFound.join(", ")+'\n**On**: '+timeStamp(1),
-								'footer': {
-									'text': 'User #'+nd+' of '+allUsersID.length+'...'
-								}
-							}]
-						};
+						slackMSG.embeds=[{
+							'thumbnail': {'url': embedSettings.snipeImg },
+							'color': parseColor(embedSettings.warningColor),
+							'description': '⚠ __**WARNING**__ ⚠\n**User**: '+allUsersNames[n]+'\n**Tag/ID**: <@'+allUsersID[n]+'> \nWas **found** in server(s): \n'
+								+spoofServersFound.join(", ")+'\n**On**: '+timeStamp(1),
+							'footer': {
+								'text': 'User #'+nd+' of '+allUsersID.length+'...'
+							}
+						}];
 						// POST NOOB FOUND IN SPOOFER SERVER
 						spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" [ERROR L:1033]\n"+err.message)});
 						console.log(timeStamp()+" User: "+cc.cyan+allUsersNames[n]+cc.reset+"("+allUsersID[n]+") was "
@@ -932,16 +927,12 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 
 					// END NOTIFICATION
 					if(nd===allUsersID.length){
-						slackMSG={
-							'username': spoofNinja.name,
-							'avatarURL': spoofNinja.avatar,
-							'embeds': [{
-								'thumbnail': {'url': embedSettings.endImg },
-								'color': parseColor(embedSettings.goodColor),
-								'description': '**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **'+totalSpoofers
-									+'** potential spoOfers!\n.\nOut of **'+allUsersID.length+'** registered members\n**On**: '+timeStamp(1)
-							}]
-						}; 
+						slackMSG.embeds=[{
+							'thumbnail': {'url': embedSettings.endImg },
+							'color': parseColor(embedSettings.goodColor),
+							'description': '**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **'+totalSpoofers
+								+'** potential spoOfers!\n.\nOut of **'+allUsersID.length+'** registered members\n**On**: '+timeStamp(1)
+						}]; 
 						console.info(timeStamp()+" "+cc.bggreen+cc.white+" DONE "+cc.reset+" I have checked "+cc.green+allUsersID.length+cc.reset+" and found "+cc.red+totalSpoofers+cc.reset+" potential spoofers!")
 						
 						if(config.botSupport==="yes"){ globalNinjaWh.send(timeStamp(2)+"**"+myServer.name+"** has found `"
@@ -976,16 +967,12 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 			// DO NOT CHECK OTHER BOTS
 			if(bot.guilds.get(myServer.id).members.get(u2c)){
 				if(bot.guilds.get(myServer.id).members.get(u2c).user.bot){
-					console.info(timeStamp()+" I have skipped the user above due to user being another \""+cc.magenta+"BOT"+cc.reset+"\"!");
-					slackMSG={
-						'username': spoofNinja.name,
-						'avatarURL': spoofNinja.avatar,
-						'embeds': [{
-							'thumbnail': {'url': embedSettings.honorImg },
-							'color': parseColor(embedSettings.goodColor),
-							'description': '✅ "**'+u2cn+'**" appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍'
-						}]
-					};
+					console.info(timeStamp()+" I have skipped the user above due to user being another \""+cc.purple+"BOT"+cc.reset+"\"!");
+					slackMSG.embeds=[{
+						'thumbnail': {'url': embedSettings.honorImg },
+						'color': parseColor(embedSettings.goodColor),
+						'description': '✅ "**'+u2cn+'**" appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍'
+					}];
 					return spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1110\n"+err.message)})
 				}
 			}
@@ -995,23 +982,19 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 			// DO NOT POST FINDING FOR WHITELISTED
 			if(daMember.isWhiteListed==="yes"){
 				if(daMember.memberIs==="BotOrOwner"){
-					console.info(timeStamp()+" I have skipped the user above due to: \""+cc.magenta+"config.json"+cc.reset+"\" » \""+cc.magenta+"ownerID"+cc.reset+"\" or \""+cc.magenta+"spoofNinja.id"+cc.reset+"\"!")
+					console.info(timeStamp()+" I have skipped the user above due to: \""+cc.purple+"config.json"+cc.reset+"\" » \""+cc.purple+"ownerID"+cc.reset+"\" or \""+cc.purple+"spoofNinja.id"+cc.reset+"\"!")
 				}
 				if(daMember.memberIs==="WhitelistedUser"){
-					console.info(timeStamp()+" I have skipped the user above due to: \""+cc.magenta+"config.json"+cc.reset+"\" » \""+cc.magenta+"whiteListedMembersIDs"+cc.reset+"\"!")
+					console.info(timeStamp()+" I have skipped the user above due to: \""+cc.purple+"config.json"+cc.reset+"\" » \""+cc.purple+"whiteListedMembersIDs"+cc.reset+"\"!")
 				}
 				if(daMember.memberIs==="WhitelistedRoled"){
-					console.info(timeStamp()+" I have skipped the user above due to: \""+cc.magenta+"config.json"+cc.reset+"\" » \""+cc.magenta+"whiteListedRoles"+cc.reset+"\"!")
+					console.info(timeStamp()+" I have skipped the user above due to: \""+cc.purple+"config.json"+cc.reset+"\" » \""+cc.purple+"whiteListedRoles"+cc.reset+"\"!")
 				}
-				slackMSG={
-					'username': spoofNinja.name,
-					'avatarURL': spoofNinja.avatar,
-					'embeds': [{
-						'thumbnail': {'url': embedSettings.honorImg },
-						'color': parseColor(embedSettings.goodColor),
-						'description': '✅ "**'+u2cn+'**" appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍'
-					}]
-				}
+				slackMSG.embeds=[{
+					'thumbnail': {'url': embedSettings.honorImg },
+					'color': parseColor(embedSettings.goodColor),
+					'description': '✅ "**'+u2cn+'**" appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍'
+				}];
 				return spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1110\n"+err.message)})
 			}
 			
@@ -1028,18 +1011,14 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 				//
 				//				SLACK TEMPLATE WITH SPOOF THUMBNAIL
 				//
-				slackMSG={
-					'username': spoofNinja.name,
-					'avatarURL': spoofNinja.avatar,
-					'embeds': [{
-						'thumbnail': {'url': embedSettings.honorImg },
-						'color': parseColor(embedSettings.goodColor),
-						'description': '✅ "**'+u2cn+'**" appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍'
-					}]
-				};
+				slackMSG.embeds=[{
+					'thumbnail': {'url': embedSettings.honorImg },
+					'color': parseColor(embedSettings.goodColor),
+					'description': '✅ "**'+u2cn+'**" appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍'
+				}];
 				
 				if(config.consoleLog==="all"){
-					console.info(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | User: "+cc.cyan+u2c+cc.reset+" appears to be a "+cc.green+"LEGIT"+cc.reset+" Trainer")
+					console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | User: "+cc.cyan+u2c+cc.reset+" appears to be a "+cc.green+"LEGIT"+cc.reset+" Trainer")
 				}
 				else{
 					console.info(timeStamp()+" User: "+cc.cyan+u2c+cc.reset+" appears to be a "+cc.green+"LEGIT"+cc.reset+" Trainer")
@@ -1051,18 +1030,14 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 				//
 				//				SLACK TEMPLATE WITH SPOOF THUMBNAIL
 				//
-				slackMSG={
-					'username': spoofNinja.name,
-					'avatarURL': spoofNinja.avatar,
-					'embeds': [{
-						'thumbnail': {'url': embedSettings.snipeImg },
-						'color': parseColor(embedSettings.warningColor),
-						'description': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\n**Tag/ID**: <@'+u2c+'>\nWas **found** in __servers__:\n'+spoofServersFound.join(", ")+'\n**On**: '+timeStamp(1)
-					}]
-				};
+				slackMSG.embeds=[{
+					'thumbnail': {'url': embedSettings.snipeImg },
+					'color': parseColor(embedSettings.warningColor),
+					'description': '⚠ __**WARNING**__ ⚠\n**User**: '+u2cn+'\n**Tag/ID**: <@'+u2c+'>\nWas **found** in __servers__:\n'+spoofServersFound.join(", ")+'\n**On**: '+timeStamp(1)
+				}];
 				
 				if(config.consoleLog==="all"){
-					console.log(timeStamp()+" "+cc.magenta+"consoleLog="+config.consoleLog+cc.reset+" | User: "+cc.cyan+u2cn+cc.reset+"("+cc.cyan+u2c+cc.reset
+					console.log(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | User: "+cc.cyan+u2cn+cc.reset+"("+cc.cyan+u2c+cc.reset
 						+") was "+cc.red+"FOUND"+cc.reset+" in servers: "+cc.cyan+spoofServersFound.join(cc.reset+", "+cc.cyan)+cc.reset)
 				}
 				else{
@@ -1074,14 +1049,10 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 		return spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1195\n"+err.message)})
 		}
 		else{
-			slackMSG={
-				'username': spoofNinja.name,
-				'avatarURL': spoofNinja.avatar,
-				'embeds': [{
-					'color': parseColor(embedSettings.goodColor),
-					'description': 'Please `@mention` a person you want me to `'+config.cmdPrefix+'check`, you can use `@user_tag` or `user_id_number`'
-				}]
-			};
+			slackMSG.embeds=[{
+				'color': parseColor(embedSettings.goodColor),
+				'description': 'Please `@mention` a person you want me to `'+config.cmdPrefix+'check`, you can use `@user_tag` or `user_id_number`'
+			}];
 			
 			// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
 			return spoofNinjaWh.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1210\n"+err.message)})
@@ -1099,14 +1070,10 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 
 	// RESTART THIS MODULE
 	if(command==="restart" && member.id===config.ownerID && args[0]==="spoofninja"){
-		slackMSG={
-			'username': spoofNinja.name,
-			'avatarURL': spoofNinja.avatar,
-			'embeds': [{
-				'color': parseColor(embedSettings.goodColor),
-				'description': '♻ Restarting **spoOfNinja**\n » please wait `3` to `5` seconds...'
-				}]
-			};
+		slackMSG.embeds=[{
+			'color': parseColor(embedSettings.goodColor),
+			'description': '♻ Restarting **spoOfNinja**\n » please wait `3` to `5` seconds...'
+			}];
 		spoofNinjaWh.send(slackMSG).then(()=>{ process.exit(1) }).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:1233\n"+err.message)})
 	}
 });
@@ -1116,7 +1083,7 @@ bot.login(spoofNinja.token);
 
 // BOT DISCONNECTED
 bot.on('disconnect', function (){
-	console.info(timeStamp()+' -- SPOOFNINJA HAS DISCONNECTED --')
+	console.info(timeStamp()+cc.bgred+' -- SPOOFNINJA HAS DISCONNECTED --'+cc.reset)
 });
 
 
@@ -1714,5 +1681,5 @@ moderatorBot.on('message', message => {
 moderatorBot.login(config.moderatorBot.token);
 
 moderatorBot.on('disconnect', function (){
-	console.info(timeStamp()+ ' -- MODERATOR BOT FOR SPOOFNINJA HAS DISCONNECTED --')
+	console.info(timeStamp()+cc.bgred+' -- MODERATOR BOT FOR SPOOFNINJA HAS DISCONNECTED --'+cc.reset)
 });
