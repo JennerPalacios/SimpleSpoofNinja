@@ -44,7 +44,6 @@
             "271532077650935808",
 	    "299635285246083073"
         ],
-        "webhook": "",
         "adminRoleName": "Admin",
         "modRoleName": "Moderator",
         "onSpooferFound": "ban",
