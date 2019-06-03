@@ -16,8 +16,8 @@ const moderatorBot=new Discord.Client();
 //		PICK ONE BELOW, ONLY ONE CAN BE ENABLED, THE OTHER ONE MUST BE COMMENTED-OUT BY ADDING "//" AT THE BEGINNING
 //		"SLOW LOAD" IS RECOMMENDED WHEN LAUNCHING THE BOT FOR THE FIRST TIME, IT GRABS ALL USERS FROM ALL SERVERS
 //
-const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
-//const bot=new Discord.Client(); //							FAST LOAD - GET ACTIVE USERS ONLY
+//const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
+const bot=new Discord.Client(); //							FAST LOAD - GET ACTIVE USERS ONLY
 //
 //
 //
@@ -121,14 +121,19 @@ globalNinjaWh.send({"embeds": [{"description": timeStamp(2)+" Gratz! **"+myServe
 //				CLASS: SPOOFNINJA.SEND WEBHOOK CATCHER/CREATOR
 //
 class SpoofNinjaWhCatcher{
-	send(channel,slackMSG){
+	send(channel,slackMSG,msgContent){
 		moderatorBot.guilds.get(myServer.id).channels.get(channel.id).fetchWebhooks()
 		.then(wh=>{
 			if(wh.size<1){
 				moderatorBot.guilds.get(myServer.id).channels.get(channel.id).createWebhook("SpoofNinja["+Math.floor(Math.random()*9999)+"]",spoofNinja.avatar,"Bot created")
 				.then(whData=>{
 					let spoofNinjaWh=new Discord.WebhookClient(whData.id,whData.token);
-					return spoofNinjaWh.send(slackMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+					if(msgContent){
+						return spoofNinjaWh.send(msgContent,slackMSG)
+							.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+					}
+					return spoofNinjaWh.send(slackMSG)
+						.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
 				})
 				.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
 			}
@@ -145,6 +150,9 @@ class SpoofNinjaWhCatcher{
 	}
 }
 const SpoofNinja=new SpoofNinjaWhCatcher();
+
+
+
 function flareHome(){
 	moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]).fetchWebhooks()
 	.then(wh=>{
@@ -245,7 +253,7 @@ bot.on('ready', () => {
 			if(error){console.info(error)}
 			if(body){
 				let gitHubVer=body.slice(0,-1); let timeLog=timeStamp();
-				let verChecker=cc.green+"up-to-date"+cc.reset; if(gitHubVer!==config.botVersion){ verChecker=cc.red+"OUTDATED!"+cc.reset }
+				let verChecker=cc.green+"up-to-date"+cc.reset; if(gitHubVer!==config.botVersion){ verChecker=cc.hlred+" OUTDATED! "+cc.reset }
 				console.info(
 					timeLog+" GitHub [SpoofNinja]: "+cc.yellow+"v"+gitHubVer+cc.reset+"\n"
 					+timeLog+" Local Bot ["+bot.user.username+"]: "+cc.yellow+"v"+config.botVersion+cc.reset+" -> "+verChecker+"\n"
@@ -886,9 +894,9 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 						
 						slackMSG.embeds=[{
 							'color': parseColor(embedSettings.goodColor),
-							"description": "GitHub [`SpoofNinja`]: v**"+gitHubVer+"**\n"
-								+"Local Bot [`"+spoofNinja.name+"`]: v**"+config.botVersion+"** "+verChecker+"\n"
-								+"**Discord** API [`discord.js`]: v**"+Discord.version+"**\n"
+							"description": "GitHub [`SpoofNinja`]: **v"+gitHubVer+"**\n"
+								+"Local Bot [`"+spoofNinja.name+"`]: **v"+config.botVersion+"** "+verChecker+"\n"
+								+"**Discord** API [`discord.js`]: **v"+Discord.version+"**\n"
 								+"**Node** API [`node.js`]: **"+process.version+"**"
 						}];
 						SpoofNinja.send(channel,slackMSG)
