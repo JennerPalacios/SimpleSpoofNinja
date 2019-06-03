@@ -135,10 +135,10 @@ class SpoofNinjaWhCatcher{
 			else{
 				let spoofNinjaWh=new Discord.WebhookClient(wh.first().id,wh.first().token);
 				if(msgContent){
-					return spoofNinjaWh.send(msgContent,slackMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
+					return spoofNinjaWh.send(msgContent,slackMSG)
 						.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
 				}
-				return spoofNinjaWh.send(slackMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
+				return spoofNinjaWh.send(slackMSG)
 					.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
 			}
 		})
