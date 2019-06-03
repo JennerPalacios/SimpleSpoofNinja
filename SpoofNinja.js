@@ -50,7 +50,7 @@ function timeStamp(type){
 //		DEFINE GLOBAL AND COMMON VARIABLES
 //
 var config=require('./files/config.json');		// CONFIG FILE
-	config.botVersion="4.5";					// LOCAL VERSION
+	config.botVersion="4.6";					// LOCAL VERSION
 //
 //
 //
@@ -130,12 +130,16 @@ class SpoofNinjaWhCatcher{
 					let spoofNinjaWh=new Discord.WebhookClient(whData.id,whData.token);
 					return spoofNinjaWh.send(slackMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
 				})
+				.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
 			}
 			else{
-				wh.map(whData=>{
-					let spoofNinjaWh=new Discord.WebhookClient(whData.id,whData.token)
-					return spoofNinjaWh.send(slackMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
-				})
+				let spoofNinjaWh=new Discord.WebhookClient(wh.first().id,wh.first().token);
+				if(msgContent){
+					return spoofNinjaWh.send(msgContent,slackMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
+						.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+				}
+				return spoofNinjaWh.send(slackMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
+					.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
 			}
 		})
 	}
