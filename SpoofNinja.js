@@ -16,7 +16,7 @@ const moderatorBot=new Discord.Client();
 //		PICK ONE BELOW, ONLY ONE CAN BE ENABLED, THE OTHER ONE MUST BE COMMENTED-OUT BY ADDING "//" AT THE BEGINNING
 //		"SLOW LOAD" IS RECOMMENDED WHEN LAUNCHING THE BOT FOR THE FIRST TIME, IT GRABS ALL USERS FROM ALL SERVERS
 //
-const bot=new Discord.Client({fetchAllMembers:true}); //		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
+const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 1B USERS (FROM ALL SERVERS)
 //const bot=new Discord.Client(); //							FAST LOAD - GET ACTIVE USERS ONLY
 //
 //
@@ -34,11 +34,11 @@ function timeStamp(type){
 		// [YYYY/MM/DD @ HH:MM:SS]
 		return cc.blue+yr+"/"+mo+"/"+da+" "+hr+":"+min+":"+sec+cc.reset+" |"
 	}
-	if(type===1) {
+	if(type===1){
 		// `MM/DD/YYYY` **@** `HH:MM:SS`
 		return "`"+mo+"/"+da+"/"+yr+"` **@** `"+hr+":"+min+":"+sec+"`"
 	}
-	if(type===2) {
+	if(type===2){
 		// `MM/DD/YYYY @ HH:MM:SS`
 		return "`"+mo+"/"+da+"/"+yr+" @ "+hr+":"+min+":"+sec+"`"
 	}
@@ -149,7 +149,7 @@ class SpoofNinjaWhCatcher{
 		})
 	}
 }
-const SpoofNinja=new SpoofNinjaWhCatcher();
+var SpoofNinja=""
 
 
 
@@ -236,6 +236,7 @@ if(!myServer.modRoleName){
 bot.on('ready', () => {
 	// SET BOT AS INVISIBLE = NINJA <(^.^<) 
 	bot.user.setPresence({"status":"invisible"});
+	SpoofNinja=new SpoofNinjaWhCatcher();
 	
 	console.info(timeStamp()+" -- DISCORD SpoofNinja, DummyAccount: "+cc.yellow+bot.user.username+cc.reset+", IS "+cc.green+"READY"+cc.reset+" --");
 	console.info(timeStamp()+" I have loaded "+cc.cyan+spoofServers.length+cc.reset+" Spoofing Servers");
@@ -425,10 +426,10 @@ bot.on("guildMemberAdd", member => {
 		if(spoofServersFound[0]===myServer.name && serverJoined===myServer.name){
 			spoofServersFound=[];
 			if(config.consoleLog==="all"){
-				console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+cc.cyan+userNoSpace+cc.reset+"("+member.id+") has joined Server: "+cc.cyan+serverJoined+cc.reset)
+				console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+cc.cyan+userNoSpace+cc.reset+"("+cc.lblue+member.id+cc.reset+") has joined Server: "+cc.cyan+serverJoined+cc.reset)
 			}
 			else{
-				console.info(timeStamp()+" User: "+cc.cyan+userNoSpace+cc.reset+"("+member.id+") has joined Server: "+cc.cyan+serverJoined+cc.reset)
+				console.info(timeStamp()+" User: "+cc.cyan+userNoSpace+cc.reset+"("+cc.lblue+member.id+cc.reset+") has joined Server: "+cc.yellow+serverJoined+cc.reset)
 			}
 		}
 		
@@ -693,7 +694,7 @@ bot.on('message', message => {
 				if(member.user.username){
 					if(config.consoleLog==="all"){
 						if(message.content){
-							console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+member.user.username+" has said: "+cc.cyan+message.content+cc.reset)
+							console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+member.user.username+": "+cc.cyan+message.content+cc.reset)
 						}
 					}
 				}
@@ -702,10 +703,10 @@ bot.on('message', message => {
 		return
 	}
 	if(config.consoleLog==="all"){
-		console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+cc.lblue+"#"+channel.name+cc.reset+" "+member.user.username+" typed a "+cc.green+"command"+cc.reset+": "+cc.cyan+message.content+cc.reset)
+		console.info(timeStamp()+" "+cc.purple+"consoleLog="+config.consoleLog+cc.reset+" | "+cc.purple+"#"+channel.name+cc.reset+" "+cc.lblue+member.user.username+cc.reset+" > "+cc.green+"command"+cc.reset+": "+cc.cyan+message.content+cc.reset)
 	}
 	else{
-		console.info(timeStamp()+" "+cc.lblue+"#"+channel.name+cc.reset+" "+member.user.username+" typed a "+cc.green+"command"+cc.reset+": "+cc.cyan+message.content+cc.reset)
+		console.info(timeStamp()+" "+cc.purple+"#"+channel.name+cc.reset+" "+cc.lblue+member.user.username+cc.reset+" > "+cc.green+"command"+cc.reset+": "+cc.cyan+message.content+cc.reset)
 	}
 	
 	// ROLES TO LISTEN TO - ACCESS TO THE COMMAND - CONFIGURE IN CONFIG.JSON
