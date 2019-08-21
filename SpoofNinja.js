@@ -940,7 +940,7 @@ if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user
 				setTimeout(function(){
 					console.info(timeStamp()+" ["+cc.yellow+nd+cc.reset+"/"+cc.green+allUsersID.length+cc.reset+"] Checking userID: "+cc.cyan+allUsersID[n]+cc.reset+" with userName: "+cc.cyan+allUsersNames[n]+cc.reset);
 					
-					memberStillHere=bot.guilds.get(myServer.id).members.get(allUsersID[n]) || "nope";
+					let memberStillHere=bot.guilds.get(myServer.id).members.get(allUsersID[n]) || "nope";
 					if(memberStillHere==="nope"){ /* boohoo member chicken out and left */ }
 					else{
 						let spoofServersFound=checkUser(allUsersID[n]);
