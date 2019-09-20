@@ -8,29 +8,26 @@
 //
 const Discord=require('discord.js');
 const bot=new Discord.Client();
+const moderatorBot=new Discord.Client();
 const config=require('./files/config.json');
 const servers=require('./files/servers.json'); 
 
-const sql = require("sqlite");
-sql.open("./files/invites.sqlite");
+const sqlite=require("sqlite");sqlite.open("./files/invites.sqlite");
 
 // GRAB THE SPOOFING SERVERS FROM JSON AND REFORMAT IT
 const spoofServers=servers.servers, myServer=config.myServer, spoofNinja=config.spoofNinja, embedSettings=config.embedSettings;
-
-// GRAB WEBHOOK FROM CONFIG.JSON AND REFORMAT IT
-let webhook=myServer.webhook; webhook=webhook.split("webhooks"); webhook=webhook[1]; webhook=webhook.split("/");
-	webhookID=webhook[1]; webhookToken=webhook[2]; 
-// DIRECT CALL TO THE WEBHOOK
-const WHchan=new Discord.WebhookClient(webhookID,webhookToken);
 
 
 
 //
 //				DEFINE GLOBAL AND COMMON VARIABLES
 //
-var serverCount, serverName, slackMSG, cc={"reset": "\x1b[0m","black": "\x1b[30m","red": "\x1b[31m","green": "\x1b[32m","yellow": "\x1b[33m","blue": "\x1b[34m",
-	"magenta": "\x1b[35m","cyan": "\x1b[36m","white": "\x1b[37m","bgblack": "\x1b[40m","bgred": "\x1b[41m","bggreen": "\x1b[42m",
-	"bgyellow": "\x1b[43m","bgblue": "\x1b[44m","bgmagenta": "\x1b[45m","bgcyan": "\x1b[46m","bgwhite": "\x1b[47m"};
+var serverCount, serverName, slackMSG,
+	cc={"reset":"\x1b[0m","ul":"\x1b[4m","lred":"\x1b[91m","red":"\x1b[31m","lgreen":"\x1b[92m","green":"\x1b[32m","lyellow":"\x1b[93m","yellow":"\x1b[33m",
+		"lblue":"\x1b[94m","blue":"\x1b[34m","lcyan":"\x1b[96m","cyan":"\x1b[36m","pink":"\x1b[95m","purple":"\x1b[35m","bgwhite":"\x1b[107m","bggray":"\x1b[100m",
+		"bgred":"\x1b[41m","bggreen":"\x1b[42m","bglgreen":"\x1b[102m","bgyellow":"\x1b[43m","bgblue":"\x1b[44m","bglblue":"\x1b[104m","bgcyan":"\x1b[106m",
+		"bgpink":"\x1b[105m","bgpurple":"\x1b[45m","hlwhite":"\x1b[7m","hlred":"\x1b[41m\x1b[30m","hlgreen":"\x1b[42m\x1b[30m","hlblue":"\x1b[44m\x1b[37m",
+		"hlcyan":"\x1b[104m\x1b[30m","hlyellow":"\x1b[43m\x1b[30m","hlpink":"\x1b[105m\x1b[30m","hlpurple":"\x1b[45m\x1b[37m"};
 
 
 //
@@ -65,7 +62,7 @@ function timeStamp(type){
 	let hr=CurrTime.getHours();if(hr<10){hr="0"+hr;}let min=CurrTime.getMinutes();if(min<10){min="0"+min;}let sec=CurrTime.getSeconds();if(sec<10){sec="0"+sec;}
 	if(!type || type===0){
 		// [YYYY/MM/DD @ HH:MM:SS]
-		return cc.blue+yr+"/"+mo+"/"+da+" @ "+hr+":"+min+":"+sec+cc.reset+" |"
+		return cc.blue+yr+"/"+mo+"/"+da+" "+hr+":"+min+":"+sec+cc.reset+" |"
 	}
 	if(type===1) {
 		// `MM/DD/YYYY` **@** `HH:MM:SS`
@@ -82,12 +79,54 @@ function timeStamp(type){
 }
 
 
+
+//
+//				CLASS: SPOOFNINJA.SEND WEBHOOK CATCHER/CREATOR
+//
+var SpoofNinja="";
+class SpoofNinjaWhCatcher{
+	send(channel,slackMSG,msgContent){
+		moderatorBot.guilds.get(myServer.id).channels.get(channel.id).fetchWebhooks()
+		.then(wh=>{
+			if(wh.size<1){
+				moderatorBot.guilds.get(myServer.id).channels.get(channel.id).createWebhook("SpoofNinja["+Math.floor(Math.random()*9999)+"]",spoofNinja.avatar,"Bot created")
+				.then(whData=>{
+					let spoofNinjaWh=new Discord.WebhookClient(whData.id,whData.token);
+					if(msgContent){
+						return spoofNinjaWh.send(msgContent,slackMSG)
+							.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+					}
+					return spoofNinjaWh.send(slackMSG)
+						.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+				})
+				.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
+			}
+			else{
+				let spoofNinjaWh=new Discord.WebhookClient(wh.first().id,wh.first().token);
+				if(msgContent){
+					return spoofNinjaWh.send(msgContent,slackMSG)
+						.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+				}
+				return spoofNinjaWh.send(slackMSG)
+					.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+			}
+		})
+	}
+}
+  
+
+
 // START SCRIPT
 bot.on('ready', () => {
 	// SET BOT AS INVISIBLE = NINJA <(^.^<)
 	bot.user.setPresence({"status":"invisible"});
 	
-	console.info(timeStamp()+" -- DISCORD SpoofNinja, "+cc.magenta+"inviteListener"+cc.reset+" module, IS "+cc.green+"READY"+cc.reset+" --");
+	setTimeout(function(){
+		SpoofNinja=new SpoofNinjaWhCatcher();
+		SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG);
+	}, 5000);
+	
+	console.info(timeStamp()+" -- DISCORD SpoofNinja, "+cc.purple+"inviteListener"+cc.reset+" module, IS "+cc.green+"READY"+cc.reset+" --");
 	console.info(timeStamp()+" I am scanning "+cc.cyan+spoofServers.length+cc.reset+" Spoofing Servers for "+cc.green+"NEW"+cc.reset+" invitecodes being shared");
 	
 	slackMSG={
@@ -98,9 +137,8 @@ bot.on('ready', () => {
 			'description': 'I am scanning for **NEW** inviteCodes being shared in **spoOfing** servers'
 		}]
 	};
-	WHchan.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:110 | "+err.message)});
 	
-	sql.run("CREATE TABLE IF NOT EXISTS inviteCodes ("
+	sqlite.run("CREATE TABLE IF NOT EXISTS inviteCodes ("
 		+"id INTEGER PRIMARY KEY AUTOINCREMENT, "
 		+"serverName TEXT, "
 		+"serverID TEXT, "
@@ -108,8 +146,15 @@ bot.on('ready', () => {
 		+"publishDate TEXT, "
 		+"forServer TEXT, "
 		+"isSpoofing TEXT, "
-		+"checked TEXT"
-		+")").catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:26 | "+err.message)});
+		+"checked TEXT)")
+	.catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:26 | "+err.message)});
+	
+	sqlite.run("CREATE TABLE IF NOT EXISTS spoofingCodes ("
+		+"id INTEGER PRIMARY KEY AUTOINCREMENT, "
+		+"serverName TEXT, "
+		+"inviteCode TEXT, "
+		+"publishDate TEXT)")
+	.catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:26 | "+err.message)});
 });
 
 
@@ -119,6 +164,7 @@ bot.on('ready', () => {
 // ##########################################################################
 bot.on('message', message => {
 	
+	// IGNORE REGULAR MESSAGES, MESSAGES WITHOUT CONTENT, OR OTHER BOTS
 	if(!message.member){ return }
 	if(!message.member.user){ return }
 	if(message.member.user.bot){ return }
@@ -128,37 +174,51 @@ bot.on('message', message => {
 	// DEFINE SHORTER DISCORD PROPERTIES
 	let guild=message.guild, channel=message.channel, member=message.member, msg=message.content;
 	
-// ############################## INVITE LISTENER ##############################
+	//
+	// ############################## INVITE LISTENER ##############################
+	//
 	let invLinks=message.content.match(/discord.gg/g);
 	if(invLinks){
 		if(message.channel.id!==config.myServer.cmdChanID){
 			let servName="";
 			if(!message.guild){ return }
-			servName=getServName(message.guild.id);if(!servName){servName=config.myServer.name}
+			servName=getServName(message.guild.id) || message.guild.name;
 			invPos=message.content.indexOf("discord.gg");invStart=invPos+11; invEnd=invPos+18;
 			let invCode=message.content.slice(invStart,invEnd);
 			
-			//\n**In Server**: '+servName+'\n**Invite Code**: '+invCode+'\n`https://discord.gg/'+invCode+'`
-			// sql.run("CREATE TABLE IF NOT EXISTS inviteCodes (serverName TEXT, serverID TEXT, inviteCode TEXT, publishDate TEXT)").catch(console.error);
-			
-			sql.get(`SELECT * FROM inviteCodes WHERE inviteCode="${invCode}"`).then(row => {
+			sqlite.get(`SELECT * FROM inviteCodes WHERE inviteCode="${invCode}"`).then(row => {
 				if (!row) {
-					sql.run("INSERT INTO inviteCodes (serverName, serverID, inviteCode, publishDate) VALUES (?, ?, ?, ?)",
+					sqlite.run("INSERT INTO inviteCodes (serverName, serverID, inviteCode, publishDate) VALUES (?, ?, ?, ?)",
 						[servName, message.guild.id, invCode, timeStamp(4)]);
 					slackMSG={
 						'username': spoofNinja.name,
 						'avatarURL': spoofNinja.avatar,
 						'embeds': [{
 							'color': parseColor(embedSettings.goodColor),
-							'description': '✅ A **new** inviteCode was stored in my **DB** 👍'
+							'description': '✅ A **new** inviteCode was saved to **DB** 👍'
 						}]
 					};
-					return WHchan.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:154 | "+err.message)});
+					return SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG)
 				}
 			}).catch(console.error);
 		}
 	}
+});
+
+//
+// MODERATOR BOT
+//
+moderatorBot.on('message', message => {
 	
+	// IGNORE REGULAR MESSAGES, MESSAGES WITHOUT CONTENT, OR OTHER BOTS
+	if(!message.member){ return }
+	if(!message.member.user){ return }
+	if(message.member.user.bot){ return }
+	if(!message.member.user.username){ return }
+	if(!message.content){ return }
+	
+	// DEFINE SHORTER DISCORD PROPERTIES
+	let guild=message.guild, channel=message.channel, member=message.member, msg=message.content;
 	
 	// IGNORE MESSAGES FROM CHANNELS THAT ARE NOT CMDCHANIDS
 	if(!myServer.cmdChanIDs.includes(channel.id)){ return }
@@ -168,34 +228,43 @@ bot.on('message', message => {
 	
 	// ROLES TO LISTEN TO - ACCESS TO THE COMMAND - CONFIGURE IN CONFIG.JSON
 	let adminRole=guild.roles.find(role => role.name === myServer.adminRoleName);
-		if(!adminRole){adminRole={"id":"111111111111111111"};console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.magenta+myServer.adminRoleName+cc.reset)}
+		if(!adminRole){adminRole={"id":"111111111111111111"};console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.purple+myServer.adminRoleName+cc.reset)}
 	let modRole=guild.roles.find(role => role.name === myServer.modRoleName);
-		if(!modRole){modRole={"id":"111111111111111111"};console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.magenta+myServer.modRoleName+cc.reset)}
+		if(!modRole){modRole={"id":"111111111111111111"};console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.purple+myServer.modRoleName+cc.reset)}
 	
 	// GRAB COMMANDS AND ARGUMENTS
-	let command=msg.toLowerCase(), args=msg.toLowerCase().split(/ +/).slice(1); command=command.split(/ +/)[0]; command=command.slice(config.cmdPrefix.length);
+	let command=msg.toLowerCase(), args=msg.toLowerCase().split(/ +/).slice(1), ARGS=msg.split(/ +/).slice(1); command=command.split(/ +/)[0]; command=command.slice(config.cmdPrefix.length);
 	
-	if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user.id===config.ownerID){
+	if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user.id===config.ownerID || member.user.id==="264304137863299072"){
 		if(command==="il"){
 			let validArgs="no";
 			if(args.length>0){
 				if(args[0]==="count"){validArgs="yes"}
+				if(args[0]==="store"){validArgs="yes"}
+				if(args[0].startsWith("f")){validArgs="yes"}
 				if(args[0]==="check"){
-					if(!args[1]){validArgs="yes"}
-					if(args[1]){
+					if(args.length>1){
+						if(args[1]==="last"){validArgs="yes"}
 						if(Number.isInteger(parseInt(args[1]))){validArgs="yes"}
-						if(args[1]==="last"){
-							if(!args[2]){validArgs="yes"}
-							if(Number.isInteger(parseInt(args[2]))){validArgs="yes"}
-						}
+					}
+				}
+				if(args[0].startsWith("l")){
+					if(args.length>1){
+						if(args[1].startsWith("c")){validArgs="yes"}
+						if(args[1].startsWith("s")){validArgs="yes"}
+						if(args[1].startsWith("f")){validArgs="yes"}
+						if(args[1].startsWith("d")){if(Number.isInteger(parseInt(args[2]))){validArgs="yes"}}
+						if(args[1].startsWith("p")){if(Number.isInteger(parseInt(args[2]))){validArgs="yes"}}
+					}
+					else{
+						validArgs="yes"
 					}
 				}
 				if(args[0]==="checked"){
-					if(Number.isInteger(parseInt(args[1]))){validArgs="yes"}
+					if(Number.isInteger(parseInt(args[1]))){if(args[2]==="yes" || args[2]==="no"){if(args[3]){validArgs="yes"}}}
 				}
 				if(args[0]==="del"){
 					if(args[1] && Number.isInteger(parseInt(args[1]))){validArgs="yes"}
-					if(args[1] && args[1].startsWith("id:")){validArgs="yes"}
 				}
 			}
 			
@@ -208,98 +277,383 @@ bot.on('message', message => {
 						'color': parseColor(embedSettings.goodColor),
 						'title': 'ℹ Available Syntax and Arguments ℹ',
 						'description': '```md\n'
-							+config.cmdPrefix+'il count\n'
-							+config.cmdPrefix+'il check\n'
+							+config.cmdPrefix+'il list\n'
+							+config.cmdPrefix+'il list count\n'
+							+config.cmdPrefix+'il list spoofing\n'
+							+config.cmdPrefix+'il list page <number>\n'
+							+config.cmdPrefix+'il list del <id>\n'
+							+config.cmdPrefix+'il list find <serverName>\n'
 							+config.cmdPrefix+'il check <id>\n'
-							+config.cmdPrefix+'il check last [amount]\n'
-							+config.cmdPrefix+'il checked <id>\n'
-							+config.cmdPrefix+'il del <code>\n'
-							+config.cmdPrefix+'il del id:<id>```'
+							+config.cmdPrefix+'il checked <id> <yes/no> <name>\n'
+							+config.cmdPrefix+'il store <inviteCode> <serverName>\n'
+							+config.cmdPrefix+'il find <serverName>\n'
+							+config.cmdPrefix+'il count\n'
+							+config.cmdPrefix+'il del <id>```'
 					}]
 				};
-				return WHchan.send(slackMSG).catch(err=>{
-					console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:217 | "+err.message)
-				})
+				return SpoofNinja.send(channel,slackMSG)
 			}
 			
-			// COUNT
-			if(args[0]==="count"){
-				sql.all(`SELECT * FROM inviteCodes`)
-				.then(rows => {
-					slackMSG={
-						'username': spoofNinja.name,
-						'avatarURL': spoofNinja.avatar,
-						'embeds': [{
-							'color': parseColor(embedSettings.goodColor),
-							'description': '✅ There are **'+rows.length+'** `unique` inviteCodes stored in my DataBase!'
-							}]
-						};
-					return WHchan.send(slackMSG).catch(err=>{
-						console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:234 | "+err.message)
+			// LIST
+			if(args[0].startsWith("l")){
+				
+				// ENTIRE GLOBAL LIST
+				if(args.length<2){
+					const commander=member;
+					const reactionFilter=(reaction,user)=>{return ["⬅","➡"].includes(reaction.emoji.name) && user.id===commander.id};
+					
+					sqlite.all(`SELECT * FROM inviteCodes`)
+					.then(async rows=>{
+						if(rows.length<1){
+							slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar,
+								'embeds': [{'color': parseColor(embedSettings.dangerColor),'description': '⛔ I don\'t have any invites...'
+							}]};
+							return SpoofNinja.send(channel,slackMSG)
+						}
+						else{
+							let dbStart=0,dbEnd=0,dbAmount=10,dbOutput="",dbPage=1,dbPages=(rows.length * 1)/10;dbPages=Math.floor(dbPages+1);
+							if(rows.length>dbAmount){dbEnd=dbAmount}else{dbEnd=rows.length}
+							
+							for(dbStart;dbStart<dbEnd;dbStart++){
+								if(!rows[dbStart].isSpoofing){rows[dbStart].isSpoofing="unk"}if(!rows[dbStart].checked){rows[dbStart].checked="nop"}
+								dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].isSpoofing+"` ✅`"+rows[dbStart].checked+"` 🌐`"+rows[dbStart].inviteCode+"`.\n"
+							}
+							
+							let embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+							moderatorBot.channels.get(channel.id).send(embedMSG)
+							.then(async sqliteEntries=>{
+								sqliteEntries.react("⬅").then(()=>{sqliteEntries.react("➡").catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))}).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
+								let reactionCollector=sqliteEntries.createReactionCollector(reactionFilter,{time:60000});
+								reactionCollector.on("collect",async (reaction,reactionsCollector)=>{
+									await sqliteEntries.reactions.get(reaction.emoji.name).remove(commander.user);
+									if(reaction.emoji.name==="⬅"){
+										dbOutput="";dbPage--;if(dbPage<1){dbPage=1}dbStart=dbStart-dbAmount-dbAmount;if(dbStart<0){dbStart=0}dbEnd=dbStart+dbAmount;if(dbEnd>rows.length){dbEnd=rows.length}
+										for(dbStart;dbStart<dbEnd;dbStart++){
+											if(!rows[dbStart].isSpoofing){rows[dbStart].isSpoofing="unk"}if(!rows[dbStart].checked){rows[dbStart].checked="nop"}
+											dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].isSpoofing+"` ✅`"+rows[dbStart].checked+"` 🌐`"+rows[dbStart].inviteCode+"`.\n"
+										}embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+										await sqliteEntries.edit(embedMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+									}
+									else{
+										dbOutput="";dbPage++;if(dbPage>=dbPages){dbPage=dbPages;}
+										if(dbStart<rows.length){
+											dbEnd=dbStart+dbAmount;
+											if(dbEnd>rows.length){
+												dbEnd=rows.length;
+											}
+											for(dbStart;dbStart<dbEnd;dbStart++){
+												if(!rows[dbStart].isSpoofing){rows[dbStart].isSpoofing="unk"}if(!rows[dbStart].checked){rows[dbStart].checked="nop"}
+												dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].isSpoofing+"` ✅`"+rows[dbStart].checked+"` 🌐`"+rows[dbStart].inviteCode+"`.\n"
+											}embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+											await sqliteEntries.edit(embedMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+										}
+									}
+								});
+								reactionCollector.on("end",collected=>{
+									console.info(timeStamp()+" "+cc.hlblue+" EXPIRED "+cc.reset+" Paging through DB timedOut, Message was deleted for protection/antiSpam");
+									sqliteEntries.edit("Scrolling through Database has expired; the message removed for protection, "+commander,{embed:""})
+									.catch(err=>console.info(timeStamp+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+									sqliteEntries.clearReactions().catch(err=>console.info(timeStamp+" "+cc.hlred+" ERROR "+cc.reset+" Could not clear reactions from message | "+err.message));
+								});
+							})
+							.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+						}
 					})
-				})
-				.catch(err=>{
-					console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:238 | "+err.message)
-				})
+					.catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:266 | "+err.message)});
+				}
+				else{
+			
+					// COUNT
+					if(args[1].startsWith("c")){
+						sqlite.all(`SELECT * FROM inviteCodes`)
+						.then(rows=>{
+							if(rows.length<1){
+								slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar,
+									'embeds': [{'color': parseColor(embedSettings.dangerColor),'description': '⛔ I don\'t have any invites...'
+								}]};
+								return SpoofNinja.send(channel,slackMSG)
+							}
+							else{
+								let dbPages=(rows.length * 1)/10;dbPages=Math.floor(dbPages+1);
+								slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar,
+								'embeds': [{'color': parseColor(embedSettings.goodColor),
+									'description': '✅ There are **'+rows.length+'** inviteCodes = **'+dbPages+'** pages!'
+								}]};
+								return SpoofNinja.send(channel,slackMSG)
+							}
+						})
+						.catch(err=>{
+							console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:266 | "+err.message)
+						})
+					}
+					
+					// SPOOFING LIST
+					if(args[1].startsWith("s")){
+						const commander=member;
+						const reactionFilter=(reaction,user)=>{return ["⬅","➡"].includes(reaction.emoji.name) && user.id===commander.id};
+						
+						sqlite.all(`SELECT * FROM spoofingCodes`)
+						.then(async rows=>{
+							if(rows.length<1){
+								slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar,
+									'embeds': [{'color': parseColor(embedSettings.dangerColor),'description': '⛔ I don\'t have any invites...'
+								}]};
+								return SpoofNinja.send(channel,slackMSG)
+							}
+							else{
+								let dbStart=0,dbEnd=0,dbAmount=10,dbOutput="",dbPage=1,dbPages=(rows.length * 1)/10;dbPages=Math.floor(dbPages+1);
+								if(rows.length>dbAmount){dbEnd=dbAmount}else{dbEnd=rows.length}
+								
+								for(dbStart;dbStart<dbEnd;dbStart++){
+									dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].serverName+"` 🌐`"+rows[dbStart].inviteCode+"` 📆`"+rows[dbStart].publishDate+"`\n"
+								}
+								
+								let embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+								moderatorBot.channels.get(channel.id).send(embedMSG)
+								.then(async sqliteEntries=>{
+									sqliteEntries.react("⬅").then(()=>{sqliteEntries.react("➡").catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))}).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
+									let reactionCollector=sqliteEntries.createReactionCollector(reactionFilter,{time:60000});
+									reactionCollector.on("collect",async (reaction,reactionsCollector)=>{
+										await sqliteEntries.reactions.get(reaction.emoji.name).remove(commander.user);
+										if(reaction.emoji.name==="⬅"){
+											dbOutput="";dbPage--;if(dbPage<1){dbPage=1}dbStart=dbStart-dbAmount-dbAmount;if(dbStart<0){dbStart=0}dbEnd=dbStart+dbAmount;if(dbEnd>rows.length){dbEnd=rows.length}
+											for(dbStart;dbStart<dbEnd;dbStart++){
+												dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].serverName+"` 🌐`"+rows[dbStart].inviteCode+"` 📆`"+rows[dbStart].publishDate+"`\n"
+											}embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+											await sqliteEntries.edit(embedMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+										}
+										else{
+											dbOutput="";dbPage++;if(dbPage>=dbPages){dbPage=dbPages;}
+											if(dbStart<rows.length){
+												dbEnd=dbStart+dbAmount;
+												if(dbEnd>rows.length){
+													dbEnd=rows.length;
+												}
+												for(dbStart;dbStart<dbEnd;dbStart++){
+													dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].serverName+"` 🌐`"+rows[dbStart].inviteCode+"` 📆`"+rows[dbStart].publishDate+"`\n"
+												}embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+												await sqliteEntries.edit(embedMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+											}
+										}
+									});
+									reactionCollector.on("end",collected=>{
+										console.info(timeStamp()+" "+cc.hlblue+" EXPIRED "+cc.reset+" Paging through DB timedOut, Message was deleted for protection/antiSpam");
+										sqliteEntries.edit("Scrolling through Database has expired; the message removed for protection, "+commander,{embed:""})
+										.catch(err=>console.info(timeStamp+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+										sqliteEntries.clearReactions().catch(err=>console.info(timeStamp+" "+cc.hlred+" ERROR "+cc.reset+" Could not clear reactions from message | "+err.message));
+									});
+								})
+								.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+							}
+						})
+						.catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:266 | "+err.message)})
+					}
+					
+					// FIND LIST
+					if(args[1].startsWith("f")){
+						const commander=member;
+						const reactionFilter=(reaction,user)=>{return ["⬅","➡"].includes(reaction.emoji.name) && user.id===commander.id};
+						
+						sqlite.all(`SELECT * FROM inviteCodes WHERE forServer LIKE "%${ARGS[2]}%"`)
+						.then(async rows=>{
+							if(rows.length<1){
+								slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar,
+									'embeds': [{'color': parseColor(embedSettings.dangerColor),'description': '⛔ I couldn\'t find any invites with that server name...'
+								}]};
+								return SpoofNinja.send(channel,slackMSG)
+							}
+							else{
+								let dbStart=0,dbEnd=0,dbAmount=10,dbOutput="",dbPage=1,dbPages=(rows.length * 1)/10;dbPages=Math.floor(dbPages+1);
+								if(rows.length>dbAmount){dbEnd=dbAmount}else{dbEnd=rows.length}
+								
+								for(dbStart;dbStart<dbEnd;dbStart++){
+									dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].forServer+"` 🌐`"+rows[dbStart].inviteCode+"` 📆`"+rows[dbStart].publishDate+"`\n"
+								}
+								
+								let embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+								moderatorBot.channels.get(channel.id).send(embedMSG)
+								.then(async sqliteEntries=>{
+									sqliteEntries.react("⬅").then(()=>{sqliteEntries.react("➡").catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))}).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
+									let reactionCollector=sqliteEntries.createReactionCollector(reactionFilter,{time:60000});
+									reactionCollector.on("collect",async (reaction,reactionsCollector)=>{
+										await sqliteEntries.reactions.get(reaction.emoji.name).remove(commander.user);
+										if(reaction.emoji.name==="⬅"){
+											dbOutput="";dbPage--;if(dbPage<1){dbPage=1}dbStart=dbStart-dbAmount-dbAmount;if(dbStart<0){dbStart=0}dbEnd=dbStart+dbAmount;if(dbEnd>rows.length){dbEnd=rows.length}
+											for(dbStart;dbStart<dbEnd;dbStart++){
+												dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].forServer+"` 🌐`"+rows[dbStart].inviteCode+"` 📆`"+rows[dbStart].publishDate+"`\n"
+											}embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+											await sqliteEntries.edit(embedMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+										}
+										else{
+											dbOutput="";dbPage++;if(dbPage>=dbPages){dbPage=dbPages;}
+											if(dbStart<rows.length){
+												dbEnd=dbStart+dbAmount;
+												if(dbEnd>rows.length){
+													dbEnd=rows.length;
+												}
+												for(dbStart;dbStart<dbEnd;dbStart++){
+													dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].forServer+"` 🌐`"+rows[dbStart].inviteCode+"` 📆`"+rows[dbStart].publishDate+"`\n"
+												}embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+												await sqliteEntries.edit(embedMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+											}
+										}
+									});
+									reactionCollector.on("end",collected=>{
+										console.info(timeStamp()+" "+cc.hlblue+" EXPIRED "+cc.reset+" Paging through DB timedOut, Message was deleted for protection/antiSpam");
+										sqliteEntries.edit("Scrolling through Database has expired; the message removed for protection, "+commander,{embed:""})
+										.catch(err=>console.info(timeStamp+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+										sqliteEntries.clearReactions().catch(err=>console.info(timeStamp+" "+cc.hlred+" ERROR "+cc.reset+" Could not clear reactions from message | "+err.message));
+									});
+								})
+								.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+							}
+						})
+						.catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:266 | "+err.message)})
+					}
+					
+					// CERTAIN PAGE
+					if(args[1].startsWith("p")){
+						const commander=member;
+						const reactionFilter=(reaction,user)=>{return ["⬅","➡"].includes(reaction.emoji.name) && user.id===commander.id};
+						
+						sqlite.all(`SELECT * FROM inviteCodes`)
+						.then(async rows=>{
+							if(rows.length<1){
+								slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar,
+									'embeds': [{'color': parseColor(embedSettings.dangerColor),'description': '⛔ I don\'t have any invites...'
+								}]};
+								return SpoofNinja.send(channel,slackMSG)
+							}
+							else{
+								let dbAmount=10,dbStart=args[2] * 10,dbEnd=(dbStart*1)+dbAmount,dbOutput="",dbPage=args[2],dbPages=(rows.length * 1)/10;dbPages=Math.floor(dbPages+1);
+								if(dbEnd>rows.length){dbEnd=rows.length}
+								
+								for(dbStart;dbStart<dbEnd;dbStart++){
+									if(!rows[dbStart].isSpoofing){rows[dbStart].isSpoofing="unk"}if(!rows[dbStart].checked){rows[dbStart].checked="nop"}
+									dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].isSpoofing+"` ✅`"+rows[dbStart].checked+"` 🌐`"+rows[dbStart].inviteCode+"`.\n"
+								}
+								
+								let embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+								await moderatorBot.channels.get(channel.id).send(embedMSG)
+								.then(async sqliteEntries=>{
+									sqliteEntries.react("⬅").then(()=>{sqliteEntries.react("➡").catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))}).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
+									let reactionCollector=sqliteEntries.createReactionCollector(reactionFilter,{time:60000});
+									reactionCollector.on("collect",async (reaction,reactionsCollector)=>{
+										await sqliteEntries.reactions.get(reaction.emoji.name).remove(commander.user);
+										if(reaction.emoji.name==="⬅"){
+											dbOutput="";dbPage--;if(dbPage<1){dbPage=1}dbStart=dbStart-dbAmount-dbAmount;if(dbStart<0){dbStart=0}dbEnd=dbStart+dbAmount;if(dbEnd>rows.length){dbEnd=rows.length}
+											for(dbStart;dbStart<dbEnd;dbStart++){
+												if(!rows[dbStart].isSpoofing){rows[dbStart].isSpoofing="unk"}if(!rows[dbStart].checked){rows[dbStart].checked="nop"}
+												dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].isSpoofing+"` ✅`"+rows[dbStart].checked+"` 🌐`"+rows[dbStart].inviteCode+"`.\n"
+											}embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+											await sqliteEntries.edit(embedMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+										}
+										else{
+											dbOutput="";dbPage++;if(dbPage>=dbPages){dbPage=dbPages;}
+											if(dbStart<rows.length){
+												dbEnd=dbStart+dbAmount;
+												if(dbEnd>rows.length){
+													dbEnd=rows.length;
+												}
+												for(dbStart;dbStart<dbEnd;dbStart++){
+													if(!rows[dbStart].isSpoofing){rows[dbStart].isSpoofing="unk"}if(!rows[dbStart].checked){rows[dbStart].checked="nop"}
+													dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].isSpoofing+"` ✅`"+rows[dbStart].checked+"` 🌐`"+rows[dbStart].inviteCode+"`.\n"
+												}embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+												await sqliteEntries.edit(embedMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+											}
+										}
+									});
+									reactionCollector.on("end",collected=>{
+										console.info(timeStamp()+" "+cc.hlblue+" EXPIRED "+cc.reset+" Paging through DB timedOut, Message was deleted for protection/antiSpam");
+										sqliteEntries.edit("Scrolling through Database has expired; the message removed for protection, "+commander,{embed:""})
+										.catch(err=>console.info(timeStamp+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+										sqliteEntries.clearReactions().catch(err=>console.info(timeStamp+" "+cc.hlred+" ERROR "+cc.reset+" Could not clear reactions from message | "+err.message));
+									});
+								})
+								.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+							}
+						})
+						.catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:266 | "+err.message)})
+					}
+					
+					// DELETE
+					if(args[1].startsWith("d")){
+						if(Number.isInteger(parseInt(args[2]))){
+							sqlite.get(`SELECT * FROM inviteCodes WHERE id="${args[2]}"`)
+							.then(rows=>{
+								if(!rows){
+									slackMSG={
+										'username': spoofNinja.name,
+										'avatarURL': spoofNinja.avatar,
+										'embeds': [{
+											'color': parseColor(embedSettings.dangerColor),
+											'description': '🚫 InviteCode ID: `'+args[2]+'` was **not found**!'
+											}]
+										};
+									return SpoofNinja.send(channel,slackMSG)
+								}
+								else {
+									let invCode=rows.inviteCode;
+									sqlite.run(`DELETE FROM inviteCodes WHERE id="${args[2]}"`)
+									.then(rows=>{
+										slackMSG={
+											'username': spoofNinja.name,
+											'avatarURL': spoofNinja.avatar,
+											'embeds': [{
+												'color': parseColor(embedSettings.goodColor),
+												'description': '👍 InviteCode **#'+args[2]+'**[`'+invCode+'`] has been **deleted** from DataBase!'
+												}]
+											};
+										return SpoofNinja.send(channel,slackMSG)
+									})
+									.catch(err=>{
+										console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:265 | "+err.message)
+									})
+								}
+							})
+						}
+					}
+				}
 			}
 			
 			// CHECK
 			if(args[0]==="check"){
-				
-				// NO ARGS
-				if(!args[1]){
-					slackMSG={
-						'username': spoofNinja.name,
-						'avatarURL': spoofNinja.avatar,
-						'embeds': [{
-							'color': parseColor(embedSettings.goodColor),
-							'title': 'ℹ WORK IN PROGRESS ℹ',
-							'description': '```md\n'
-								+config.cmdPrefix+'This page will display 10 DB entries at a time, able to scroll through pages using emoji/reactions```'
-						}]
-					};
-					return WHchan.send(slackMSG).catch(err=>{
-						console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:258 | "+err.message)
-					})
-				}
-				
 				// CHECK ID
 				if(Number.isInteger(parseInt(args[1]))){
-					sql.get(`SELECT * FROM inviteCodes WHERE id="${args[1]}"`).then(row => {
+					sqlite.get(`SELECT * FROM inviteCodes WHERE id="${args[1]}"`).then(row => {
 						if(!row){
 							slackMSG={
 								'username': spoofNinja.name,
 								'avatarURL': spoofNinja.avatar,
 								'embeds': [{
 									'color': parseColor(embedSettings.dangerColor),
-									'description': '⚠ Couldn\'t find entry with that **ID**...'
+									'description': '⚠ Couldn\'t find entry with that **ID** in my DataBase...'
 								}]
 							};
-							return WHchan.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:154 | "+err.message)});
+							return SpoofNinja.send(channel,slackMSG)
 						}
 						else{
-							if(row.forServer){row.forServer=" 🌐`"+row.forServer+"`"}else{row.forServer=""}
+							if(row.forServer){row.forServer=" 🌐`"+row.forServer+"`."}else{row.forServer=""}
 							if(row.isSpoofing){
-								row.isSpoofing=" Spoofing:`"+row.isSpoofing+"`";
-							}else{row.isSpoofing=" Spoofing:`?`"}
+								row.isSpoofing=" 🤖:`"+row.isSpoofing+"`.";
+							}else{row.isSpoofing=" 🤖:`?`."}
 							if(row.checked){
-								row.checked=" Checked:`"+row.checked+"`.";
-							}else{row.checked=" Checked:`no`."}
+								row.checked=" ✅:`"+row.checked+"`.";
+							}else{row.checked=" ✅:`no`."}
 							
 							slackMSG={
 								'username': spoofNinja.name,
 								'avatarURL': spoofNinja.avatar
 							};
-							let msgContent="🗄`"+row.id+"` 📆`"+row.publishDate+"`"+row.forServer+row.isSpoofing+row.checked+"```md\nhttps://discord.gg/"+row.inviteCode+"```";
-							
-							return WHchan.send(msgContent ,slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:154 | "+err.message)});
+							let msgContent="🆔`"+row.id+"` 📆`"+row.publishDate+"`"+row.isSpoofing+row.checked+row.forServer+"```md\nhttps://discord.gg/"+row.inviteCode+"```";
+							return SpoofNinja.send(channel,slackMSG,msgContent)
 						}
-					}).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:207 | "+err.message)})
+					}).catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:207 | "+err.message)})
 				}
 				
 				// LAST NO ARG = DEFAULT TO 1
 				if(args[1]==="last" && !args[2]){
-					sql.get(`SELECT * FROM inviteCodes ORDER BY id DESC LIMIT 1`).then(row => {
+					sqlite.get(`SELECT * FROM inviteCodes ORDER BY id DESC LIMIT 1`).then(row => {
 						if(!row){
 							slackMSG={
 								'username': spoofNinja.name,
@@ -309,12 +663,12 @@ bot.on('message', message => {
 									'description': '⚠ Couldn\'t find anything...'
 								}]
 							};
-							return WHchan.send(slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:154 | "+err.message)});
+							return SpoofNinja.send(channel,slackMSG)
 						}
 						else{
-							if(row.forServer){row.forServer=" 🌐`"+row.forServer+"`"}else{row.forServer=""}
+							if(row.forServer){row.forServer=" 🌐`"+row.forServer+"`."}else{row.forServer=""}
 							if(row.isSpoofing){
-								row.isSpoofing=" Spoofing:`"+row.isSpoofing+"`";
+								row.isSpoofing=" Spoofing:`"+row.isSpoofing+"`.";
 							}else{row.isSpoofing=" Spoofing:`?`"}
 							if(row.checked){
 								row.checked=" Checked:`"+row.checked+"`.";
@@ -324,60 +678,171 @@ bot.on('message', message => {
 								'username': spoofNinja.name,
 								'avatarURL': spoofNinja.avatar
 							};
-							let msgContent="🗄`"+row.id+"` 📆`"+row.publishDate+"`"+row.forServer+row.isSpoofing+row.checked+"```md\nhttps://discord.gg/"+row.inviteCode+"```";
+							let msgContent="🆔`"+row.id+"` 📆`"+row.publishDate+"`"+row.forServer+row.isSpoofing+row.checked+"```md\nhttps://discord.gg/"+row.inviteCode+"```";
 							
-							return WHchan.send(msgContent ,slackMSG).catch(err=>{console.info(timeStamp()+" "+cc.bgred+cc.white+" ERROR "+cc.reset+" L:154 | "+err.message)});
+							return SpoofNinja.send(channel,slackMSG,msgContent)
 						}
-					}).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:207 | "+err.message)})
-				}
-				
-				// LAST WITH ARG
-				if(args[1]==="last" && Number.isInteger(parseInt(args[2]))){
-					return
+					}).catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:207 | "+err.message)})
 				}
 			}
 			
 			// CHECKED
 			if(args[0]==="checked"){
-				
-				// CHECK SINGLE ENTRY
 				if(Number.isInteger(parseInt(args[1]))){
-					slackMSG={
-						'username': spoofNinja.name,
-						'avatarURL': spoofNinja.avatar,
-						'embeds': [{
-							'color': parseColor(embedSettings.goodColor),
-							'title': 'ℹ WORK IN PROGRESS ℹ',
-							'description': '```md\n'
-								+config.cmdPrefix+'il checked <'+args[1]+'>```'
-						}]
-					};
-					return WHchan.send(slackMSG).catch(err=>{
-						console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:207 | "+err.message)
-					})
+					if(args[2]==="yes" || args[2]==="no"){
+						if(args[2]==="no"){args[2]="nop"}
+						if(args[3]){
+							sqlite.get(`SELECT * FROM inviteCodes WHERE id="${args[1]}"`).then(row => {
+								if(!row){
+									slackMSG={
+										'username': spoofNinja.name,
+										'avatarURL': spoofNinja.avatar,
+										'embeds': [{
+											'color': parseColor(embedSettings.dangerColor),
+											'description': '⚠ Couldn\'t find entry with that **ID**...'
+										}]
+									};
+									return SpoofNinja.send(channel,slackMSG)
+								}
+								else{
+									let dbServerName=ARGS.slice(3);dbServerName=dbServerName.join(" ");
+									sqlite.run("UPDATE inviteCodes SET checked=?, isSpoofing=?, forServer=? WHERE id="+args[1],["yes", args[2], dbServerName])
+									.then(()=>{
+										slackMSG={
+											'username': spoofNinja.name,
+											'avatarURL': spoofNinja.avatar
+										};
+										let msgContent="✅ Updated ID: `"+args[1]+"` Spoofing:`"+args[2]+"` Server: `"+dbServerName+"`";
+										return SpoofNinja.send(channel,slackMSG,msgContent)
+									})
+									.catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" SELECT * FROM inviteCodes | "+err.message)});
+								}
+							}).catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" SELECT * FROM inviteCodes | "+err.message)});
+						}
+					}
 				}
 			}
 			
-			// DELETE
-			if(args[0]==="del"){
-				if(args[1].startsWith("id:")){
-					args[1]=args[1].slice(3);
+			// COUNT
+			if(args[0]==="count"){
+				sqlite.all(`SELECT * FROM spoofingCodes`)
+				.then(rows=>{
+					if(rows.length<1){
+						slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar,
+							'embeds': [{'color': parseColor(embedSettings.dangerColor),'description': '⛔ I don\'t have any invites...'
+						}]};
+						return SpoofNinja.send(channel,slackMSG)
+					}
+					else{
+						let dbPages=(rows.length * 1)/10;dbPages=Math.floor(dbPages+1);
+						slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar,
+						'embeds': [{'color': parseColor(embedSettings.goodColor),
+							'description': '✅ There are **'+rows.length+'** spoofingCodes = **'+dbPages+'** pages!'
+						}]};
+						return SpoofNinja.send(channel,slackMSG)
+					}
+				})
+				.catch(err=>{
+					console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:266 | "+err.message)
+				})
+			}
+			
+			// STORE
+			if(args[0]==="store"){
+				if(args.length<2 || args.length<3){
+					slackMSG={
+						'username': spoofNinja.name,
+						'avatarURL': spoofNinja.avatar,
+						'embeds': [{
+							'color': parseColor(embedSettings.dangerColor),
+							'description': '```md\n'
+								+config.cmdPrefix+'il store <inviteCode> <serverName>```'
+						}]
+					};
+					return SpoofNinja.send(channel,slackMSG);
+				}
+				else{
+					let dbServerName=ARGS.slice(2);dbServerName=dbServerName.join(" ");
+					sqlite.run(`INSERT INTO spoofingCodes (serverName, inviteCode, publishDate) VALUES (?, ?, ?)`,[dbServerName, ARGS[1], timeStamp(4)])
+					.catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" INSERT INTO spoofingCodes table | "+err.message)});
 					slackMSG={
 						'username': spoofNinja.name,
 						'avatarURL': spoofNinja.avatar,
 						'embeds': [{
 							'color': parseColor(embedSettings.goodColor),
-							'title': 'ℹ WORK IN PROGRESS ℹ',
-							'description': '```md\n'
-								+config.cmdPrefix+'il del <'+args[1]+'>```'
+							'description': '✅ InviteCode **successfully** stored in `spoofingCodes` **DB** 👍'
 						}]
 					};
-					return WHchan.send(slackMSG).catch(err=>{
-						console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:207 | "+err.message)
-					})
+					return SpoofNinja.send(channel,slackMSG);
 				}
-				else{
-					sql.get(`SELECT * FROM inviteCodes WHERE inviteCode="${args[1]}"`)
+			}
+			
+			// FIND LIST
+			if(args[0].startsWith("f")){
+				const commander=member;
+				const reactionFilter=(reaction,user)=>{return ["⬅","➡"].includes(reaction.emoji.name) && user.id===commander.id};
+				
+				sqlite.all(`SELECT * FROM spoofingCodes WHERE serverName LIKE "%${ARGS[1]}%"`)
+				.then(async rows=>{
+					if(rows.length<1){
+						slackMSG={'username': spoofNinja.name,'avatarURL': spoofNinja.avatar,
+							'embeds': [{'color': parseColor(embedSettings.dangerColor),'description': '⛔ I couldn\'t find any invites with that server name...'
+						}]};
+						return SpoofNinja.send(channel,slackMSG)
+					}
+					else{
+						let dbStart=0,dbEnd=0,dbAmount=10,dbOutput="",dbPage=1,dbPages=(rows.length * 1)/10;dbPages=Math.floor(dbPages+1);
+						if(rows.length>dbAmount){dbEnd=dbAmount}else{dbEnd=rows.length}
+						
+						for(dbStart;dbStart<dbEnd;dbStart++){
+							dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].serverName+"` 🌐`"+rows[dbStart].inviteCode+"` 📆`"+rows[dbStart].publishDate+"`\n"
+						}
+						
+						let embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+						moderatorBot.channels.get(channel.id).send(embedMSG)
+						.then(async sqliteEntries=>{
+							sqliteEntries.react("⬅").then(()=>{sqliteEntries.react("➡").catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))}).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message))
+							let reactionCollector=sqliteEntries.createReactionCollector(reactionFilter,{time:60000});
+							reactionCollector.on("collect",async (reaction,reactionsCollector)=>{
+								await sqliteEntries.reactions.get(reaction.emoji.name).remove(commander.user);
+								if(reaction.emoji.name==="⬅"){
+									dbOutput="";dbPage--;if(dbPage<1){dbPage=1}dbStart=dbStart-dbAmount-dbAmount;if(dbStart<0){dbStart=0}dbEnd=dbStart+dbAmount;if(dbEnd>rows.length){dbEnd=rows.length}
+									for(dbStart;dbStart<dbEnd;dbStart++){
+										dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].serverName+"` 🌐`"+rows[dbStart].inviteCode+"` 📆`"+rows[dbStart].publishDate+"`\n"
+									}embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+									await sqliteEntries.edit(embedMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+								}
+								else{
+									dbOutput="";dbPage++;if(dbPage>=dbPages){dbPage=dbPages;}
+									if(dbStart<rows.length){
+										dbEnd=dbStart+dbAmount;
+										if(dbEnd>rows.length){
+											dbEnd=rows.length;
+										}
+										for(dbStart;dbStart<dbEnd;dbStart++){
+											dbOutput=await dbOutput+"🆔`"+rows[dbStart].id+"` 🤖`"+rows[dbStart].serverName+"` 🌐`"+rows[dbStart].inviteCode+"` 📆`"+rows[dbStart].publishDate+"`\n"
+										}embedMSG=await {'embed':{'color': parseColor(embedSettings.goodColor),'title': 'ℹ [PG:'+dbPage+'/'+dbPages+'] InviteCodes DataBase ℹ','description': dbOutput.slice(0,-1)}};
+										await sqliteEntries.edit(embedMSG).catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+									}
+								}
+							});
+							reactionCollector.on("end",collected=>{
+								console.info(timeStamp()+" "+cc.hlblue+" EXPIRED "+cc.reset+" Paging through DB timedOut, Message was deleted for protection/antiSpam");
+								sqliteEntries.edit("Scrolling through Database has expired; the message removed for protection, "+commander,{embed:""})
+								.catch(err=>console.info(timeStamp+" "+cc.hlred+" ERROR "+cc.reset+" Could not edit message | "+err.message));
+								sqliteEntries.clearReactions().catch(err=>console.info(timeStamp+" "+cc.hlred+" ERROR "+cc.reset+" Could not clear reactions from message | "+err.message));
+							});
+						})
+						.catch(err=>console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" "+err.message));
+					}
+				})
+				.catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:266 | "+err.message)})
+			}
+			
+			// DELETE
+			if(args[0].startsWith("del")){
+				if(Number.isInteger(parseInt(args[1]))){
+					sqlite.get(`SELECT * FROM spoofingCodes WHERE id="${args[1]}"`)
 					.then(rows=>{
 						if(!rows){
 							slackMSG={
@@ -385,56 +850,39 @@ bot.on('message', message => {
 								'avatarURL': spoofNinja.avatar,
 								'embeds': [{
 									'color': parseColor(embedSettings.dangerColor),
-									'description': '🚫 InviteCode: `'+args[1]+'` was **not found** in database!'
+									'description': '🚫 InviteCode ID: `'+args[1]+'` was **not found**!'
 									}]
 								};
-							return WHchan.send(slackMSG).catch(err=>{
-								console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:246 | "+err.message)
-							})
+							return SpoofNinja.send(channel,slackMSG)
 						}
 						else {
-							sql.run(`DELETE FROM inviteCodes WHERE inviteCode="${args[1]}"`)
+							let invCode=rows.inviteCode;
+							sqlite.run(`DELETE FROM spoofingCodes WHERE id="${args[1]}"`)
 							.then(rows=>{
 								slackMSG={
 									'username': spoofNinja.name,
 									'avatarURL': spoofNinja.avatar,
 									'embeds': [{
 										'color': parseColor(embedSettings.goodColor),
-										'description': '👍 InviteCode: `'+args[1]+'` has been **deleted** from database!'
+										'description': '👍 InviteCode **#'+args[1]+'**[`'+invCode+'`] has been **deleted** from DataBase!'
 										}]
 									};
-								return WHchan.send(slackMSG).catch(err=>{
-									console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:261 | "+err.message)
-								})
+								return SpoofNinja.send(channel,slackMSG)
 							})
 							.catch(err=>{
-								console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:265 | "+err.message)
+								console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:265 | "+err.message)
 							})
 						}
 					})
 				}
 			}
 		}
-		
-		
-		
-		// RESTART THIS MODULE
-		if(command==="restart" && m.id===config.ownerID && args[0]==="il"){
-			slackMSG={
-				'username': spoofNinja.name,
-				'avatarURL': spoofNinja.avatar,
-				'embeds': [{
-					'color': parseColor(embedSettings.goodColor),
-					'description': '♻ Restarting `spoOfNinja`\'s **Invite Listener**\n » please wait `3` to `5` seconds...'
-					}]
-				};
-			WHchan.send(slackMSG).then(()=>{ process.exit(1) }).catch(err=>{console.info(timeStamp()+" "+cc.white+cc.bgred+" ERROR "+cc.reset+" L:313 | "+err.message)})
-		}
 	}
 });
 
 // BOT LOGIN TO DISCORD
 bot.login(spoofNinja.token);
+moderatorBot.login(config.moderatorBot.token);
 
 // BOT DISCONNECTED
 bot.on('disconnected', function (){
