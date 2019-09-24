@@ -646,43 +646,6 @@ bot.on("guildMemberRemove",async member => {
 bot.on("message", message=>{
 	//STOP SCRIPT IF DM
 	if(message.channel.type==="dm"){ return }
-	
-	// STOP IF SERVER NOT MY SERVER
-	if(message.guild.id!==myServer.id){ return }
-	
-	// STOP IF NOT THE RIGHT CHANNEL ► COMMAND CHANNELS
-	if(!myServer.cmdChanIDs.includes(message.channel.id)){ return }
-	
-	// STOP IF NO MESSAGE CONTENT
-	if(!message.content){ return }
-	
-	// STOP IF NOT A COMMAND
-	if(!message.content.startsWith(config.cmdPrefix)){ return }
-
-	// ROLES TO LISTEN TO - ACCESS TO THE COMMAND - CONFIGURE IN CONFIG.JSON
-	let adminRole=guild.roles.find(role => role.name === myServer.adminRoleName);
-		if(!adminRole){
-			adminRole={"id":"101010"};
-			console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.purple+myServer.adminRoleName+cc.reset)
-		}
-	let modRole=guild.roles.find(role => role.name === myServer.modRoleName);
-		if(!modRole){
-			modRole={"id":"101010"};
-			console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.purple+myServer.modRoleName+cc.reset)
-		}
-	if(member.roles.has(adminRole.id) || member.roles.has(modRole.id) || member.user.id===config.ownerID){ 
-		// RESTART THIS MODULE
-		if(command==="restart" && member.id===config.ownerID && args[0]==="spoofninja"){
-			slackMSG.embeds=[{
-				"color": parseColor(embedSettings.goodColor),
-				"description": "♻ Restarting **spoOfNinja**\n ► please wait `5` to `15` seconds..."
-				}];
-			SpoofNinja.send(channel,slackMSG);
-			setTimeout(function(){
-				process.exit(1)
-			},2000);
-		}
-	}
 });
 
 // BOT LOGIN TO DISCORD
