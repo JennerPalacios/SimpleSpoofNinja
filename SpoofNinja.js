@@ -11,7 +11,7 @@ const fs=require("fs");
 const request = require("request");
 const serversFile=require("./files/servers.json");
 const spoofServers=serversFile.servers;
-const moderatorBot=new Discord.Client();
+const moderatorBot=new Discord.Client({fetchAllMembers: true});
 //
 //		PICK ONE BELOW, ONLY ONE CAN BE ENABLED, THE OTHER ONE MUST BE COMMENTED-OUT BY ADDING "//" AT THE BEGINNING
 //		"SLOW LOAD" IS RECOMMENDED WHEN LAUNCHING THE BOT FOR THE FIRST TIME, IT GRABS ALL MEMBERS FROM ALL SERVERS
