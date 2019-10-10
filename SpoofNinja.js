@@ -9,8 +9,7 @@
 const Discord=require("discord.js");
 const fs=require("fs");
 const request = require("request");
-const serversFile=require("./files/servers.json");
-const spoofServers=serversFile.servers;
+const spoofServers=require("./files/servers.json");
 const moderatorBot=new Discord.Client({fetchAllMembers: true});
 //
 //		PICK ONE BELOW, ONLY ONE CAN BE ENABLED, THE OTHER ONE MUST BE COMMENTED-OUT BY ADDING "//" AT THE BEGINNING
@@ -358,7 +357,7 @@ async function checkJoinedServer(serverID){
 	}
 	
 	// SEND DATA BACK TO VARIABLE
-	return noobJoined;
+	return await noobJoined;
 }
 
 
@@ -369,18 +368,18 @@ async function isWhiteListed(memberID){
 	
 	// MEMBER IS BOT
 	if(memberID==spoofNinja.id){
-		return {"isWhiteListed": "yes", "memberIs": "Bot"};
+		return await {"isWhiteListed": "yes", "memberIs": "Bot"};
 	}
 	
 	// MEMBER IS BOT OWNER
 	if(memberID===config.ownerID){
-		return {"isWhiteListed": "yes", "memberIs": "Bot Owner"};
+		return await {"isWhiteListed": "yes", "memberIs": "Bot Owner"};
 	}
 	
 	// MEMBER IS WHITELISTED
 	if(whiteListedMembersIDs.length>0){
 		if(whiteListedMembersIDs.includes(memberID)){
-			return {"isWhiteListed": "yes", "memberIs": "WhitelistedUser"};
+			return await {"isWhiteListed": "yes", "memberIs": "WhitelistedUser"};
 		}
 	}
 	
@@ -395,13 +394,13 @@ async function isWhiteListed(memberID){
 			if(memberRoleNames.length>0){
 				for(let n="0"; n < memberRoleNames.length; n++){
 					if(myServer.whiteListedRoles.includes(memberRoleNames[n])){
-						return {"isWhiteListed": "yes", "memberIs": "WhitelistedRoled"};
+						return await {"isWhiteListed": "yes", "memberIs": "WhitelistedRoled"};
 					}
 				}
 			}
 		}
 	}
-	return {"isWhiteListed": "no", "memberIs": "NotWhitelisted"};
+	return await {"isWhiteListed": "no", "memberIs": "NotWhitelisted"};
 }
 
 
@@ -602,7 +601,7 @@ bot.on("guildMemberRemove",async member => {
 	}
 	else{
 		// CHECK IF MEMBER IS WHITELISTED OR HAS WHITELISTED ROLES
-		let daMember=isWhiteListed(member.id);
+		let daMember=await isWhiteListed(member.id);
 		
 		// DO NOT POST FINDING FOR STAFF
 		if(daMember.isWhiteListed==="yes"){
@@ -619,19 +618,20 @@ bot.on("guildMemberRemove",async member => {
 				return console.info(timeStamp()+" "+cc.cyan+member.user.username+cc.reset+"("+cc.lblue+member.id+cc,reset+") has left: "+cc.cyan+spoofServer+cc.reset+". But they have "+cc.green+"whiteListedRole(s)"+cc.reset+"!")
 			}
 		}
-		
-		// MODIFY EMBED
-		slackMSG.embeds=[{
-			"color": parseColor(embedSettings.goodColor),
-			"thumbnail": {"url": embedSettings.checkedImg},
-			"description": "✅ __**MEMBER LEFT SERVER**__ ✅\n**"
-				+member.user.username+"** has left: **"+spoofServer+"**\n**UserID**: `"+member.id+"`\n**On**: "+timeStamp(1)
-		}];
+		else{
+			// MODIFY EMBED
+			slackMSG.embeds=[{
+				"color": parseColor(embedSettings.goodColor),
+				"thumbnail": {"url": embedSettings.checkedImg},
+				"description": "✅ __**MEMBER LEFT SERVER**__ ✅\n**"
+					+member.user.username+"** has left: **"+spoofServer+"**\n**UserID**: `"+member.id+"`\n**On**: "+timeStamp(1)
+			}];
 
-		console.info(timeStamp()+" "+cc.cyan+member.user.username+cc.reset+"("+cc.lblue+member.id+cc.reset+") has left: "+cc.cyan+spoofServer+cc.reset);
+			console.info(timeStamp()+" "+cc.cyan+member.user.username+cc.reset+"("+cc.lblue+member.id+cc.reset+") has left: "+cc.cyan+spoofServer+cc.reset);
 
-		// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-		return SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG)
+			// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
+			return SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG)
+		}
 	}
 });
 
@@ -850,11 +850,11 @@ moderatorBot.on("message",async message => {
 			if(command==="bug"){
 				slackMSG.embeds[0].description="Your `BugReport` has been recorded! Stay tuned <(^.^<)";
 				botSupportWh.send("⚠ [BUGREPORT] on "+timeStamp(1)+"\n**By: **"+member.username+"[`"+member.user.id+"`]\n**From: **"+myServer.name+"[`"+myServer.invite+"`]\n```\n"+message.content.slice(4)+"\n```");
-				return SpoofNinja.send(channel,slackMSG);
+				SpoofNinja.send(channel,slackMSG); slackMSG={"username": spoofNinja.name,"avatarURL": spoofNinja.avatar}; return;
 			}
 			slackMSG.embeds[0].description="Thanks for your feedback <(^.^<)";
 			botSupportWh.send("✅ [FEEDBACK] on "+timeStamp(1)+"\n**By: **"+member.username+" [`"+member.user.id+"`]\n**From: **"+myServer.name+"[`"+myServer.invite+"`]\n```\n"+message.content.slice(9)+"\n```");
-			return SpoofNinja.send(channel,slackMSG);
+			SpoofNinja.send(channel,slackMSG); slackMSG={"username": spoofNinja.name,"avatarURL": spoofNinja.avatar}; return;
 		}
 		
 		// PUNISHMENT ACTION
