@@ -1552,7 +1552,7 @@ moderatorBot.on("message",async message => {
 											// TIMER FOR PUNISHMENT
 											//
 											setTimeout(async function(){
-												let tempMember=bot.guilds.get(myServer.id).members.get(catchID);
+												let tempMember=moderatorBot.guilds.get(myServer.id).members.get(catchID);
 												if(!tempMember){
 													return moderatorBot.channels.get(myServer.cmdChanIDs[0]).send({embed:{"color":0x009900,"description":"<@"+catchID+"> has decided to leave our server instead."}}).catch(err=>{console.info(timeStamp()+" [ERROR L:360]\n"+err.message)});
 												}
