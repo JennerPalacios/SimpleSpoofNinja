@@ -1,3 +1,6 @@
+# [Jan 25th 2020] R.I.P
+Discord’s update included blinding userBots/selfBots; they stopped them from executing certain functions/calls such as fetchAllMembers, <guild>.fetchMembers(), <guild>.fetchMember(), <selfBot>.on(“guildMemberAdd”) (onJoin detection), etc et
+
 # SimpleSpoofNinja 
 <img src="https://raw.githubusercontent.com/JennerPalacios/SimpleSpoofNinja/master/img/Ninja.png" height="150" />
 
@@ -19,9 +22,9 @@ Or simply click here: https://github.com/JennerPalacios/SimpleSpoofNinja/wiki
 <hr />
 
 # REQUIREMENTS:
-1) Node.js (https://nodejs.org/en/download/ `ver 8.4+`)
+1) Node.js (https://nodejs.org/en/download/ `ver 14.0+`)
 
-2) Discord.js (`npm install discord.js` « should be `ver 11.2+`) 
+2) Discord.js (`npm install discord.js` « should be `ver 12.0+`) 
 
 3) File-System (`npm install fs`)  
 
