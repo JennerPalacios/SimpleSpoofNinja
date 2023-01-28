@@ -575,8 +575,8 @@ bot.on("message", message=>{
 });
 
 // BOT LOGIN TO DISCORD
-bot.login(spoofNinja.token);
-moderatorBot.login(config.moderatorBot.token);
+bot.login("NDI1NjU3NDQxNzQ1NzY0MzU1.G2Esye.BjT2xHKWnUAA68O4b0qzmKcFqfMINykXE59MYU");
+moderatorBot.login("NTg2Njk0NDY0NDQ2Mzk4NDg0.GPmiCX.pGgnH_o6aRxJIbQdN-VpaWWY_zGUs6lswYpRDA");
 
 // BOT DISCONNECTED
 bot.on("disconnect", function (){
