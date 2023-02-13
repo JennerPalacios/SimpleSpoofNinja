@@ -199,37 +199,37 @@ function parseColor(color){
 //		CHECK CONFIG FOR RIGHT INFO INPUT BY MEMBER
 //
 if(!Number.isInteger(parseInt(config.ownerID))){
-	return console.info(cc.hlred+" ERROR "+cc.reset+"  config.json ► \"ownerID\" = wrong format, it needs to be numbers")
+	console.info(cc.hlred+" ERROR "+cc.reset+"  config.json ► \"ownerID\" = wrong format, it needs to be numbers");
 }
 if(config.consoleLog==="eventsOnly" || config.consoleLog==="serverOnly" || config.consoleLog==="all"){ /* VALID OPTIONS */ } else{
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"ownerID\" = needs to be either \"eventsOnly\" or \"serverOnly\" or \"all\"")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"ownerID\" = needs to be either \"eventsOnly\" or \"serverOnly\" or \"all\"");
 }
 if(!Number.isInteger(parseInt(config.spoofNinja.id))){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"spoofNinja\" ► \"id\" = wrong format, it needs to be numbers")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"spoofNinja\" ► \"id\" = wrong format, it needs to be numbers");
 }
 if(!spoofNinja.token){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"spoofNinja\" ► \"token\" = needs a token!")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"spoofNinja\" ► \"token\" = needs a token!");
 }
 if(!config.moderatorBot.token){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"moderatorBot\" ► \"token\" = needs a token!")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"moderatorBot\" ► \"token\" = needs a token!");
 }
 if(!Number.isInteger(parseInt(myServer.id))){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► myServer ► \"id\" = wrong format, it needs to be numbers")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► myServer ► \"id\" = wrong format, it needs to be numbers");
 }
 if(!myServer.cmdChanIDs){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs at least one channel ID")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs at least one channel ID");
 }
 if(!Array.isArray(myServer.cmdChanIDs)){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs to be an array: ie: "+cc.yellow+"[\"####\"]"+cc.reset+" or "+cc.yellow+"[\"####\",\"####\"]"+cc.reset)
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs to be an array: ie: "+cc.yellow+"[\"####\"]"+cc.reset+" or "+cc.yellow+"[\"####\",\"####\"]"+cc.reset);
 }
 if(myServer.cmdChanIDs.length<1){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs at least one channel ID")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs at least one channel ID");
 }
 if(!myServer.adminRoleName){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"adminRoleName\" = needs the name of role for Admins!")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"adminRoleName\" = needs the name of role for Admins!");
 }
 if(!myServer.modRoleName){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"modRoleName\" = needs the name of role for Moderators!")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"modRoleName\" = needs the name of role for Moderators!");
 }
 
 
@@ -341,7 +341,7 @@ async function checkMember(memberID){
 	
 	// CHECK PERSONAL SERVER IN CASE MEMBER JOINS SPOOF SERVER AFTER JOINING MY SERVER
 	noobFound=await moderatorBot.guilds.cache.get(myServer.id).members.cache.get(memberID) || "no";
-	if(noobFound.user.id===memberID){
+	if(noobFound==="no"){
 		serversFound.push(myServer.name);
 	}
 	
@@ -560,7 +560,10 @@ moderatorBot.on("guildMemberAdd",async member=>{
 // #																		#
 // #								MEMBER LEFT								#
 // #																		#
-// ##########################################################################
+// #########################################################################
+moderatorBot.on("guildMemberRemove", async member => {
+	console.info(member.id + " left the server");
+});
 
 
 
@@ -958,7 +961,7 @@ moderatorBot.on("message",async message => {
 				// COMMAND ► !CHECK SERVER
 				if(args[0]==="server"){
 					let guildMembers=await guild.members.cache.map(m=>m);
-					let milSecs=2500, daServers="", totalSpoofers=0, n=0, nd=1;
+					let daServers="", totalSpoofers=0, n=0, nd=1;
 					
 					// SEND NOTIFICATION
 					slackMSG.embeds=[{
@@ -977,34 +980,37 @@ moderatorBot.on("message",async message => {
 							+guildMembers.length+"** registered users <(^.^<)"}]});
 					}
 					
-					for(var xUser=0; xUser < guildMembers.length; xUser++){
-						setTimeout(async function(){
-							console.info(timeStamp()+" ["+cc.yellow+nd+cc.reset+"/"+cc.green+guildMembers.length+cc.reset+"] Checking memberID: "+cc.cyan+guildMembers[n].id+cc.reset+" with userName: "+cc.cyan+guildMembers[n].user.username+cc.reset);
-							
-							let memberStillHere=await moderatorBot.guilds.cache.get(myServer.id).members.cache.get(guildMembers[n].id);
+					for(let xUser=0; xUser < guildMembers.length; xUser++){
+						console.info(timeStamp()+" ["+cc.yellow+nd+cc.reset+"/"+cc.green+guildMembers.length+cc.reset+"] Checking memberID: "+cc.cyan+guildMembers[n].id+cc.reset+" with userName: "+cc.cyan+guildMembers[n].user.username+cc.reset);
+						
+						let memberStillHere=await moderatorBot.guilds.cache.get(myServer.id).members.cache.get(guildMembers[n].id) || "nope";
+						if(memberStillHere==="nope"){
+							console.info(timeStamp()+" Member above has left the server during check.");
+						}
+						else{
 							let spoofServersFound=await checkMember(guildMembers[n].id);
 							let daMember=await isWhiteListed(guildMembers[n].id);
 							// DO NOT POST FINDING FOR STAFF
 							if(daMember.isWhiteListed==="yes"){
 								spoofServersFound=[];
 								if(daMember.memberIs==="Bot"){
-									console.info(timeStamp()+" Member above is "+cc.purple+"Bot"+cc.reset+".... so "+cc.green+"shhhhhh!"+cc.reset)
+									console.info(timeStamp()+" Member above is "+cc.purple+"Bot"+cc.reset+".... so "+cc.green+"shhhhhh!"+cc.reset);
 								}
 								if(daMember.memberIs==="Bot Owner"){
-									console.info(timeStamp()+" Member above is "+cc.purple+"Bot Owner"+cc.reset+".... so "+cc.green+"shhhhhh!"+cc.reset)
+									console.info(timeStamp()+" Member above is "+cc.purple+"Bot Owner"+cc.reset+".... so "+cc.green+"shhhhhh!"+cc.reset);
 								}
 								if(daMember.memberIs==="WhitelistedUser"){
-									console.info(timeStamp()+" Member above is a "+cc.green+"whiteListedMember"+cc.reset+"!")
+									console.info(timeStamp()+" Member above is a "+cc.green+"whiteListedMember"+cc.reset+"!");
 								}
 								if(daMember.memberIs==="WhitelistedRoled"){
-									console.info(timeStamp()+" Member above has "+cc.green+"whiteListedRole(s)"+cc.reset+"!")
-								}
+									console.info(timeStamp()+" Member above has "+cc.green+"whiteListedRole(s)"+cc.reset+"!");
+								}	
 							}
 
 							// DO NOT CHECK OTHER BOTS
 							if(guildMembers[n].user.bot){
 								spoofServersFound=[];
-								console.info(timeStamp()+" I have skipped the user above due to user being another \""+cc.purple+"BOT"+cc.reset+"\"!")
+								console.info(timeStamp()+" I have skipped the user above due to user being another \""+cc.purple+"BOT"+cc.reset+"\"!");
 							}
 
 							//	CHECK IF MY SERVER IS IN ALL SERVERS AND REMOVE IT
@@ -1032,7 +1038,7 @@ moderatorBot.on("message",async message => {
 									+cc.red+"FOUND"+cc.reset+" in Server(s): "+cc.cyan+spoofServersFound.join(cc.reset+", "+cc.cyan)+cc.reset);
 
 								// ADD TO TOTALSPOOFERS COUNT
-								totalSpoofers++
+								totalSpoofers++;
 
 								// RESET DATA FOR NEXT MEMBER IN WAIT-LIST
 								spoofServersFound=[];
@@ -1047,26 +1053,22 @@ moderatorBot.on("message",async message => {
 									"description": "**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **"+totalSpoofers
 										+"** potential spoOfers!\n.\nOut of **"+guildMembers.length+"** registered members\n**On**: "+timeStamp(1)
 								}];
-								console.info(timeStamp()+" "+cc.hlgreen+" DONE "+cc.reset+" I have checked "+cc.green+guildMembers.length+cc.reset+" and found "+cc.red+totalSpoofers+cc.reset+" potential spoofers!")
+								console.info(timeStamp()+" "+cc.hlgreen+" DONE "+cc.reset+" I have checked "+cc.green+guildMembers.length+cc.reset+" and found "+cc.red+totalSpoofers+cc.reset+" potential spoofers!");
 
 								if(config.botSupport==="yes"){ globalNinjaWh.send(timeStamp(2)+"**"+myServer.name+"** has found `"
 									+totalSpoofers+"` spoofers, out of `"+guildMembers.length+"` users on their server <(^.^<)"); }
 
 								SpoofNinja.send(channel,slackMSG);
 								if(channel.id!==myServer.cmdChanIDs[0]){
-									SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG)
+									SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG);
 								}
 							}
-							
+						}
 							// ADD +1 TO COUNT TO CHECK NEXT MEMBER
-							n++, nd++;
-						}, milSecs);
-
-						// ADD 1 SECOND TO NEXT MEMBER CHECK FROM SERVER
-						milSecs=milSecs+2500;
+						n++, nd++;
 					}
-					return
-				}
+				return;
+			}
 
 				// CHECK IF SOMEONE WAS MENTIONED AND THAT MEMBER EXIST WITHIN MY OWN SERVER
 				let mentionMember=""; if(message.mentions.users.first()){mentionMember=await guild.members.cache.get(message.mentions.users.first().id)}
@@ -1478,7 +1480,7 @@ moderatorBot.on("message",async message => {
 												}
 												else{
 													// CHECK IF MEMBER IS IN A SPOOFING SERVER
-													let spoofServersFoundAgain=checkMember(tempMember.id);
+													let spoofServersFoundAgain= await checkMember(tempMember.id);
 
 													// CHECK IF MY SERVER IS IN ALL SERVERS AND REMOVE IT
 													if(spoofServersFoundAgain.includes(myServer.name)){
