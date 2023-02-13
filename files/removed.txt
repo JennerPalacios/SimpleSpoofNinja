@@ -40,6 +40,98 @@ REMOVED DUE TO INACTIVITY/DEAD/NO-INVITE:
         {"server": "209481682720522240", "name": "KimCordashian",
             "invite": "4RbwSHj",
                 "dateChecked": "20180318", "notes": "Botting, Dead"
+        },
+	{"id": "407724585358852107", "name": "ExRaidPushers",
+                "invite": "https://discord.gg/Wmwn8qp",
+                        "dateChecked": "20191012", "notes": "Dead"
+        },
+        {"id": "465816079554445332", "name": "iSpoofer",
+                "invite": "https://discord.gg/pvQwqSe",
+                        "dateChecked": "20191012", "notes": "Rebranded then Died"
+        },
+        {"id": "245525908847329280", "name": "DiscPokeSnipers",
+                "invite": "https://discord.gg/eZJZDE7",
+                        "dateChecked": "20191012", "notes": "Spoofing, Dead → DEAD 4.5k+"
+        },
+	{"id": "264132120337711105", "name": "OuDaPoke", 
+                "invite": "https://discord.gg/gPpBwAv", 
+                        "dateChecked": "20191012", "notes": "Couldn't survive the rona" 
+        }, 
+	{"id": "314469632759169024", "name": "PokeMurph",
+                "invite": "https://discord.gg/Rk2DYyG",
+                        "dateChecked": "20191012", "notes": "Basically dead"
+        },
+	{"id": "297839926970417152", "name": "PokeNoobs",
+                "invite": "https://discord.gg/HeqAtNy",
+                        "dateChecked": "20191012", "notes": "Also dead"
+        },
+	{"id": "213950622473388032", "name": "PogoNinja",
+                "invite": "https://discord.gg/CtJP7WU",
+                        "dateChecked": "20191012", "notes": "Dead for long time"
+        },
+	{"id": "212977806819196938", "name": "CatchemPoGoBot",
+                "invite": "https://discord.gg/pPwxX8Q",
+                        "dateChecked": "20191012", "notes": "Dead, Spoofing, Botting → DEAD 23k+"
+        },
+	{"id": "211288195462201347", "name": "PokeSnipersV2",
+                "invite": "https://discord.gg/ueny2ej",
+                        "dateChecked": "20191012", "notes": "Dead, Spoofing, Little Activity, moved to Catch 'Em All → DEAD 19.5k+"
+        },
+	{"id": "208587704823316480", "name": "PokeFarmer",
+                "invite": "https://discord.gg/Zw278sX",
+                        "dateChecked": "20191012", "notes": "Dead, Botting, Accounts for Sale → DEAD 6.5k+"
+        },
+        {"id": "208694020313055233", "name": "SytharixMarket",
+                "invite": "https://discord.gg/hQpvJaE",
+                        "dateChecked": "20191012", "notes": "Dead, Botting, Accounts for Sale → DEAD 6.5k+"
+        },
+	{"id": "207436506833354754", "name": "HackEmon",
+                "invite": "https://discord.gg/mMhuG6q",
+                        "dateChecked": "20191012", "notes": "Dead, Spoofing → DEAD 5.5k+"
+        },
+	{"id": "210496959973294081", "name": "BPGM",
+                "invite": "https://discord.gg/SQMcuXc",
+                        "dateChecked": "20191012", "notes": "CONSIDER LEAVING, Dead, Botting, Accounts for Sale → DEAD 2K+"
+        },
+	{"id": "220608494934556672", "name": "GoMan.io", 
+                "invite": "https://discord.gg/GD43ZCG", 
+                        "dateChecked": "20191012", "notes": "CONSIDER LEAVING, Dead, Botting, Accounts for Sale → DEAD 1.5k+" 
+        }, 
+	{"id": "235509605994594304", "name": "PoGoSpoof", 
+                "invite": "https://discord.gg/HhY8FG2", 
+                        "dateChecked": "20191012", "notes": "Dead, Spoofing, Botting → DEAD 1.5k+" 
+        },
+	{"id": "208485545439920128", "name": "RocketBot",
+                "invite": "https://discord.gg/FANTZCG",
+                        "dateChecked": "20191012", "notes": "CONSIDER LEAVING, Dead, Botting, Dead → DEAD 1.5k+"
+        },
+        {"id": "341581188567269376", "name": "UnownJay",
+                "invite": "https://discord.gg/zBaPkAq",
+                        "dateChecked": "20191012", "notes": "CONSIDER LEAVING, Dead, Spoofing → DEAD 500+"
+        },
+        {"id": "335455302965002242", "name": "AccManager",
+                "invite": "https://discord.gg/rkm4xhX",
+                        "dateChecked": "20191012", "notes": "CONSIDER LEAVING, Dead, Botting, Dead → DEAD 500+"
+        },
+        {"id": "301096455509245952", "name": "PokeGoScout",
+                "invite": "https://discord.gg/PQpb6bN or https://discord.gg/6bEgfrW",
+                        "dateChecked": "20191012", "notes": "CONSIDER LEAVING, Dead, Spoofing, Dead, but live website → DEAD 500+"
+        },
+        {"id": "295165433340755970", "name": "PoGoMarketPlace",
+                "invite": "https://discord.gg/ZdaJuqA",
+                        "dateChecked": "20191012", "notes": "CONSIDER LEAVING, Dead, Botting, Accounts for Sale → DEAD 500+"
+        },
+        {"id": "218144442345979906", "name": "PoGoCommunity",
+                "invite": "https://discord.gg/CGYvRga",
+                        "dateChecked": "20191012", "notes": "CONSIDER LEAVING, Dead, Botting, Dead, Accounts for Sale → DEAD 500+"
+        },
+        {"id": "368059775008768000", "name": "PokeGOMaster",
+                "invite": "https://discord.gg/bTfhuBc",
+                        "dateChecked": "20191012", "notes": "CONSIDER LEAVING, Dead, Botting, Accounts for Sale → DEAD 300+ ► Former PokeXen"
+        },
+        {"id": "306443147452612608", "name": "MrSnorlax",
+                "invite": "https://discord.gg/8hB2TUs",
+                        "dateChecked": "20191012", "notes": "CONSIDER LEAVING, Dead, Spoofing, Active → DEAD 100+"
         }
 
 ▲ Please remove them, to go easy on your CPU; so that your bot doesn't load all the members and registered members from those servers... if you dont know how to effectively-and-efficiently leave those server, I'll upload a short vid later tomorrow
