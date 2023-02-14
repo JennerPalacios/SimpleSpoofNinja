@@ -10,17 +10,20 @@ const Discord=require("discord.js");
 const fs=require("fs");
 const request = require("request");
 const spoofServers=require("./files/servers.json");
+const allowUserBotting = require('discord.js.userbot');
 const moderatorBot=new Discord.Client({fetchAllMembers: true});
 //
 //		PICK ONE BELOW, ONLY ONE CAN BE ENABLED, THE OTHER ONE MUST BE COMMENTED-OUT BY ADDING "//" AT THE BEGINNING
 //		"SLOW LOAD" IS RECOMMENDED WHEN LAUNCHING THE BOT FOR THE FIRST TIME, IT GRABS ALL MEMBERS FROM ALL SERVERS
 //
-const bot=new Discord.Client({fetchAllMembers: true}); //		SLOW LOAD - GET OVER 1B MEMBERS (FROM ALL SERVERS)
+const bot=new Discord.Client(); //		SLOW LOAD - GET OVER 1B MEMBERS (FROM ALL SERVERS)
 //const bot=new Discord.Client(); //							FAST LOAD - GET ACTIVE MEMBERS ONLY
 //
 //
 //
-
+allowUserBotting(bot);
+bot.setMaxListeners(100);
+moderatorBot.setMaxListeners(100);
 
 //
 //		FUNCTION: TIME STAMP
@@ -49,7 +52,7 @@ function timeStamp(type){
 //		DEFINE GLOBAL AND COMMON VARIABLES
 //
 var config=require("./files/config.json");		// CONFIG FILE
-	config.botVersion="4.7";					// LOCAL VERSION
+	config.botVersion="4.8";					// LOCAL VERSION
 //
 //
 //
@@ -125,10 +128,10 @@ globalNinjaWh.send({"embeds": [{"description": timeStamp(2)+" Gratz! **"+myServe
 var SpoofNinja="";
 class SpoofNinjaWhCatcher{
 	send(channel,slackMSG,msgContent){
-		moderatorBot.guilds.get(myServer.id).channels.get(channel.id).fetchWebhooks()
+		moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(channel.id).fetchWebhooks()
 		.then(wh=>{
 			if(wh.size<1){
-				moderatorBot.guilds.get(myServer.id).channels.get(channel.id).createWebhook("SpoofNinja["+Math.floor(Math.random()*9999)+"]",spoofNinja.avatar,"Bot created")
+				moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(channel.id).createWebhook("SpoofNinja["+Math.floor(Math.random()*9999)+"]",spoofNinja.avatar,"Bot created")
 				.then(whData=>{
 					let spoofNinjaWh=new Discord.WebhookClient(whData.id,whData.token);
 					if(msgContent){
@@ -156,10 +159,10 @@ class SpoofNinjaWhCatcher{
 
 
 function flareHome(){
-	moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]).fetchWebhooks()
+	moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]).fetchWebhooks()
 	.then(wh=>{
 		if(wh.size<1){
-			moderatorBot.guilds.get(myServer.id).channels.get(channel.id).createWebhook("SpoofNinja["+Math.floor(Math.random()*9999)+"]",spoofNinja.avatar,"Bot created")
+			moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(channel.id).createWebhook("SpoofNinja["+Math.floor(Math.random()*9999)+"]",spoofNinja.avatar,"Bot created")
 			.then(whData=>{
 				let spoofNinjaWh=new Discord.WebhookClient(whData.id,whData.token)
 				if(!myServer.invite){myServer.invite="no invite"}
@@ -196,37 +199,37 @@ function parseColor(color){
 //		CHECK CONFIG FOR RIGHT INFO INPUT BY MEMBER
 //
 if(!Number.isInteger(parseInt(config.ownerID))){
-	return console.info(cc.hlred+" ERROR "+cc.reset+"  config.json ► \"ownerID\" = wrong format, it needs to be numbers")
+	console.info(cc.hlred+" ERROR "+cc.reset+"  config.json ► \"ownerID\" = wrong format, it needs to be numbers");
 }
 if(config.consoleLog==="eventsOnly" || config.consoleLog==="serverOnly" || config.consoleLog==="all"){ /* VALID OPTIONS */ } else{
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"ownerID\" = needs to be either \"eventsOnly\" or \"serverOnly\" or \"all\"")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"ownerID\" = needs to be either \"eventsOnly\" or \"serverOnly\" or \"all\"");
 }
 if(!Number.isInteger(parseInt(config.spoofNinja.id))){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"spoofNinja\" ► \"id\" = wrong format, it needs to be numbers")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"spoofNinja\" ► \"id\" = wrong format, it needs to be numbers");
 }
 if(!spoofNinja.token){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"spoofNinja\" ► \"token\" = needs a token!")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"spoofNinja\" ► \"token\" = needs a token!");
 }
 if(!config.moderatorBot.token){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"moderatorBot\" ► \"token\" = needs a token!")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"moderatorBot\" ► \"token\" = needs a token!");
 }
 if(!Number.isInteger(parseInt(myServer.id))){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► myServer ► \"id\" = wrong format, it needs to be numbers")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► myServer ► \"id\" = wrong format, it needs to be numbers");
 }
 if(!myServer.cmdChanIDs){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs at least one channel ID")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs at least one channel ID");
 }
 if(!Array.isArray(myServer.cmdChanIDs)){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs to be an array: ie: "+cc.yellow+"[\"####\"]"+cc.reset+" or "+cc.yellow+"[\"####\",\"####\"]"+cc.reset)
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs to be an array: ie: "+cc.yellow+"[\"####\"]"+cc.reset+" or "+cc.yellow+"[\"####\",\"####\"]"+cc.reset);
 }
 if(myServer.cmdChanIDs.length<1){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs at least one channel ID")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"cmdChanIDs\" = needs at least one channel ID");
 }
 if(!myServer.adminRoleName){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"adminRoleName\" = needs the name of role for Admins!")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"adminRoleName\" = needs the name of role for Admins!");
 }
 if(!myServer.modRoleName){
-	return console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"modRoleName\" = needs the name of role for Moderators!")
+	console.info(cc.hlred+" ERROR "+cc.reset+" config.json ► \"myServer\" ► \"modRoleName\" = needs the name of role for Moderators!");
 }
 
 
@@ -246,7 +249,7 @@ bot.on("ready",()=>{
 			"color": parseColor(embedSettings.goodColor),
 			"description": "I am ready to **scan** __this__ server against **"+spoofServers.length+"**-other **spoOfing** servers!"
 		}];
-		SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG);
+		SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG);
 	}, 5000);
 	
 	// CONSOLE SPOOF NINJA HAS STARTED
@@ -292,45 +295,59 @@ bot.on("ready",()=>{
 //
 //				FUNCTION: CHECK MEMBER ON ALL SERVERS
 //
+
+async function prememberCheck(memberID,serverID,serverName){
+	correctServer='';
+	try{
+		noobFound = await bot.guilds.cache.get(serverID).members.fetch(memberID);
+                if(noobFound.user.id===memberID){
+			correctServer=serverName;
+                }
+        }
+
+        catch(error){
+		correctServer = '';
+        }
+
+	return correctServer;
+}
+
+		
+
 async function checkMember(memberID){
 	memberIsSpoofer="no", serversFound=[];
 	
 	// CHECK ALL SERVERS FROM SERVERLIST
-	await spoofServers.forEach(async server=>{
+	await Promise.all(spoofServers.map(async server=>{
+	//for (const server of spoofServers){
+	
 		
 		// CHECK IF DUMMY ACCOUNT IS IN EACH SERVER
-		botIsInServer=await bot.guilds.get(server.id) || "no";
+		botIsInServer=await bot.guilds.cache.get(server.id) || "no";
 		if(botIsInServer==="no"){
 			console.info(timeStamp()+" "+cc.hlyellow+" WARNING "+cc.reset+" I am not in server: "+cc.cyan+server.name+cc.reset
 				+" | Please join using invite code: "+cc.cyan+server.invite+cc.reset+"..."
 				+" or remove line from \""+cc.purple+"servers.json"+cc.reset+"\" and wait for update (if botsupport is enabled)");
 		}
 		else{
-			
-			// CHECK IF MEMBER IS IN EACH SERVER
-			noobFound=await bot.guilds.get(server.id).members.get(memberID) || "no";
-			if(noobFound==="no"){
-				/* NOOB WASNT FOUND IN THIS SERVER */
-			}
-			else{
-				await serversFound.push(server.name);
-				memberIsSpoofer=await "yes";
-			}
+				memberInServer = await prememberCheck(memberID, server.id, server.name);
+				if (memberInServer != ''){
+					await serversFound.push(memberInServer);
+		                	memberIsSpoofer=await "yes";
+				}
 		}
-	});
+	}));
+	//}
 	
 	// CHECK PERSONAL SERVER IN CASE MEMBER JOINS SPOOF SERVER AFTER JOINING MY SERVER
-	noobFound=await moderatorBot.guilds.get(myServer.id).members.get(memberID) || "no";
+	noobFound=await moderatorBot.guilds.cache.get(myServer.id).members.cache.get(memberID) || "no";
 	if(noobFound==="no"){
-		/* MEMBER IS NOT IN MY SERVER */
-	}
-	else{
-		serversFound.push(myServer.name)
+		serversFound.push(myServer.name);
 	}
 	
 	// SEND DATA BACK TO VARIABLE
 	//console.info("serversFound from "+cc.purple+"checkMember()"+cc.reset+":");console.info(serversFound);//
-	return await serversFound;
+	return serversFound;
 }
 
 
@@ -355,6 +372,7 @@ async function checkJoinedServer(serverID){
 			}
 		});
 	}
+
 	
 	// SEND DATA BACK TO VARIABLE
 	return await noobJoined;
@@ -385,12 +403,12 @@ async function isWhiteListed(memberID){
 	
 	// MEMBER HAS WHITELISTED ROLES
 	if(whiteListedRoles.length>0){
-		noobFound=await moderatorBot.guilds.get(myServer.id).members.get(memberID) || "no";
+		noobFound=await moderatorBot.guilds.cache.get(myServer.id).members.cache.get(memberID) || "no";
 		if(noobFound==="no"){
 			/* MEMBER IS NOT IN MY SERVER */
 		}
 		else{
-			let memberRoleNames=await noobFound.roles.map(role=>role.name);
+			let memberRoleNames=await noobFound.roles.cache.map(role=>role.name);
 			if(memberRoleNames.length>0){
 				for(let n="0"; n < memberRoleNames.length; n++){
 					if(myServer.whiteListedRoles.includes(memberRoleNames[n])){
@@ -507,7 +525,7 @@ async function parseJoinResults(member,servers,serverJoined){
 		}];
 		
 		// SEND DATA TO CHANNEL
-		SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG);
+		SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG);
 	}
 }
 
@@ -517,28 +535,6 @@ async function parseJoinResults(member,servers,serverJoined){
 // #								MEMBER JOINS							#
 // #																		#
 // ##########################################################################
-bot.on("guildMemberAdd",async member=>{
-	//console.info(member.user.username+" joined: "+member.guild.name+"|"+member.guild.id);//
-	
-	memberIsSpoofer="no",myServerFound="no";
-	
-	// STOP ► IF MEMBER IS BOT
-	if(member.user.bot){ return }
-	
-	// CHECK IF MEMBER IS IN A SPOOFING SERVER
-	let spoofServersFound=await checkMember(member.id);
-	//console.info(cc.red+"spoofServersFound("+spoofServersFound.length+"): "+spoofServersFound+cc.reset);//
-	
-	// CHECK THE SERVER THEY JOINED
-	let serverJoined=await checkJoinedServer(member.guild.id);
-	//console.info(cc.red+"serverJoined: "+serverJoined+cc.reset);//
-	
-	// STOP ► IF BOT DIDNT FIND MEMBER JOINING A KNOWN SPOOF SERVER OR MY SERVER
-	if(serverJoined==="unknownServer"){ return }
-	
-	// PARSE JOINING RESULTS ► POST RESULTS OR IGNORE
-	parseJoinResults(member,spoofServersFound,serverJoined);
-});
 moderatorBot.on("guildMemberAdd",async member=>{
 	memberIsSpoofer="no",myServerFound="yes";
 	
@@ -564,77 +560,10 @@ moderatorBot.on("guildMemberAdd",async member=>{
 // #																		#
 // #								MEMBER LEFT								#
 // #																		#
-// ##########################################################################
-
-bot.on("guildMemberRemove",async member => {
-	//console.info(member.user.username+" left: "+member.guild.name+"|"+member.guild.id);//
-	
-	// EXIT IF BOT
-	if(member.user.bot){ return }
-	
-	// RESET VARIABLES
-	let spoofServer="";
-	
-	// CHECK ALL SERVERS FROM SERVERLIST
-	for(let serverN="0"; serverN < spoofServers.length; serverN++){
-		if(member.guild.id===spoofServers[serverN].server){
-			spoofServer=spoofServers[serverN].name;
-		}
-	}
-	
-	// LOGGING EACH EVENT , TO DISABLE/REMOVE: DELETE EACH LINE, OR ADD COMMENT PARAM: //
-	if(!spoofServer && !moderatorBot.guilds.get(myServer.id).members.get(member.id)){
-		if(config.consoleLog==="all"){
-			return console.info(timeStamp()+" "+cc.cyan+member.user.username+cc.reset+"("+cc.lblue+member.id+cc.reset+") has "+cc.green+"left"+cc.reset+" server: "+cc.cyan+member.guild.name+cc.reset);
-		}
-	}
-	
-	// SERVER IS NOT ON THE LIST BUT I'M ON THE SERVER, MAYBE FORGOT TO ADD IT? GRAB THE NAME FROM THE SERVER
-	if(!spoofServer){
-		spoofServer=member.guild.name
-	}
-	
-	// CHECK IF MEMBER IS STILL IN MY SERVER
-	noobFound=await moderatorBot.guilds.get(myServer.id).members.get(member.id) || "no";
-	if(noobFound==="no"){
-		/* MEMBER IS NO LONGER IN MY SERVER */
-	}
-	else{
-		// CHECK IF MEMBER IS WHITELISTED OR HAS WHITELISTED ROLES
-		let daMember=await isWhiteListed(member.id);
-		
-		// DO NOT POST FINDING FOR STAFF
-		if(daMember.isWhiteListed==="yes"){
-			if(daMember.memberIs==="Bot"){
-				return console.info(timeStamp()+" Bot has left: "+cc.cyan+spoofServer+cc.reset)
-			}
-			if(daMember.memberIs==="Bot Owner"){
-				return console.info(timeStamp()+" Bot Owner has left: "+cc.cyan+spoofServer+cc.reset)
-			}
-			if(daMember.memberIs==="WhitelistedUser"){
-				return console.info(timeStamp()+" "+cc.cyan+member.user.username+cc.reset+"("+cc.lblue+member.id+cc.reset+") has left: "+cc.cyan+spoofServer+cc.reset+". But they are "+cc.green+"whiteListed"+cc.reset+"!")
-			}
-			if(daMember.memberIs==="WhitelistedRoled"){
-				return console.info(timeStamp()+" "+cc.cyan+member.user.username+cc.reset+"("+cc.lblue+member.id+cc,reset+") has left: "+cc.cyan+spoofServer+cc.reset+". But they have "+cc.green+"whiteListedRole(s)"+cc.reset+"!")
-			}
-		}
-		else{
-			// MODIFY EMBED
-			slackMSG.embeds=[{
-				"color": parseColor(embedSettings.goodColor),
-				"thumbnail": {"url": embedSettings.checkedImg},
-				"description": "✅ __**MEMBER LEFT SERVER**__ ✅\n**"
-					+member.user.username+"** has left: **"+spoofServer+"**\n**UserID**: `"+member.id+"`\n**On**: "+timeStamp(1)
-			}];
-
-			console.info(timeStamp()+" "+cc.cyan+member.user.username+cc.reset+"("+cc.lblue+member.id+cc.reset+") has left: "+cc.cyan+spoofServer+cc.reset);
-
-			// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
-			return SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG)
-		}
-	}
+// #########################################################################
+moderatorBot.on("guildMemberRemove", async member => {
+	console.info(member.id + " left the server");
 });
-
 
 
 
@@ -706,9 +635,9 @@ moderatorBot.on("message",async message => {
 	let args=message.content.toLowerCase().split(/ +/).slice(1); ARGS=message.content.split(/ +/).slice(1);
 
 	// LOAD ADMIN AND MOD ROLES
-	let adminRole=await guild.roles.find(role=>role.name===myServer.adminRoleName);
+	let adminRole=await guild.roles.cache.find(role=>role.name===myServer.adminRoleName);
 	if(!adminRole){adminRole={"id":"101010"};console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.purple+myServer.adminRoleName+cc.reset)}
-	let modRole=await guild.roles.find(role=>role.name===myServer.modRoleName);
+	let modRole=await guild.roles.cache.find(role=>role.name===myServer.modRoleName);
 	if(!modRole){modRole={"id":"101010"};console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" [CONFIG] I could not find role: "+cc.purple+myServer.modRoleName+cc.reset)}
 
 	
@@ -717,7 +646,7 @@ moderatorBot.on("message",async message => {
 		//
 		//
 		//
-		if(member.roles.has(modRole.id) || member.roles.has(adminRole.id) || member.id===config.ownerID){ // DISABLE FOR GLOBAL USE - ANY MEMBER - AT DEVELOPER'S SERVER
+		if(member.roles.cache.has(modRole.id) || member.roles.cache.has(adminRole.id) || member.id===config.ownerID){ // DISABLE FOR GLOBAL USE - ANY MEMBER - AT DEVELOPER'S SERVER
 		//
 		//
 		//
@@ -1031,8 +960,8 @@ moderatorBot.on("message",async message => {
 				
 				// COMMAND ► !CHECK SERVER
 				if(args[0]==="server"){
-					let guildMembers=await guild.members.map(m=>m);
-					let milSecs=1000, daServers="", totalSpoofers=0, n=0, nd=1;
+					let guildMembers=await guild.members.cache.map(m=>m);
+					let daServers="", totalSpoofers=0, n=0, nd=1;
 					
 					// SEND NOTIFICATION
 					slackMSG.embeds=[{
@@ -1043,7 +972,7 @@ moderatorBot.on("message",async message => {
 					}];
 					
 					SpoofNinja.send(channel,slackMSG);
-					if(channel.id!==myServer.cmdChanIDs[0]){SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG)}
+					if(channel.id!==myServer.cmdChanIDs[0]){SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG)}
 					console.info(timeStamp()+" About to check "+cc.cyan+guildMembers.length+cc.reset+" users, from server: "+cc.cyan+myServer.name+cc.reset);
 					
 					if(config.botSupport==="yes"){
@@ -1051,109 +980,102 @@ moderatorBot.on("message",async message => {
 							+guildMembers.length+"** registered users <(^.^<)"}]});
 					}
 					
-					for(var xUser=0; xUser < guildMembers.length; xUser++){
-						setTimeout(async function(){
-							console.info(timeStamp()+" ["+cc.yellow+nd+cc.reset+"/"+cc.green+guildMembers.length+cc.reset+"] Checking memberID: "+cc.cyan+guildMembers[n].id+cc.reset+" with userName: "+cc.cyan+guildMembers[n].user.username+cc.reset);
-							
-							let memberStillHere=await moderatorBot.guilds.get(myServer.id).members.get(guildMembers[n].id) || "nope";
-							if(memberStillHere==="nope"){
-								console.info(timeStamp()+" Member above has left the server during check.");
+					for(let xUser=0; xUser < guildMembers.length; xUser++){
+						console.info(timeStamp()+" ["+cc.yellow+nd+cc.reset+"/"+cc.green+guildMembers.length+cc.reset+"] Checking memberID: "+cc.cyan+guildMembers[n].id+cc.reset+" with userName: "+cc.cyan+guildMembers[n].user.username+cc.reset);
+						
+						let memberStillHere=await moderatorBot.guilds.cache.get(myServer.id).members.cache.get(guildMembers[n].id) || "nope";
+						if(memberStillHere==="nope"){
+							console.info(timeStamp()+" Member above has left the server during check.");
+						}
+						else{
+							let spoofServersFound=await checkMember(guildMembers[n].id);
+							let daMember=await isWhiteListed(guildMembers[n].id);
+							// DO NOT POST FINDING FOR STAFF
+							if(daMember.isWhiteListed==="yes"){
+								spoofServersFound=[];
+								if(daMember.memberIs==="Bot"){
+									console.info(timeStamp()+" Member above is "+cc.purple+"Bot"+cc.reset+".... so "+cc.green+"shhhhhh!"+cc.reset);
+								}
+								if(daMember.memberIs==="Bot Owner"){
+									console.info(timeStamp()+" Member above is "+cc.purple+"Bot Owner"+cc.reset+".... so "+cc.green+"shhhhhh!"+cc.reset);
+								}
+								if(daMember.memberIs==="WhitelistedUser"){
+									console.info(timeStamp()+" Member above is a "+cc.green+"whiteListedMember"+cc.reset+"!");
+								}
+								if(daMember.memberIs==="WhitelistedRoled"){
+									console.info(timeStamp()+" Member above has "+cc.green+"whiteListedRole(s)"+cc.reset+"!");
+								}	
 							}
-							else{
-								let spoofServersFound=await checkMember(guildMembers[n].id);
-								let daMember=await isWhiteListed(guildMembers[n].id);
 
-								// DO NOT POST FINDING FOR STAFF
-								if(daMember.isWhiteListed==="yes"){
-									spoofServersFound=[];
-									if(daMember.memberIs==="Bot"){
-										console.info(timeStamp()+" Member above is "+cc.purple+"Bot"+cc.reset+".... so "+cc.green+"shhhhhh!"+cc.reset)
+							// DO NOT CHECK OTHER BOTS
+							if(guildMembers[n].user.bot){
+								spoofServersFound=[];
+								console.info(timeStamp()+" I have skipped the user above due to user being another \""+cc.purple+"BOT"+cc.reset+"\"!");
+							}
+
+							//	CHECK IF MY SERVER IS IN ALL SERVERS AND REMOVE IT
+							if(spoofServersFound.includes(myServer.name)){
+								myServerFound="yes"; spoofServersFound=spoofServersFound.slice(0,-1);
+							}
+
+							if(spoofServersFound.length>0){
+								//
+								//				SLACK TEMPLATE WITH SPOOF THUMBNAIL
+								//
+								slackMSG.embeds=[{
+									"thumbnail": {"url": embedSettings.snipeImg },
+									"color": parseColor(embedSettings.warningColor),
+									"description": "⚠ __**WARNING**__ ⚠\n**User**: "+guildMembers[n].user.username+"\n**Tag/ID**: <@"+guildMembers[n].id+"> \nWas **found** in server(s): \n"
+										+spoofServersFound.join(", ")+"\n**On**: "+timeStamp(1),
+									"footer": {
+										"text": "User #"+nd+" of "+guildMembers.length+"..."
 									}
-									if(daMember.memberIs==="Bot Owner"){
-										console.info(timeStamp()+" Member above is "+cc.purple+"Bot Owner"+cc.reset+".... so "+cc.green+"shhhhhh!"+cc.reset)
-									}
-									if(daMember.memberIs==="WhitelistedUser"){
-										console.info(timeStamp()+" Member above is a "+cc.green+"whiteListedMember"+cc.reset+"!")
-									}
-									if(daMember.memberIs==="WhitelistedRoled"){
-										console.info(timeStamp()+" Member above has "+cc.green+"whiteListedRole(s)"+cc.reset+"!")
-									}
-								}
+								}];
+								// POST NOOB FOUND IN SPOOFER SERVER
+								SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG);
 
-								// DO NOT CHECK OTHER BOTS
-								if(guildMembers[n].user.bot){
-									spoofServersFound=[];
-									console.info(timeStamp()+" I have skipped the user above due to user being another \""+cc.purple+"BOT"+cc.reset+"\"!")
-								}
+								console.log(timeStamp()+" "+cc.cyan+guildMembers[n].user.username+cc.reset+"("+cc.lblue+guildMembers[n].id+cc.reset+") was "
+									+cc.red+"FOUND"+cc.reset+" in Server(s): "+cc.cyan+spoofServersFound.join(cc.reset+", "+cc.cyan)+cc.reset);
 
-								//	CHECK IF MY SERVER IS IN ALL SERVERS AND REMOVE IT
-								if(spoofServersFound.includes(myServer.name)){
-									myServerFound="yes"; spoofServersFound=spoofServersFound.slice(0,-1);
-								}
+								// ADD TO TOTALSPOOFERS COUNT
+								totalSpoofers++;
 
-								if(spoofServersFound.length>0){
-									//
-									//				SLACK TEMPLATE WITH SPOOF THUMBNAIL
-									//
-									slackMSG.embeds=[{
-										"thumbnail": {"url": embedSettings.snipeImg },
-										"color": parseColor(embedSettings.warningColor),
-										"description": "⚠ __**WARNING**__ ⚠\n**User**: "+guildMembers[n].user.username+"\n**Tag/ID**: <@"+guildMembers[n].id+"> \nWas **found** in server(s): \n"
-											+spoofServersFound.join(", ")+"\n**On**: "+timeStamp(1),
-										"footer": {
-											"text": "User #"+nd+" of "+guildMembers.length+"..."
-										}
-									}];
-									// POST NOOB FOUND IN SPOOFER SERVER
-									SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG);
-
-									console.log(timeStamp()+" "+cc.cyan+guildMembers[n].user.username+cc.reset+"("+cc.lblue+guildMembers[n].id+cc.reset+") was "
-										+cc.red+"FOUND"+cc.reset+" in Server(s): "+cc.cyan+spoofServersFound.join(cc.reset+", "+cc.cyan)+cc.reset);
-
-									// ADD TO TOTALSPOOFERS COUNT
-									totalSpoofers++
-
-									// RESET DATA FOR NEXT MEMBER IN WAIT-LIST
-									spoofServersFound=[];
-								}
+								// RESET DATA FOR NEXT MEMBER IN WAIT-LIST
+								spoofServersFound=[];
+							}
 
 
-								// END NOTIFICATION
-								if(nd===guildMembers.length){
-									slackMSG.embeds=[{
-										"thumbnail": {"url": embedSettings.endImg },
-										"color": parseColor(embedSettings.goodColor),
-										"description": "**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **"+totalSpoofers
-											+"** potential spoOfers!\n.\nOut of **"+guildMembers.length+"** registered members\n**On**: "+timeStamp(1)
-									}];
-									console.info(timeStamp()+" "+cc.hlgreen+" DONE "+cc.reset+" I have checked "+cc.green+guildMembers.length+cc.reset+" and found "+cc.red+totalSpoofers+cc.reset+" potential spoofers!")
+							// END NOTIFICATION
+							if(nd===guildMembers.length){
+								slackMSG.embeds=[{
+								"thumbnail": {"url": embedSettings.endImg },
+									"color": parseColor(embedSettings.goodColor),
+									"description": "**(>^.^)> ALL DONE <(^.^<)**\n.\nI __found__ a total of **"+totalSpoofers
+										+"** potential spoOfers!\n.\nOut of **"+guildMembers.length+"** registered members\n**On**: "+timeStamp(1)
+								}];
+								console.info(timeStamp()+" "+cc.hlgreen+" DONE "+cc.reset+" I have checked "+cc.green+guildMembers.length+cc.reset+" and found "+cc.red+totalSpoofers+cc.reset+" potential spoofers!");
 
-									if(config.botSupport==="yes"){ globalNinjaWh.send(timeStamp(2)+"**"+myServer.name+"** has found `"
-										+totalSpoofers+"` spoofers, out of `"+guildMembers.length+"` users on their server <(^.^<)"); }
+								if(config.botSupport==="yes"){ globalNinjaWh.send(timeStamp(2)+"**"+myServer.name+"** has found `"
+									+totalSpoofers+"` spoofers, out of `"+guildMembers.length+"` users on their server <(^.^<)"); }
 
-									SpoofNinja.send(channel,slackMSG);
-									if(channel.id!==myServer.cmdChanIDs[0]){
-										SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG)
-									}
+								SpoofNinja.send(channel,slackMSG);
+								if(channel.id!==myServer.cmdChanIDs[0]){
+									SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG);
 								}
 							}
-							
+						}
 							// ADD +1 TO COUNT TO CHECK NEXT MEMBER
-							n++, nd++;
-						}, milSecs);
-
-						// ADD 1 SECOND TO NEXT MEMBER CHECK FROM SERVER
-						milSecs=milSecs+1500;
+						n++, nd++;
 					}
-					return
-				}
+				return;
+			}
 
 				// CHECK IF SOMEONE WAS MENTIONED AND THAT MEMBER EXIST WITHIN MY OWN SERVER
-				let mentionMember=""; if(message.mentions.users.first()){mentionMember=await guild.members.get(message.mentions.users.first().id)}
+				let mentionMember=""; if(message.mentions.users.first()){mentionMember=await guild.members.cache.get(message.mentions.users.first().id)}
 
 				// IF MEMBER ID WAS PROVIDED INSTEAD OF @MENTIONED
 				if(Number.isInteger(parseInt(args[0]))){
-					mentionMember=await guild.members.get(args[0]) || {id: args[0], user: { username: "<@"+args[0]+">" } };
+					mentionMember=await guild.members.cache.get(args[0]) || {id: args[0], user: { username: "<@"+args[0]+">" } };
 				}
 
 				if(mentionMember.id){
@@ -1167,7 +1089,7 @@ moderatorBot.on("message",async message => {
 							"description": "✅ **"+mentionMember.user.username+"** appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍"
 						}];
 						if(channel.id!==myServer.cmdChanIDs[0]){
-							SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG)
+							SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG)
 						}
 						return SpoofNinja.send(channel,slackMSG)
 					}
@@ -1194,7 +1116,7 @@ moderatorBot.on("message",async message => {
 							"description": "✅ **"+mentionMember.user.username+"** appears to be an __honorably__-awesome\n **Pokemon Go Trainer** 👍 😍"
 						}];
 						if(channel.id!==myServer.cmdChanIDs[0]){
-							SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG)
+							SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG)
 						}
 						return SpoofNinja.send(channel,slackMSG)
 					}
@@ -1249,7 +1171,7 @@ moderatorBot.on("message",async message => {
 					}
 					// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
 					if(channel.id!==myServer.cmdChanIDs[0]){
-						SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG)
+						SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG)
 					}
 					return SpoofNinja.send(channel,slackMSG)
 				}
@@ -1261,7 +1183,7 @@ moderatorBot.on("message",async message => {
 
 					// SEND DATA TO CHANNEL AS WEBHOOK IN ORDER TO HIDE BOT'S IDENTITY
 					if(channel.id!==myServer.cmdChanIDs[0]){
-						SpoofNinja.send(moderatorBot.guilds.get(myServer.id).channels.get(myServer.cmdChanIDs[0]),slackMSG)
+						SpoofNinja.send(moderatorBot.guilds.cache.get(myServer.id).channels.cache.get(myServer.cmdChanIDs[0]),slackMSG)
 					}
 					return SpoofNinja.send(channel,slackMSG)
 				}
@@ -1424,9 +1346,9 @@ moderatorBot.on("message",async message => {
 									let catchID=spoofNinja[2].split(/ +/);
 									catchID=catchID[1].slice(2,-1);
 
-									if(!guild.members.get(catchID)){ return }
+									if(!guild.members.cache.get(catchID)){ return }
 
-									let tempMember=guild.members.get(catchID);
+									let tempMember=guild.members.cache.get(catchID);
 
 									if(spooferFlag==="nothing"){
 										return
@@ -1456,7 +1378,7 @@ moderatorBot.on("message",async message => {
 												+"**banned** in `"+minsUntilPunished+" minute(s)` if they haven\"t left the spoofing server(s)."}
 											}).catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:1374\n"+err.message)})
 										}
-										guild.members.get(catchID).send({embed: embedMSG}).catch(err=>{
+										guild.members.cache.get(catchID).send({embed: embedMSG}).catch(err=>{
 											console.info(timeStamp()+" "+cc.hlyellow+" WARNING "+cc.reset+" L:1377 | "+err.message+" | "
 												+"Member has disabled DMs or has blocked me... No "+cc.yellow+"warning"+cc.reset+" was sent, I will try to "
 												+cc.red+"ban"+cc.reset+" in "+cc.green+minsUntilPunished+" minute(s)"+cc.reset+" instead!")
@@ -1471,10 +1393,10 @@ moderatorBot.on("message",async message => {
 											"description": kickMSG.description
 										};
 										channel.send({embed:{"color":0xFF0000,"description":"<@"+catchID+"> has been **KICKED**! 💪"}});
-										guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
+										guild.members.cache.get(catchID).send({embed: embedMSG}).then(()=>{
 											try {
 												console.info(timeStamp()+" "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.lblue+tempMember.id+cc.reset+") ignored warning so they were "+cc.red+"KICKED"+cc.reset+"!")
-												guild.members.get(catchID).kick("AutoKick: Rule violation, user was found in spoofing server(s)")
+												guild.members.cache.get(catchID).kick("AutoKick: Rule violation, user was found in spoofing server(s)")
 											}
 											catch(err){
 												console.info(timeStamp()+" ["+cc.red+"ERROR"+cc.reset+"] L:1396\n"+err.message);
@@ -1482,7 +1404,7 @@ moderatorBot.on("message",async message => {
 										}).catch(err=>{
 											console.info(timeStamp()+" "+cc.hlyellow+" WARNING "+cc.reset+" L:1400 | "+err.message+" | "
 												+"Member has disabled DMs or has blocked me... so they were "+cc.red+"instantly banned"+cc.reset+" instead!");
-											guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
+											guild.members.cache.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
 										})
 									}
 
@@ -1494,10 +1416,10 @@ moderatorBot.on("message",async message => {
 											"description": banMSG.description
 										};
 										channel.send({embed:{"color":0xFF0000,"description":"<@"+catchID+"> has been **BANNED**! ⛔"}});
-										guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
+										guild.members.cache.get(catchID).send({embed: embedMSG}).then(()=>{
 											try {
 												console.info(timeStamp()+" "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.lblue+tempMember.id+cc.reset+") ignored warning so they were "+cc.red+"BANNED"+cc.reset+"!")
-												guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s)"})
+												guild.members.cache.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s)"})
 											}
 											catch(err){
 												channel.send(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L1419\n"+err.message);
@@ -1505,7 +1427,7 @@ moderatorBot.on("message",async message => {
 										}).catch(err=>{
 											console.info(timeStamp()+" "+cc.hlyellow+" WARNING "+cc.reset+" L:1424 | "+err.message+" | "
 												+"Member has disabled DMs or has blocked me... so they were "+cc.red+"instantly banned"+cc.reset+" instead!");
-											guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
+											guild.members.cache.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
 										})
 									}
 									return
@@ -1517,7 +1439,7 @@ moderatorBot.on("message",async message => {
 								if(foundEvent===true){
 									let catchID=spoofNinja[2].split(/ +/);
 									catchID=catchID[1].slice(2,-1);
-									if(!guild.members.get(catchID)){ return }
+									if(!guild.members.cache.get(catchID)){ return }
 
 									if(spooferFlag==="nothing"){
 										return
@@ -1542,7 +1464,7 @@ moderatorBot.on("message",async message => {
 												+"**banned** in `"+minsUntilPunished+" minute(s)` if they haven\"t left the spoofing server(s)."}});
 										}
 
-										guild.members.get(catchID).send({embed: embedMSG}).catch(err=>{
+										guild.members.cache.get(catchID).send({embed: embedMSG}).catch(err=>{
 											console.info(timeStamp()+" "+cc.hlyellow+" WARNING "+cc.reset+" L:1467 | "+err.message+" | "
 												+"Member has disabled DMs or has blocked me...")
 										})
@@ -1552,13 +1474,13 @@ moderatorBot.on("message",async message => {
 											// TIMER FOR PUNISHMENT
 											//
 											setTimeout(async function(){
-												let tempMember=moderatorBot.guilds.get(myServer.id).members.get(catchID);
+												let tempMember=moderatorBot.guilds.cache.get(myServer.id).members.cache.get(catchID);
 												if(!tempMember){
-													return moderatorBot.channels.get(myServer.cmdChanIDs[0]).send({embed:{"color":0x009900,"description":"<@"+catchID+"> has decided to leave our server instead."}}).catch(err=>{console.info(timeStamp()+" [ERROR L:360]\n"+err.message)});
+													return moderatorBot.channels.cache.get(myServer.cmdChanIDs[0]).send({embed:{"color":0x009900,"description":"<@"+catchID+"> has decided to leave our server instead."}}).catch(err=>{console.info(timeStamp()+" [ERROR L:360]\n"+err.message)});
 												}
 												else{
 													// CHECK IF MEMBER IS IN A SPOOFING SERVER
-													let spoofServersFoundAgain=checkMember(tempMember.id);
+													let spoofServersFoundAgain= await checkMember(tempMember.id);
 
 													// CHECK IF MY SERVER IS IN ALL SERVERS AND REMOVE IT
 													if(spoofServersFoundAgain.includes(myServer.name)){
@@ -1581,7 +1503,7 @@ moderatorBot.on("message",async message => {
 														// MODERATOR BOT POSTS TO COMMAND CHANNEL
 
 														if(spooferFlag==="ban"){
-															moderatorBot.channels.get(myServer.cmdChanIDs[0]).send({
+															moderatorBot.channels.cache.get(myServer.cmdChanIDs[0]).send({
 																embed:{"color":0xFF0000,"description":"<@"+tempMember.id+"> ignored the `warning` so they were **banned** 🔨"}
 															}).catch(err=>{console.info(timeStamp()+" [ERROR L]\n"+err.message)});
 
@@ -1593,7 +1515,7 @@ moderatorBot.on("message",async message => {
 															}
 														}
 														else{
-															moderatorBot.channels.get(myServer.cmdChanIDs[0]).send({
+															moderatorBot.channels.cache.get(myServer.cmdChanIDs[0]).send({
 																embed:{"color":0xFF0000,"description":"<@"+tempMember.id+"> ignored the `warning` so they were **kicked** 😏"}
 															}).catch(err=>{console.info(timeStamp()+" "+cc.hlred+" ERROR "+cc.reset+" L:1509\n"+err.message)});
 
@@ -1605,15 +1527,15 @@ moderatorBot.on("message",async message => {
 															}
 														}
 
-														moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).send({embed: embedMSG}).then(()=>{
+														moderatorBot.guilds.cache.get(myServer.id).members.cache.get(tempMember.id).send({embed: embedMSG}).then(()=>{
 															try {
 																if(spooferFlag==="kick"){
 																	console.info(timeStamp()+" "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.lblue+tempMember.id+cc.reset+") ignored warning so they were "+cc.red+"KICKED"+cc.reset+"!")
-																	moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).kick("AutoKick: Rule violation, user was found in spoofing server(s)")
+																	moderatorBot.guilds.cache.get(myServer.id).members.cache.get(tempMember.id).kick("AutoKick: Rule violation, user was found in spoofing server(s)")
 																}
 																if(spooferFlag==="ban"){
 																	console.info(timeStamp()+" "+cc.cyan+tempMember.user.username+cc.reset+"("+cc.lblue+tempMember.id+cc.reset+") ignored warning so they were "+cc.red+"BANNED"+cc.reset+"!")
-																	moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s)"})
+																	moderatorBot.guilds.cache.get(myServer.id).members.cache.get(tempMember.id).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s)"})
 																}
 															}
 															catch(err){
@@ -1621,7 +1543,7 @@ moderatorBot.on("message",async message => {
 															}
 														}).catch(err=>{
 															console.info(timeStamp()+" ["+cc.red+"ERROR"+cc.reset+"]\n"+err.message+" | Member blocked me, so no message was sent and they were "+cc.red+"instantly banned"+cc.reset);
-															moderatorBot.guilds.get(myServer.id).members.get(tempMember.id).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
+															moderatorBot.guilds.cache.get(myServer.id).members.cache.get(tempMember.id).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
 														})
 													}
 												}
@@ -1640,9 +1562,9 @@ moderatorBot.on("message",async message => {
 											"description": kickMSG.description
 										};
 										channel.send({embed:{"color":0xFF0000,"description":"<@"+catchID+"> has been **KICKED**! 💪"}});
-										guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
+										guild.members.cache.get(catchID).send({embed: embedMSG}).then(()=>{
 											try {
-												guild.members.get(catchID).kick("AutoKick: Rule violation, user was found in spoofing server(s)")
+												guild.members.cache.get(catchID).kick("AutoKick: Rule violation, user was found in spoofing server(s)")
 											}
 											catch(err){
 												channel.send(" catch(err) ERROR:\n"+err.message);
@@ -1650,7 +1572,7 @@ moderatorBot.on("message",async message => {
 										}).catch(err=>{
 											console.info(timeStamp()+" "+cc.hlyellow+" WARNING "+cc.reset+" L:1616 | "+err.message+" | "
 												+"Member has disabled DMs or has blocked me... so no "+cc.red+"KICK"+cc.reset+"-message was sent; I will "+cc.red+"BAN"+cc.reset+" them instead!");
-											guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
+											guild.members.cache.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
 										})
 									}
 
@@ -1662,9 +1584,9 @@ moderatorBot.on("message",async message => {
 											"description": banMSG.description
 										};
 										channel.send({embed:{"color":0xFF0000,"description":"<@"+catchID+"> has been **BANNED**! ⛔"}});
-										guild.members.get(catchID).send({embed: embedMSG}).then(()=>{
+										guild.members.cache.get(catchID).send({embed: embedMSG}).then(()=>{
 											try {
-												guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s)"})
+												guild.members.cache.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s)"})
 											}
 											catch(err){
 												console.info(timeStamp()+" catch(err) ["+cc.red+"ERROR"+cc.reset+"]\n"+err.message);
@@ -1672,7 +1594,7 @@ moderatorBot.on("message",async message => {
 										}).catch(err=>{
 											console.info(timeStamp()+" "+cc.hlyellow+" WARNING "+cc.reset+" L:1638 | "+err.message+" | "
 												+"Member has disabled DMs or has blocked me... so no "+cc.red+"BAN"+cc.reset+"-message was sent!");
-											guild.members.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
+											guild.members.cache.get(catchID).ban({days: 7, reason: "AutoBan: Rule violation, user was found in spoofing server(s) | Member blocked me so no message was sent"})
 										})
 									}
 								}
